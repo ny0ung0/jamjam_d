@@ -3,6 +3,7 @@ package com.jamjam.view.commonController;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
@@ -31,5 +32,15 @@ public class RegCompanyController {
 		 model.addAttribute("sectorCategories", sectorCategories);
 		 System.out.println(sectorCategories);
 		 model.addAttribute("allSectors", allSectors);
+		 
+		 List<Map<String, Object>> regionData = objectMapper.readValue(
+		            new ClassPathResource("static/json/korea-administrative-district.json").getFile(),
+		            new TypeReference<List<Map<String, Object>>>() {
+		            });
+		      Map<String, List<String>> regions = regionData.stream()
+		            .collect(Collectors.toMap(map -> map.keySet().iterator().next(), // key 값 (서울특별시, 부산광역시 등)
+		                  map -> (List<String>) map.values().iterator().next() // value 값 (구, 군 리스트)
+		            ));
+		      model.addAttribute("regions", regions);
 	}
 }
