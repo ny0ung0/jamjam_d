@@ -18,7 +18,7 @@ public class User {
 	private String name;
 	private String contact;
 	private String address;
-	private Date birth_date;
+	private Date birthDate;
 	private String gender;
 	private Date created_at;
 	private Date updated_at;
@@ -26,7 +26,7 @@ public class User {
 	public boolean hasAdditionalInfo() {
         return contact != null && !contact.isEmpty() &&
                address != null && !address.isEmpty() &&
-               birth_date != null &&
+               birthDate != null &&
                gender != null && !gender.isEmpty();
     }
 	
