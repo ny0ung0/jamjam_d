@@ -29,6 +29,7 @@ public class RegCompanyController {
 			        new TypeReference<List<Map<String, Object>>>() {
 			        });
 		 model.addAttribute("sectorCategories", sectorCategories);
+		 System.out.println(sectorCategories);
 		 model.addAttribute("allSectors", allSectors);
 	}
 }
