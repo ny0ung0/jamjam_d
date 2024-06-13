@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
 <h2>이준형</h2>
-
+<div th:if="${session.loginCompany ne null}">
+<p th:text="${session.loginCompany.company_id}"></p>
+</div>
 <a href="reg_company_form">기업회원가입폼</a>
+<a href="/company/log">임시로그인</a>
 </body>
 </html>

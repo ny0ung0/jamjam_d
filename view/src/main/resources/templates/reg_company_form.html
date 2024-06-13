@@ -1,94 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="https://code.jquery.com/jquery-3.7.1.js"
-	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-	crossorigin="anonymous"></script>
+    integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
 </head>
 <body>
-	<div id="companyContainer">
-		<form name="companyFrm">
-			이메일 : <input type="text" name="email"><br> 
-			기업형태 :
-			
-				<label for="sector1">모집업종</label> <select id="sector1"
-					name="sector1" onchange="codeSelectChanged()">
-					<option value="">선택</option>
-					<option th:each="sectorCategory : ${sectorCategories}"
-						th:value="${sectorCategory['코드']}"
-						th:text="${sectorCategory['산업/업종명']}"
-						></option>
-				</select>
-			
+    <div id="companyContainer">
+        <form id="companyFrm">
+            이메일 : <input type="text" name="email"><br> 
+            업종 :
+            
+                <label for="sector1">업종</label> 
+                <select id="sector1" name="sector1" onchange="codeSelectChanged()">
+                    <option value="">선택</option>
+                    <option th:each="sectorCategory : ${sectorCategories}"
+                        th:value="${sectorCategory['코드']}"
+                        th:text="${sectorCategory['산업/업종명']}"></option>
+                </select>
+            
+                <label for="sector2">상세업종</label> 
+                <select id="sector2" name="sector2">
+                    <option value="" class="always">선택</option>
+                    <option th:each="sector : ${allSectors}"
+                        th:value="${sector['산업/업종명']}"
+                        th:text="${sector['산업/업종명']}"
+                        th:class="${sector['상위코드']}"
+                        style="display: none;"></option>
+                </select>
+            <br>
+            사업자등록번호 : <input type="text" name="registration_number"><br>
+            회사명 : <input type="text" name="company_name"><br>
+            대표자명 : <input type="text" name="representative_name"><br>
+            회사주소 :
+                <select id="address1" name="address1" onchange="address1SelectChanged()">
+                    <option value="">선택</option>
+                    <option th:each="region : ${regions}"
+                        th:value="${region.key}"
+                        th:text="${region.key}"></option>
+                </select>
+               <select id="address2" name="address2">
+                    <option value="" class="always">선택</option>
+                    <option th:each="region : ${regions}"
+                        th:each="subRegion : ${region}"
+                        th:value="${subRegion}"
+                        th:text="${subRegion}"
+                        th:class="${region.key}"
+                        style="display: none;"></option>
+                </select>
+            <br>
+            전화번호 : <input type="text" name="tel"><br>
+            <button onclick="reg(event)">회원가입</button>
+        </form>
+    </div>
+    <div id="result_post"></div>
 
-			
-				<label for="sector2">상세모집업종</label> <select id="sector2"
-					name="sector2">
-					<option value="" class="always">선택</option>
-					<option th:each="sector : ${allSectors}"
-						th:value="${sector['산업/업종명']}"
-						th:text="${sector['산업/업종명']}"
-						th:class="${sector['상위코드']}"
-						
-						
-						style="display: none;"
-						></option>
-				</select>
-			<br>
-			 사업자등록번호 : <input type="text" name="registraion_number"><br>
-			 회사명 : <input type="text" name="company_name"><br>
-			대표자명 : <input type="text" name="representative_name"><br>
-			회사주소 : <input type="text" name="address"><br>
-			전화번호 : <input type="text" name="tel"><br>
-			<button>회원가입</button>
-		</form>
-	</div>
-
-	<script>
-	
-
-	 function codeSelectChanged() {
-         let code = document.querySelector("#sector1").value;
-         let options = document.querySelectorAll("#sector2 option");
-         let choice =document.querySelector(".always");
-         choice.selected = true;
-         options.forEach(option => {
-				option.style.display = 'none'; // 모든 옵션을 숨김 처리
-				
-				if (option.classList.contains(code)) {
-					option.style.display = 'block'; // 선택된 코드에 맞는 옵션만 보이도록 설정
-				}else if(option.classList.contains("always")) {
-					option.style.display = 'block'; // 선택된 코드에 맞는 옵션만 보이도록 설정
-				}
-			});
-     }
-	 
-	 
-	 function reg(){
-			let frm = document.querySelector("#frm");
-			let data={
-					"email" : frm.email.value,
-					"company_name" : frm.company_name.value,
-					"registration_number" : frm.registration_number.value,
-					"company_type" : frm.sector2.value,
-					"representative_name" : frm.representative_name.value,
-					"address" : frm.address.value,
-					"tel" : frm.tel.value,
-			}
-			let sendData = JSON.stringify(data);
-			const xhttp = new XMLHttpRequest();
-			xhttp.onload = function() {	//서버가 등록처리 후 결과 데이터를 보내주면 reponseText로 받는다.
-				document.getElementById("result_post").innerHTML = this.responseText;
-			}
-			xhttp.open("post", "http://localhost:8888/", true);
-			xhttp.setRequestHeader("Content-type", "application/json");
-			xhttp.send(sendData);
-			
-			
-		}
-	</script>
-
+    <script>
+        function codeSelectChanged() {
+            let code = document.querySelector("#sector1").value;
+            let options = document.querySelectorAll("#sector2 option");
+            let choice = document.querySelector(".always");
+            choice.selected = true;
+            options.forEach(option => {
+                option.style.display = 'none';
+                if (option.classList.contains(code)) {
+                    option.style.display = 'block';
+                } else if (option.classList.contains("always")) {
+                    option.style.display = 'block';
+                }
+            });
+        }
+     
+        function reg(e) {
+            e.preventDefault();
+            let frm = document.querySelector("#companyFrm");
+            let data = {
+                "email": frm.email.value,
+                "company_name": frm.company_name.value,
+                "registration_number": frm.registration_number.value,
+                "company_type": frm.sector2.value,
+                "representative_name": frm.representative_name.value,
+                "address": frm.address1.value + " " + frm.address2.value,
+                "tel": frm.tel.value,
+            };
+            let sendData = JSON.stringify(data);
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+                document.getElementById("result_post").innerHTML = this.responseText;
+            };
+            xhttp.open("post", "/api/company", true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(sendData);
+        }
+    </script>
 </body>
 </html>
