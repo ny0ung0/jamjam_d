@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class User {
 	
-	private Integer user_id;
+	private Long userId;
 	private String email;
 	private String name;
 	private String contact;
@@ -22,4 +22,12 @@ public class User {
 	private String gender;
 	private Date created_at;
 	private Date updated_at;
+	
+	public boolean hasAdditionalInfo() {
+        return contact != null && !contact.isEmpty() &&
+               address != null && !address.isEmpty() &&
+               birth_date != null &&
+               gender != null && !gender.isEmpty();
+    }
+	
 }
