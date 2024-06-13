@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-
+/*
 public class RedirectOAuth2User implements OAuth2User {
 
     private String redirectUrl;
@@ -35,3 +35,4 @@ public class RedirectOAuth2User implements OAuth2User {
         return null;
     }
 }
+*/

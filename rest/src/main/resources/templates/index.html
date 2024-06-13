@@ -5,9 +5,13 @@
 <title>Insert title here</title>
 </head>
 <body>
+<div th:if="${email == null}">
 <a href="login">로그인</a>
+</div>
+<div th:if="${email != null}">
 <h1>Welcome, <span th:text="${name}">User</span>!</h1>
     <p>You have successfully logged in.</p>
     <a th:href="@{/logout}">Logout</a>
+     </div>
 </body>
 </html>

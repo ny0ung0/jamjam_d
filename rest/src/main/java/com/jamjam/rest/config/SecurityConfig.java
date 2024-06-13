@@ -1,5 +1,7 @@
 package com.jamjam.rest.config;
 
+import java.io.IOException;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,8 +10,11 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 import com.jamjam.rest.service.CustomOAuth2UserService;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -20,17 +25,11 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/oauth2/**", "/login/**", "/error").permitAll()
+                .requestMatchers("/", "signup", "/oauth2/**", "/login/**", "/error").permitAll()
                 .anyRequest().authenticated()
             )
-            .formLogin(formLogin -> formLogin
-                .loginPage("/login")
-                .defaultSuccessUrl("/home")
-                .failureUrl("/login?error=true")
-            )
             .oauth2Login(oauth2 -> oauth2
-                .loginPage("/login")
-                .defaultSuccessUrl("/oauth2/success")
+                .defaultSuccessUrl("/oauth2/success", true)
                 .failureUrl("/login?error=true")
                 .userInfoEndpoint(userInfo -> userInfo
                     .userService(oauth2UserService())
@@ -38,9 +37,20 @@ public class SecurityConfig {
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login")
+                .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
+                .deleteCookies("JSESSIONID", "XSRF-TOKEN")
+                .clearAuthentication(true) // 인증 정보 제거
+                .addLogoutHandler((request, response, authentication) -> {
+                    // 로그아웃 시 Google 로그아웃 URL로 리디렉션
+                    String googleLogoutUrl = "https://accounts.google.com/Logout";
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    try {
+						response.sendRedirect(googleLogoutUrl);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+                })
             );
         
         return http.build();
