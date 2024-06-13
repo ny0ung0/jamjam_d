@@ -1,4 +1,4 @@
-package com.jamjam.view.CompanyController;
+package com.jamjam.view.companyController;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
