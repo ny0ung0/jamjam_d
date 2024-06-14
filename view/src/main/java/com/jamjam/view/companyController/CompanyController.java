@@ -31,7 +31,11 @@ public class CompanyController {
 		return "/leindex";
 	}
 	@RequestMapping("/job_posting_create")
-	public void job_posting_create(Model model)  {
+	public void job_posting_create()  {
+		
+	}
+	@RequestMapping("/company_introduction_create")
+	public void company_introduction_create() {
 		
 	}
 

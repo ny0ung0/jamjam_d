@@ -15,9 +15,8 @@ public class CompanyInfo {
 
 	private Integer info_id;
 	private Integer company_id;
-	private String logo_image;
 	private String description;
-	private String industry;
+
 	private Integer number_of_employees;
 	private String working_environment;
 	private String benefits;

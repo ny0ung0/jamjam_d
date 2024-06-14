@@ -3,51 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+	crossorigin="anonymous"></script>
 </head>
 <body>
 <h1>기업소개 등록</h1>
 
-<form>
-	<input type="hidden" name="company_id" value="{session.loginCompany.company_id}">
-	<input type="file" name="file"><br>
-	<textarea name="description"></textarea><br>
-	<input type="number" name="number_of_employees"><br>
-	<input type="text" name="working_environment"><br>
-	<input type="text" name="benefits"><br>
-	<input type="text" name="ideal_candidate"><br>
-	<input type="text" name="main_contact"><br>
-	<input type="text" name="main_email"><br>
-	<button onclick="reg(event)">등록</button>
-	<div id="demo"></div>
+<form name="frm" id="companyInfoFrm" method="POST">
+	<input type="text" name="company_id" th:value="${session.loginCompany.company_id}">
+	회사로고 :<input type="file" name="file"><br>
+	회사소개 :<textarea name="description"></textarea><br>
+	사원수 :<input type="number" name="number_of_employees"><br>
+	근무환경 :<input type="text" name="working_environment"><br>
+	복리후생 :<input type="text" name="benefits"><br>
+	인재상 :<input type="text" name="ideal_candidate"><br>
+	전화번호 :<input type="text" name="main_contact"><br>
+	이메일 :<input type="text" name="main_email"><br>
+	<input type="submit" onclick="reg11(event)" value="등록">
+	
 </form>
+<div id="demo"></div>
 <script>
-	function reg(event){
-		event.preventDefault();
-		alert("submit....");
-		
-		var form = document.forms['frm'];
-		var formData = new FormData(form);
-		
-		$.ajax({
-			type: "POST",
-			url: "http://localhost:8888/company/companyinfo",
-			enctype:"multipart/form-data",
-			data: formData,
-			dataType: "text",
-			 contentType: false, // FormData를 사용할 때는 false로 설정
-	            processData: false, // FormData를 사용할 때는 false로 설정
-	            cache: false,
-			success: function(data){
-				console.log(data);
-				$("#demo").html(data);
-			},
-			error: function(){
-				console.log("에러발생");
-			}
-		
-		});
-	}
+function reg11(event){
+    event.preventDefault();
+    alert("submit....");
+
+    let frm = document.querySelector("#companyInfoFrm");
+    alert(frm.file);
+    let formData = new FormData(frm);
+
+    $.ajax({
+        type: "post",
+        url: "http://localhost:8888/company/companyInfo",
+        enctype: "multipart/form-data",
+        
+        data: formData,
+        dataType: "text",
+        contentType: false,
+        processData: false,
+        cache: false,
+        success: function(data){
+            console.log(data);
+            $("#demo").html(data);
+        },
+        error: function(){
+            console.log("에러발생" + data);
+        }
+    });
+}
 	
 </script>
 
