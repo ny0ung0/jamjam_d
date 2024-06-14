@@ -43,12 +43,7 @@
                 </select>
                <select id="address2" name="address2">
                     <option value="" class="always">선택</option>
-                    <option th:each="region : ${regions}"
-                        th:each="subRegion : ${region}"
-                        th:value="${subRegion}"
-                        th:text="${subRegion}"
-                        th:class="${region.key}"
-                        style="display: none;"></option>
+                    
                 </select>
             <br>
             전화번호 : <input type="text" name="tel"><br>
@@ -72,7 +67,23 @@
                 }
             });
         }
-     
+        function address1SelectChanged() {
+        	let address1 = document.querySelector("#address1").value;
+        	 document.getElementById("address2").innerHTML ='<option value="" class="always">선택</option>';
+            
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+            	let address2 =JSON.parse(this.responseText);
+            	alert(address2);
+            	address2.forEach(address => {
+            		 document.getElementById("address2").innerHTML += '<option value =' +address+'>'+address+'</option>';
+            	})
+               
+            };
+            xhttp.open("get", "http://localhost:8888/api/address2/" + address1, true);
+           // xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send();
+        }
         function reg(e) {
             e.preventDefault();
             let frm = document.querySelector("#companyFrm");
