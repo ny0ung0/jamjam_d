@@ -42,8 +42,7 @@ public class UserController {
     HttpSession httpSession;
 	
 	@PostMapping("/resume")
-	public String regResume(@RequestParam("email")String email_, Resume resume,@RequestPart("profile_photo") MultipartFile profilePhoto) {
-		System.out.println("123");
+	public String regResume(@RequestParam("email")String email_, Resume resume, @RequestPart("profile_photo") MultipartFile profilePhoto) {
 		System.out.println(resume);
 		ResumeDB resumedb = new ResumeDB();
 		resumedb.setTitle(resume.getTitle());
