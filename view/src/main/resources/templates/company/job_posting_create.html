@@ -8,15 +8,261 @@
 <body>
 <h1>채용 공고 등록</h1>
 
-<form>
-	<input type="hidden" name="company_id" th:value="${loginCompany}">
+<form id="postingFrm">
+	<input type="hidden" name="company_id" th:value="${session.loginCompany.company_id}">
 	공고제목 : <input type="text" name="title" > <br>
-	모집업종 :  <br>
-	모집직무 :  <br>
-	직무내용 : <textarea name="job_description" > <br>
-	
-
+	모집업종 :  <select id="sector1" name="sector1" onchange="sector1SelectChanged()"></select>
+	<select id="sector2" name="sector2"></select>
+	<br>
+	모집직무 : <select id="job_role1" name="job_role1" onchange="job_role1SelectChanged()">
+				
+	</select> <select id="job_role2" name="job_role2" onchange="job_role2SelectChanged()"></select><br>
+	직무내용 : <textarea name="job_description" ></textarea> <br>
+	경력사항 : <input type="text" name="experience_required"><br>
+	고용형태 :  <select id="employment_type" name="employment_type"></select><br>
+	모집인원 : <input type="number" name="number_of_positions"><br>
+	임금조건 : <input type="text" name="salary_condition"><br>
+	임금형태 : <input type="text" name="salary_type"><br>
+	학력조건 : <select id="education_requirement" name="education_requirement"></select><br>
+	필요스킬 : <input type="text" name="required_skills"><br>
+	근무지역 : <select id="address1" name="address1" onchange="address1SelectChanged()"></select>
+	<select id="address2" name="address2"></select>
+	<input type="text" name="detailAddress"><br>
+	근무시간 : <input type="text" name="working_hours"><br>
+	기타복리후생 : <input type="text" name="benefits"><br>
+	키워드 :  <span id="keywords"></span> <br>
+	담당자 이름 : <input type="text" name="contact_person_name"><br>
+	담당자 이메일 : <input type="text" name="contact_person_email"><br>
+	담당자 연락처 : <input type="text" name="contact_person_phone"><br>
+	마감일자 : <input type="date" name="application_deadline"><br>
+<button onclick="reg(event)">등록</button>
 </form>
+<div id = "result_post"></div>
 
+
+
+
+<script>
+pre1();
+pre2();
+pre3();
+pre4();
+pre5();
+
+//업종1을 선택하면 업종2를 바꿔주는 메서드(수정필요)
+function sector1SelectChanged() {
+	let sector1 = document.querySelector("#sector1").value;
+	//alert(sector1);
+	 document.getElementById("sector2").innerHTML ='<option value="" class="always">선택</option>';
+   
+   const xhttp = new XMLHttpRequest();
+   xhttp.onload = function() {
+   	let sector2 =JSON.parse(this.responseText);
+   	
+   	sector2.forEach(sector => {
+   		 document.getElementById("sector2").innerHTML += '<option value =' +sector+'>'+sector+'</option>';
+   	})
+      
+   };
+   xhttp.open("get", "http://localhost:8888/json/sector/" + sector1, true);
+  // xhttp.setRequestHeader("Content-type", "application/json");
+   xhttp.send();
+}
+//주소1을 선택하면 주소2내용을 바꿔주는 메서드
+function address1SelectChanged() {
+	let address1 = document.querySelector("#address1").value;
+	//alert(sector1);
+	 document.getElementById("address2").innerHTML ='<option value="" class="always">선택</option>';
+   
+   const xhttp = new XMLHttpRequest();
+   xhttp.onload = function() {
+   	let address2 =JSON.parse(this.responseText);
+   	
+   	address2.forEach(address => {
+   		 document.getElementById("address2").innerHTML += '<option value =' +address+'>'+address+'</option>';
+   	})
+      
+   };
+   xhttp.open("get", "http://localhost:8888/json/address2/" + address1, true);
+  // xhttp.setRequestHeader("Content-type", "application/json");
+   xhttp.send();
+}
+//직무1을 선택하면 직무2의 내용을 바꿔주는 메서드
+function job_role1SelectChanged() {
+	let job_role1 = document.querySelector("#job_role1").value;
+	 document.getElementById("job_role2").innerHTML ='<option value="" class="always">선택</option>';
+	 document.getElementById("keywords").innerHTML ='';
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+    	let job_role2 =JSON.parse(this.responseText);
+    	
+    	job_role2.forEach(role => {
+    		
+    		
+    		 document.getElementById("job_role2").innerHTML += '<option value =' +role+'>'+role+'</option>';
+    		 
+    	})
+       
+    };
+    xhttp.open("get", "http://localhost:8888/json/job/" + job_role1, true);
+   // xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send();
+}
+//직무2를 선택하면 키워드가 저장되는 메서드
+function job_role2SelectChanged(){
+	let job_role2 = document.querySelector("#job_role2").value;
+	//alert(job_role1);
+	 document.getElementById("keywords").innerHTML =job_role2;
+	 
+}
+
+//페이지 오픈할때 첫번째 셀렉트에 데이터 넣는 메서드
+function pre1(){
+	//직무 관련
+	let job_role1 =document.getElementById("job_role1");
+	job_role1.innerHTML ='<option value="" class="always">선택</option>';
+	document.getElementById("job_role2").innerHTML ='<option value="" class="always">선택</option>';
+   const xhttp = new XMLHttpRequest();
+   xhttp.onload = function() {
+	  
+   	let results =JSON.parse(this.responseText);
+   	//alert(results);
+   	results.forEach(result => {
+   		//아직 미완성 
+   		//alert(result);
+   		let code =result.코드;
+   		let role = result.상위직무;
+   		job_role1.innerHTML += '<option value =' +code+'>'+role+'</option>';
+   	})
+      
+   };
+   xhttp.open("get", "http://localhost:8888/json/job_category", true);
+  // xhttp.setRequestHeader("Content-type", "application/json");
+   xhttp.send();
+}
+function  pre2(){
+   //고용형태 관련
+   let employment_type = document.getElementById("employment_type");
+   employment_type.innerHTML ='<option value="" class="always">선택</option>';
+   
+   const xhttp = new XMLHttpRequest();
+   xhttp.onload = function() {
+	  
+   	let results =JSON.parse(this.responseText);
+   	//alert(results);
+   	results.forEach(result => {
+   		//아직 미완성 
+   		//alert(result);
+   		//let code =result.코드;
+   		let text = result.근무형태;
+   		employment_type.innerHTML += '<option value =' +text+'>'+text+'</option>';
+   	})
+      
+   };
+   xhttp.open("get", "http://localhost:8888/json/workType", true);
+  // xhttp.setRequestHeader("Content-type", "application/json");
+   xhttp.send();
+   
+}
+function  pre3(){
+	   //학력관련
+	   let education_requirement = document.getElementById("education_requirement");
+	   education_requirement.innerHTML ='<option value="" class="always">선택</option>';
+	   
+	   const xhttp = new XMLHttpRequest();
+	   xhttp.onload = function() {
+		  
+	   	let results =JSON.parse(this.responseText);
+	   	//alert(results);
+	   	results.forEach(result => {
+	   		//아직 미완성 
+	   		//alert(result);
+	   		//let code =result.코드;
+	   		let text = result.학력;
+	   		education_requirement.innerHTML += '<option value =' +text+'>'+text+'</option>';
+	   	})
+	      
+	   };
+	   xhttp.open("get", "http://localhost:8888/json/eduCode", true);
+	  // xhttp.setRequestHeader("Content-type", "application/json");
+	   xhttp.send();
+	   
+	}
+function pre4(){
+	let sector1 =document.getElementById("sector1");
+	sector1.innerHTML ='<option value="" class="always">선택</option>';
+	document.getElementById("sector2").innerHTML ='<option value="" class="always">선택</option>';
+   const xhttp = new XMLHttpRequest();
+   xhttp.onload = function() {
+	  
+   	let results =JSON.parse(this.responseText);
+   	//alert(results);
+   	results.forEach(result => {
+   		//아직 미완성 
+   		//alert(result);
+   		let code =result.코드;
+   		let name = result.업종명;
+   		sector1.innerHTML += '<option value =' +code+'>'+name+'</option>';
+   	})
+      
+   };
+   xhttp.open("get", "http://localhost:8888/json/sector_category", true);
+  // xhttp.setRequestHeader("Content-type", "application/json");
+   xhttp.send();
+}
+function pre5(){
+	let address1 =document.getElementById("address1");
+	address1.innerHTML ='<option value="" class="always">선택</option>';
+	document.getElementById("address2").innerHTML ='<option value="" class="always">선택</option>';
+   const xhttp = new XMLHttpRequest();
+   xhttp.onload = function() {
+	  
+   	let result =JSON.parse(this.responseText);
+    Object.keys(result).forEach(key => {
+        address1.innerHTML += '<option value="' + key + '">' + key + '</option>';
+    });
+      
+   };
+   xhttp.open("get", "http://localhost:8888/json/address1", true);
+  // xhttp.setRequestHeader("Content-type", "application/json");
+   xhttp.send();
+}
+
+function reg(e) {
+    e.preventDefault();
+    let frm = document.querySelector("#postingFrm");
+    let data = {
+        "company_id": frm.company_id.value,
+        "title": frm.title.value,
+        "industry": frm.sector2.value,
+        "job_role": frm.job_role1.value + " " + frm.job_role2.value,
+        "job_description": frm.job_description.value,
+        "experience_required": frm.experience_required.value ,
+        "employment_type": frm.employment_type.value,
+        "number_of_positions": frm.number_of_positions.value,
+        "salary_condition": frm.salary_condition.value,
+        "salary_type": frm.salary_type.value,
+        "education_requirement": frm.education_requirement.value,
+        "required_skills": frm.required_skills.value,
+        "location": frm.address1.value +" "+frm.address2.value +" "+frm.detailAddress.value ,
+        "working_hours": frm.working_hours.value,
+        "benefits": frm.benefits.value,
+        "keywords": frm.job_role2.value,
+        "contact_person_name": frm.contact_person_name.value,
+        "contact_person_email": frm.contact_person_email.value,
+        "contact_person_phone": frm.contact_person_phone.value,
+        "application_deadline": frm.application_deadline.value,
+    };
+    let sendData = JSON.stringify(data);
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        document.getElementById("result_post").innerHTML = this.responseText;
+    };
+    xhttp.open("post", "http://localhost:8888/company/jobposting");
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send(sendData);
+}
+
+</script>
 </body>
 </html>

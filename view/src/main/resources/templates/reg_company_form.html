@@ -18,15 +18,15 @@
                     <option value="">선택</option>
                     <option th:each="sectorCategory : ${sectorCategories}"
                         th:value="${sectorCategory['코드']}"
-                        th:text="${sectorCategory['산업/업종명']}"></option>
+                        th:text="${sectorCategory['업종명']}"></option>
                 </select>
             
                 <label for="sector2">상세업종</label> 
                 <select id="sector2" name="sector2">
                     <option value="" class="always">선택</option>
                     <option th:each="sector : ${allSectors}"
-                        th:value="${sector['산업/업종명']}"
-                        th:text="${sector['산업/업종명']}"
+                        th:value="${sector['업종명']}"
+                        th:text="${sector['업종명']}"
                         th:class="${sector['상위코드']}"
                         style="display: none;"></option>
                 </select>
@@ -75,13 +75,12 @@
             const xhttp = new XMLHttpRequest();
             xhttp.onload = function() {
             	let address2 =JSON.parse(this.responseText);
-            	alert(address2);
             	address2.forEach(address => {
             		 document.getElementById("address2").innerHTML += '<option value =' +address+'>'+address+'</option>';
             	})
                
             };
-            xhttp.open("get", "http://localhost:8888/company/address2/" + address1, true);
+            xhttp.open("get", "http://localhost:8888/json/address2/" + address1, true);
            // xhttp.setRequestHeader("Content-type", "application/json");
             xhttp.send();
         }

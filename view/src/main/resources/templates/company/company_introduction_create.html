@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+</head>
+<body>
+<h1>기업소개 등록</h1>
+
+<form>
+	<input type="hidden" name="company_id" value="{session.loginCompany.company_id}">
+	<input type="file" name="file"><br>
+	<textarea name="description"></textarea><br>
+	<input type="number" name="number_of_employees"><br>
+	<input type="text" name="working_environment"><br>
+	<input type="text" name="benefits"><br>
+	<input type="text" name="ideal_candidate"><br>
+	<input type="text" name="main_contact"><br>
+	<input type="text" name="main_email"><br>
+	<button onclick="reg(event)">등록</button>
+	<div id="demo"></div>
+</form>
+<script>
+	function reg(event){
+		event.preventDefault();
+		alert("submit....");
+		
+		var form = document.forms['frm'];
+		var formData = new FormData(form);
+		
+		$.ajax({
+			type: "POST",
+			url: "http://localhost:8888/company/companyinfo",
+			enctype:"multipart/form-data",
+			data: formData,
+			dataType: "text",
+			 contentType: false, // FormData를 사용할 때는 false로 설정
+	            processData: false, // FormData를 사용할 때는 false로 설정
+	            cache: false,
+			success: function(data){
+				console.log(data);
+				$("#demo").html(data);
+			},
+			error: function(){
+				console.log("에러발생");
+			}
+		
+		});
+	}
+	
+</script>
+
+</body>
+</html>

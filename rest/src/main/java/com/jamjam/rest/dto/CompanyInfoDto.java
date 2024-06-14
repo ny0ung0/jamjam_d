@@ -2,6 +2,8 @@ package com.jamjam.rest.dto;
 
 import java.util.Date;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +13,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyInfo {
+public class CompanyInfoDto {
 
 	private Integer info_id;
 	private Integer company_id;
-	private String logo_image;
+	private MultipartFile file;
 	private String description;
 	private String industry;
 	private Integer number_of_employees;
@@ -27,6 +29,7 @@ public class CompanyInfo {
 	private Date created_at;
 	private Date updated_at;
 	
-	private String originName;
-	private String newName;
+	public String getFileName() {
+		return file.getOriginalFilename();
+	}
 }
