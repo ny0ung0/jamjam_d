@@ -1,10 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>현용</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+function fetchUserInfo() {
+    $.ajax({
+        url: "http://localhost:8888/userInfo",
+        method: "GET",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: function(data) {
+            if (data) {
+                $("#userName").text(data.name);
+                $("#userEmail").text(data.email);
+                $("#email").val(data.email);
+                $("#name").val(data.name);
+                $("#loggedInSection").show();
+                $("#loggedOutSection").hide();
+            } else {
+                window.location.href = "/";
+            }
+        },
+        error: function() {
+            alert("Failed to fetch user info.");
+        }
+    });
+}
+
+$(document).ready(function() {
+    // 페이지가 로드될 때는 로그인 버튼만 표시
+    $("#loggedOutSection").show();
+    $("#loggedInSection").hide();
+});
+
+function login() {
+    // 로그인 버튼을 클릭할 때 사용자 정보를 가져옴
+    window.location.href = "http://localhost:8888/login";
+}
+</script>
 </head>
 <body>
-<h2>임현용</h2>
+    <div id="loggedOutSection">
+        <button onclick="login()">로그인</button>
+    </div>
+    <div id="loggedInSection">
+        <h1>
+            Welcome, <span id="userName">User</span>!
+        </h1>
+        <p>Your email is <span id="userEmail"></span>.</p>
+        <a href="http://localhost:8888/logout">Logout</a>
+    </div>
 </body>
 </html>

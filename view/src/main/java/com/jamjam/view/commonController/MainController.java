@@ -18,4 +18,11 @@ public class MainController {
 	public void n() {
 		
 	}
+	
+	@RequestMapping("usermain")
+	public void usermain() {
+		
+	}
+	
+	
 }

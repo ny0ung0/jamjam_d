@@ -26,10 +26,10 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/", "signup", "/oauth2/**", "/login/**", "/error").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .oauth2Login(oauth2 -> oauth2
-                .defaultSuccessUrl("/oauth2/success", true)
+                .defaultSuccessUrl("http://localhost:9999/usermain", true)
                 .failureUrl("/login?error=true")
                 .userInfoEndpoint(userInfo -> userInfo
                     .userService(oauth2UserService())
@@ -37,7 +37,7 @@ public class SecurityConfig {
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
+                .logoutSuccessUrl("http://localhost:9999/")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID", "XSRF-TOKEN")
                 .clearAuthentication(true) // 인증 정보 제거
