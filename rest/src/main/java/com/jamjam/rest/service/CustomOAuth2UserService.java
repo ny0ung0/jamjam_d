@@ -47,7 +47,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 user.setName(oauth2User.getAttribute("name"));
                 userMapper.insertUser(user);
             }
-            oauthUser = new OAuthUser(user.getUserId(), provider, providerUserId);
+            oauthUser = new OAuthUser(user.getUser_id(), provider, providerUserId);
             oauthUserMapper.insertOAuthUser(oauthUser);
         } else {
             user = userMapper.findByEmail(oauth2User.getAttribute("email"));
