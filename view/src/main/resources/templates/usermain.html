@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: "http://localhost:8888/userInfo",
+                method: "GET",
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function(data) {
+                    if (data) {
+                        $("#userName").text(data.name);
+                        $("#userEmail").text(data.email);
+                        $("#email").val(data.email);
+                        $("#name").val(data.name);
+                    }
+                },
+                error: function() {
+                    alert("Failed to fetch user info.");
+                }
+            });
+
+            $("#signupForm").submit(function(event) {
+                event.preventDefault();
+
+                var formData = {
+                    email: $("#email").val(),
+                    name: $("#name").val(),
+                    contact: $("#contact").val(),
+                    address: $("#address").val(),
+                    birthDate: $("#birthDate").val(),
+                    gender: $("#gender").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:8888/signup",
+                    data: JSON.stringify(formData),
+                    contentType: "application/json",
+                    success: function(response) {
+                        alert("Signup successful!");
+                        window.location.href = "/"; // 성공 시 리디렉션
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Signup failed: " + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div>
+        <h1>Welcome, <span id="userName">User</span>!</h1>
+        <p>Your email is <span id="userEmail"></span>.</p>
+        <a href="http://localhost:8888/logout">Logout</a>
+    </div>
+
+    <h1>Additional Information</h1>
+    <form id="signupForm">
+        <div>
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" required />
+        </div>
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required />
+        </div>
+        <div>
+            <label for="contact">Contact:</label>
+            <input type="text" id="contact" name="contact" />
+        </div>
+        <div>
+            <label for="address">Address:</label>
+            <textarea id="address" name="address"></textarea>
+        </div>
+        <div>
+            <label for="birthDate">Birth Date:</label>
+            <input type="date" id="birthDate" name="birthDate" />
+        </div>
+        <div>
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender">
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</body>
+</html>
