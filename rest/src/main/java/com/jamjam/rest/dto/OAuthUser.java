@@ -14,12 +14,12 @@ import lombok.NoArgsConstructor;
 public class OAuthUser {
 	
 	private Long id;
-    private Long userId;
+    private Integer userId;
     private String provider;
     private String providerUserId;
     
-    public OAuthUser(Long user_id, String provider2, String providerUserId2) {
-		this.userId = user_id;
+    public OAuthUser(Integer integer, String provider2, String providerUserId2) {
+		this.userId = integer;
 		this.provider = provider2;
 		this.providerUserId = providerUserId2;
 	}

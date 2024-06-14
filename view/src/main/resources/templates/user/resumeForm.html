@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>resume Form</title>
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+	crossorigin="anonymous"></script>
+</head>
+<body>
+	<h2>이력서 등록 페이지</h2>
+	<div>
+		<form name="resume" id="resumeForm">
+		<input type="hidden" id="email" name="email"/>
+			제목<input type="text" name="title"/><br/>
+			프로필사진<input type="file" name="profile_photo"/><br/>
+			희망직무<input type="text" name="desired_job"/><br/>
+			보유스킬<input type="text" name="skills"/><br/>
+			보유자격증<input type="text" name="license" /><br/>
+			학력사항<input type="text" name="education"/><br/>
+			경력사항<input type="text" name="experience"/><br/>
+			취업우대사항<input type="text" name="preferences"/><br/>
+			자기소개서 제목<input type="text" name="cover_letter_title"/><br/>
+			자기소개서 내용<input type="text" name="cover_letter_content"/><br/>
+			희망근무조건<input type="text"	name="desired_conditions"/><br/>
+			포트폴리오<input type="text" name="portfolio"/><br/>
+			<button type="submit" onclick="submitResume(event)">이력서 작성 완료</button>	
+		</form>
+	</div>
+	<script>
+	$(document).ready(function() {
+        $.ajax({
+            url: "http://localhost:8888/userInfo",
+            method: "GET",
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function(data) {
+                if (data) {
+                    $("#userName").text(data.name);
+                    $("#userEmail").text(data.email);
+                    $("#email").val(data.email);
+                    $("#name").val(data.name);
+                    
+                }
+            },
+            error: function() {
+                alert("Failed to fetch user info.");
+            }
+        });
+	});
+	
+	function submitResume(event){
+        event.preventDefault();
+        alert("이력서 등록중..");
+        var form = document.forms['resume'];
+        var formData = new FormData(form);
+
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8888/user/resume",
+            enctype: "multipart/form-data",
+            data: formData,
+            dataType: "text",
+            processData: false,  // 필수: 파일 데이터를 문자열로 변환하지 않음
+            contentType: false,  // 필수: 파일 데이터의 Content-Type 설정
+            cache: false,
+            success: function(response){
+                alert("이력서 등록 성공");
+                if(response != null){
+                    window.location.href= "/nindex";
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                alert("에러발생: " + textStatus + ", " + errorThrown);
+            }
+        });
+    };
+	</script>
+</body>
+</html>
