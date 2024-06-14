@@ -11,11 +11,27 @@
 	<h2>이력서 등록 페이지</h2>
 	<div>
 		<form name="resume" id="resumeForm">
-		<input type="hidden" id="email" name="email"/>
+		<input type="text" id="email" name="email"/>
 			제목<input type="text" name="title"/><br/>
 			프로필사진<input type="file" name="profile_photo"/><br/>
-			희망직무<input type="text" name="desired_job"/><br/>
-			보유스킬<input type="text" name="skills"/><br/>
+			<div>
+				<label for = "desired_job1">희망직무</label>
+				<select id="desired_job1" name="desired_job1" onchange="addJob()" required>
+				<option value="">선택</option>
+				</select>
+				<div id="selectdesired_job">
+				</div>
+			</div>
+			<input type="text" id="srchDesiredJson" name="desired_job"/>
+			<div>
+				<label for = "gotSkills">보유스킬</label>
+				<select id="selectSkill" name="selectSkill" onchange="addSkill()" required>
+				<option value="">선택</option>
+				</select>
+				<div id="selectedSkills">
+				</div>
+			</div>
+			<input type="text" id="skills" name="skills"/>
 			보유자격증<input type="text" name="license" /><br/>
 			학력사항<input type="text" name="education"/><br/>
 			경력사항<input type="text" name="experience"/><br/>
@@ -49,6 +65,70 @@
             }
         });
 	});
+	
+	
+	fetch('/json/job.json')
+		.then(response => response.json())
+		.then(data => {
+			const select = document.getElementById('selectSkill');
+			const keywordSete = new Set();
+			data.forEach(item => {
+				if(!keywordSete.has(item["직무 키워드명"])){
+					const option = document.createElement('option');
+					option.value = item["직무 키워드명"];
+					option.text = item["직무 키워드명"];
+					select.add(option);
+				}
+			});
+		});
+	
+	
+	fetch('/json/job_category.json')
+	.then(response => response.json())
+	.then(data => {
+		const select = document.getElementById('desired_job1');
+		const keywordSet = new Set();
+		data.forEach(item => {
+			if (!keywordSet.has(item["상위직무"])){
+				const option = document.createElement('option');
+				option.value = item["상위직무"];
+				option.text = item["상위직무"];
+				select.add(option);
+			}
+		});
+	});
+
+function addJob() {
+    const select = document.getElementById('desired_job1');
+    const selectedJob = select.options[select.selectedIndex].value;
+
+    if (selectedJob) {
+        const selectedDiv = document.getElementById('selectdesired_job');
+        const newJobDiv = document.createElement('span');
+        newJobDiv.classList.add('job-item');
+        newJobDiv.innerHTML = `${selectedJob} <button type="button" onclick="removeJob(this)">X</button>`;
+        selectedDiv.appendChild(newJobDiv);
+
+        updateDesiredJobs();
+    }
+}
+
+function removeJob(button) {
+    const jobItem = button.parentNode;
+    jobItem.parentNode.removeChild(jobItem);
+
+    updateDesiredJobs();
+}
+
+function updateDesiredJobs() {
+    const selectedDiv = document.getElementById('selectdesired_job');
+    const jobItems = selectedDiv.getElementsByClassName('job-item');
+    const jobs = Array.from(jobItems).map(item => item.textContent.trim().slice(0, -1)); // Remove the trailing 'X'
+    const jobsString = jobs.join(', ');
+
+    document.getElementById('srchDesiredJson').value = jobsString;
+}
+	
 	
 	function submitResume(event){
         event.preventDefault();
