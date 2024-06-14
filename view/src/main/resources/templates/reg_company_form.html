@@ -45,6 +45,7 @@
                     <option value="" class="always">선택</option>
                     
                 </select>
+                상세주소:<input type="text" name="detailAddress">
             <br>
             전화번호 : <input type="text" name="tel"><br>
             <button onclick="reg(event)">회원가입</button>
@@ -80,7 +81,7 @@
             	})
                
             };
-            xhttp.open("get", "http://localhost:8888/api/address2/" + address1, true);
+            xhttp.open("get", "http://localhost:8888/company/address2/" + address1, true);
            // xhttp.setRequestHeader("Content-type", "application/json");
             xhttp.send();
         }
@@ -93,7 +94,7 @@
                 "registration_number": frm.registration_number.value,
                 "company_type": frm.sector2.value,
                 "representative_name": frm.representative_name.value,
-                "address": frm.address1.value + " " + frm.address2.value,
+                "address": frm.address1.value + " " + frm.address2.value + " "+frm.detailAddress.value,
                 "tel": frm.tel.value,
             };
             let sendData = JSON.stringify(data);
@@ -101,7 +102,7 @@
             xhttp.onload = function() {
                 document.getElementById("result_post").innerHTML = this.responseText;
             };
-            xhttp.open("post", "/api/company", true);
+            xhttp.open("post", "http://localhost:8888/signup/company");
             xhttp.setRequestHeader("Content-type", "application/json");
             xhttp.send(sendData);
         }
