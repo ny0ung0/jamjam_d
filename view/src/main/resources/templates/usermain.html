@@ -18,6 +18,11 @@
                         $("#userEmail").text(data.email);
                         $("#email").val(data.email);
                         $("#name").val(data.name);
+                     // 추가 정보가 있는지 확인
+                        if (data.hasAdditionalInfo) {
+                            // 메인 페이지로 리다이렉트
+                            window.location.href = "/nindex";
+                        }
                     }
                 },
                 error: function() {
@@ -25,17 +30,58 @@
                 }
             });
 
+
+         // JSON 데이터를 로드하고 시/도 선택박스에 추가
+            fetch('/json/korea-administrative-district.json')
+            .then(response => response.json())
+            .then(data => {
+                const citySelect = document.getElementById('city');
+                data.forEach(city => {
+                    for (const cityName in city) {
+                        const option = document.createElement('option');
+                        option.value = cityName;
+                        option.text = cityName;
+                        citySelect.add(option);
+                    }
+                });
+            });
+
+
+            // 시/도 선택이 변경되면 구/군 선택박스를 업데이트
+            document.getElementById('city').addEventListener('change', function() {
+                const selectedCity = this.value;
+                const districtSelect = document.getElementById('district');
+                districtSelect.innerHTML = ''; // 기존 옵션 제거
+
+                fetch('/json/korea-administrative-district.json')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(city => {
+                        if (city[selectedCity]) {
+                            city[selectedCity].forEach(district => {
+                                const option = document.createElement('option');
+                                option.value = district;
+                                option.text = district;
+                                districtSelect.add(option);
+                            });
+                        }
+                    });
+                });
+            });
+            
             $("#signupForm").submit(function(event) {
                 event.preventDefault();
 
                 var formData = {
-                    email: $("#email").val(),
-                    name: $("#name").val(),
-                    contact: $("#contact").val(),
-                    address: $("#address").val(),
-                    birthDate: $("#birthDate").val(),
-                    gender: $("#gender").val()
-                };
+                        email: $("#email").val(),
+                        name: $("#name").val(),
+                        contact: $("#contact").val(),
+                        city: $("#city").val(),
+                        district: $("#district").val(),
+                        address: $("#address").val(),
+                        birth_date: $("#birthDate").val(),
+                        gender: $("#gender").val()
+                    };
 
                 $.ajax({
                     type: "POST",
@@ -44,7 +90,7 @@
                     contentType: "application/json",
                     success: function(response) {
                         alert("Signup successful!");
-                        window.location.href = "/"; // 성공 시 리디렉션
+                        window.location.href = "/nindex"; // 성공 시 리디렉션
                     },
                     error: function(xhr, status, error) {
                         alert("Signup failed: " + xhr.responseText);
@@ -58,40 +104,52 @@
     <div>
         <h1>Welcome, <span id="userName">User</span>!</h1>
         <p>Your email is <span id="userEmail"></span>.</p>
-        <a href="http://localhost:8888/logout">Logout</a>
     </div>
 
     <h1>Additional Information</h1>
-    <form id="signupForm">
-        <div>
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="email" required />
-        </div>
-        <div>
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required />
-        </div>
-        <div>
-            <label for="contact">Contact:</label>
-            <input type="text" id="contact" name="contact" />
-        </div>
-        <div>
-            <label for="address">Address:</label>
-            <textarea id="address" name="address"></textarea>
-        </div>
-        <div>
-            <label for="birthDate">Birth Date:</label>
-            <input type="date" id="birthDate" name="birthDate" />
-        </div>
-        <div>
-            <label for="gender">Gender:</label>
-            <select id="gender" name="gender">
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-            </select>
-        </div>
-        <div>
-            <button type="submit">Submit</button>
+        <form id="signupForm">
+            <div>
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email" readonly required />
+            </div>
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required />
+            </div>
+            <div>
+            	<label for="contact">Contact:</label>
+            	<input type="text" id="contact" name="contact" required />
+            </div>
+            <div>
+                <label for="city">City:</label>
+                <select id="city" name="city" required>
+                <option value="">선택</option>
+                </select>
+            </div>
+            <div>
+                <label for="district">District:</label>
+                <select id="district" name="district" required>
+                <option value="">선택</option>
+                </select>
+            </div>
+            <div>
+                <label for="address">Detailed Address:</label>
+                <input type="text" id="address" name="address" required />
+            </div>
+            <div>
+                <label for="birthDate">Birth Date:</label>
+                <input type="date" id="birthDate" name="birth_date" required/>
+            </div>
+            <div>
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender" required>
+                	<option value="">선택</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+            </div>
+            <div>
+                <button type="submit">Submit</button>
         </div>
     </form>
 </body>

@@ -1,6 +1,10 @@
 package com.jamjam.rest.commonController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -10,9 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jamjam.rest.dao.CompanyDao;
+import com.jamjam.rest.dao.RoleDao;
 import com.jamjam.rest.dao.UserDao;
 import com.jamjam.rest.dto.Company;
+import com.jamjam.rest.dto.Role;
 import com.jamjam.rest.dto.User;
 
 @RestController
@@ -22,23 +29,68 @@ public class MainController {
 	UserDao userMapper;
 	@Autowired
 	CompanyDao companyMapper;
+	@Autowired
+	RoleDao roleMapper;
 	
-	
-	@GetMapping("/userInfo")
-    public ResponseEntity<User> getUserInfo(@AuthenticationPrincipal OAuth2User principal) {
-        if (principal != null) {
-            String email = principal.getAttribute("email");
-            User user = userMapper.findByEmail(email);
-            return ResponseEntity.ok(user);
-        }
-        return ResponseEntity.notFound().build();
-    }
+	 @GetMapping("/userInfo")
+	    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal OAuth2User principal) {
+	        if (principal == null) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+	        }
+	        
+	        // 예시로, 사용자의 이메일을 통해 추가 정보 여부를 확인하는 로직
+	        String email = principal.getAttribute("email");
+	        User user = userMapper.findByEmail(email);
+	        
+	        if (user == null) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+	        }
+	        
+	        boolean hasAdditionalInfo = user.getGender() != null;
+	        Map<String, Object> response = new HashMap<>();
+	        response.put("name", user.getName());
+	        response.put("email", user.getEmail());
+	        response.put("gender", user.getGender());
+	        response.put("hasAdditionalInfo", hasAdditionalInfo);
+	        
+	        return ResponseEntity.ok(response);
+	    }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> processSignup(@RequestBody User user) {
-        // 사용자 추가 정보를 저장하는 로직 구현
-        userMapper.updateUser(user);
-        return ResponseEntity.ok().body("Signup successful");
+    public ResponseEntity<?> processSignup(@RequestBody Map<String, Object> requestData) {
+    	try {
+            User user = new User();
+            user.setEmail((String) requestData.get("email"));
+            user.setName((String) requestData.get("name"));
+            user.setContact((String) requestData.get("contact"));
+            user.setBirth_date( (String) requestData.get("birth_date"));
+            user.setGender((String) requestData.get("gender"));
+
+            // Create address JSON
+            Map<String, String> addressMap = new HashMap<>();
+            addressMap.put("city", (String) requestData.get("city"));
+            addressMap.put("district", (String) requestData.get("district"));
+            addressMap.put("address", (String) requestData.get("address"));
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            String addressJson = objectMapper.writeValueAsString(addressMap);
+            user.setAddress(addressJson);
+
+            // Save user
+            userMapper.updateUser(user);
+            Role role = new Role();
+            System.out.println(user.getEmail());
+            User userid = userMapper.findByEmail(user.getEmail());
+            System.out.println(userid);
+            role.setUser_id(userid.getUser_id());
+            role.setRole("ROLE_USER");
+            
+            roleMapper.insertRole(role);
+            return ResponseEntity.ok().body("Signup successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Signup failed: " + e.getMessage());
+        }
+        
     }
     
     @PostMapping("/signup/company")

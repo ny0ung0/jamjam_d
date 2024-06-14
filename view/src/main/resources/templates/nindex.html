@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>현용</title>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 function fetchUserInfo() {
     $.ajax({
@@ -26,28 +25,26 @@ function fetchUserInfo() {
             }
         },
         error: function() {
-            alert("Failed to fetch user info.");
         }
     });
 }
-
-$(document).ready(function() {
-    // 페이지가 로드될 때는 로그인 버튼만 표시
-    $("#loggedOutSection").show();
-    $("#loggedInSection").hide();
-});
 
 function login() {
     // 로그인 버튼을 클릭할 때 사용자 정보를 가져옴
     window.location.href = "http://localhost:8888/login";
 }
+
+$(document).ready(function() {
+    fetchUserInfo();
+});
 </script>
+
 </head>
 <body>
     <div id="loggedOutSection">
         <button onclick="login()">로그인</button>
     </div>
-    <div id="loggedInSection">
+    <div id="loggedInSection" style="display:none;">
         <h1>
             Welcome, <span id="userName">User</span>!
         </h1>
