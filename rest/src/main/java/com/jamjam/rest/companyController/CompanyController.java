@@ -23,7 +23,6 @@ import com.jamjam.rest.dto.Company;
 
 @RestController
 @RequestMapping("/company")
-@CrossOrigin("*")
 public class CompanyController {
 
 	@PostMapping("/register")
