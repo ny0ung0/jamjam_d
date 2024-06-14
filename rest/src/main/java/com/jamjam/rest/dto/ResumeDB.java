@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Resume {
+public class ResumeDB {
 
 	private Integer resume_id;
 	private Integer user_id;
-	private MultipartFile profile_photo;
+	private String profile_photo;
 	private String photo_newName;
 	private String title;
 	private String desired_job;
@@ -37,7 +37,4 @@ public class Resume {
 	private Date created_at;
 	private Date updated_at;
 	
-	public String getFileName() {
-		return profile_photo.getOriginalFilename();
-	}
 }
