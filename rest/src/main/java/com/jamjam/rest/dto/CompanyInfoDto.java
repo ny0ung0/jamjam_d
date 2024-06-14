@@ -19,7 +19,6 @@ public class CompanyInfoDto {
 	private Integer company_id;
 	private MultipartFile file;
 	private String description;
-	private String industry;
 	private Integer number_of_employees;
 	private String working_environment;
 	private String benefits;
