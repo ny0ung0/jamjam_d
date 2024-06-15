@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>이력서 리스트</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <h2>이력서 리스트</h2>
+    <div id="resumeListContainer">
+        <table id="resumeListTable">
+            <thead>
+                <tr>
+                    <th>이력서 제목</th>
+                    <th>작성 시간</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            fetchUserInfo();
+        });
+
+        function fetchUserInfo() {
+            $.ajax({
+                url: "http://localhost:8888/userInfo",
+                method: "GET",
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data) {
+                    if (data && data.email) {
+                        listResumes(data.email);
+                    } else {
+                        window.location.href = "/";
+                    }
+                },
+                error: function () {
+                    alert('사용자 정보를 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+
+        function listResumes(email) {
+            $.ajax({
+                url: `http://localhost:8888/user/resumes?email=${email}`,
+                method: "GET",
+                success: function (data) {
+                    const tableBody = $('#resumeListTable tbody');
+                    tableBody.empty();
+                    if (data.length > 0) {
+                        data.forEach(resume => {
+                            const row = `<tr>
+                                <td><a href="/viewResume.html?resume_id=${resume.resume_id}">${resume.title}</a></td>
+                                <td>${resume.created_at}</td>
+                            </tr>`;
+                            tableBody.append(row);
+                        });
+                    } else {
+                        const row = '<tr><td colspan="2">작성된 이력서가 없습니다.</td></tr>';
+                        tableBody.append(row);
+                    }
+                },
+                error: function () {
+                    alert('이력서 리스트를 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

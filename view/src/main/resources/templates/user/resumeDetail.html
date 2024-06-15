@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>이력서 보기</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+    <style>
+        .resume-section {
+            margin-bottom: 20px;
+        }
+        .resume-section h3 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>이력서 보기</h2>
+    <div id="resumeContainer">
+        <div class="resume-section" id="titleSection">
+            <h3>제목</h3>
+            <p id="title"></p>
+        </div>
+        <div class="resume-section" id="profilePhotoSection">
+            <h3>프로필 사진</h3>
+            <img id="profilePhoto" src="" alt="Profile Photo" />
+        </div>
+        <div class="resume-section" id="desiredJobSection">
+            <h3>희망직무</h3>
+            <p id="desiredJob"></p>
+        </div>
+        <div class="resume-section" id="skillsSection">
+            <h3>보유스킬</h3>
+            <p id="skills"></p>
+        </div>
+        <div class="resume-section" id="licensesSection">
+            <h3>보유자격증</h3>
+            <p id="licenses"></p>
+        </div>
+        <div class="resume-section" id="experiencesSection">
+            <h3>경력사항</h3>
+            <p id="experiences"></p>
+        </div>
+        <div class="resume-section" id="educationSection">
+            <h3>학력사항</h3>
+            <p id="education"></p>
+        </div>
+        <div class="resume-section" id="preferencesSection">
+            <h3>취업우대사항</h3>
+            <p id="preferences"></p>
+        </div>
+        <div class="resume-section" id="coverLetterSection">
+            <h3>자기소개서</h3>
+            <p id="coverLetterTitle"></p>
+            <p id="coverLetterContent"></p>
+        </div>
+        <div class="resume-section" id="desiredConditionsSection">
+            <h3>희망근무조건</h3>
+            <p id="desiredConditions"></p>
+        </div>
+        <div class="resume-section" id="portfolioSection">
+            <h3>포트폴리오</h3>
+            <p id="portfolio"></p>
+        </div>
+    </div>
+
+    <script>
+    
+    
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const resumeId = urlParams.get('resume_id');
+            if (resumeId) {
+                viewResume(resumeId);
+            } else {
+                alert('이력서 ID가 필요합니다.');
+            }
+        });
+
+        function viewResume(resumeId) {
+            $.ajax({
+                url: `http://localhost:8888/user/resume?resume_id=${resumeId}`,
+                method: "GET",
+                success: function (data) {
+                    if (data) {
+                        $('#title').text(data.title);
+                        $('#profilePhoto').attr('src', data.profile_photo);
+                        $('#desiredJob').text(data.desired_job);
+                        $('#skills').text(data.skills);
+                        $('#licenses').text(data.license);
+                        $('#experiences').text(data.experience);
+                        $('#education').text(data.education);
+                        $('#preferences').text(data.preferences);
+                        $('#coverLetterTitle').text(data.cover_letter_title);
+                        $('#coverLetterContent').text(data.cover_letter_content);
+                        $('#desiredConditions').text(data.desired_conditions);
+                        $('#portfolio').text(data.portfolio);
+                    } else {
+                        alert('이력서를 찾을 수 없습니다.');
+                    }
+                },
+                error: function () {
+                    alert('이력서를 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
