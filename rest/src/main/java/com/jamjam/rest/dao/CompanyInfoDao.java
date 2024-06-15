@@ -10,5 +10,5 @@ public interface CompanyInfoDao {
 
 	@Insert("insert into companyinfo (company_id,description,number_of_employees,working_environment,benefits,ideal_candidate,main_contact,main_email,origin_name,new_name) "
 			+ "values(#{company_id},#{description},#{number_of_employees},#{working_environment},#{benefits},#{ideal_candidate},#{main_contact},#{main_email},#{originName},#{newName})")
-	public void insertCompanyInfo(CompanyInfo companyInfo);
+	public int insertCompanyInfo(CompanyInfo companyInfo);
 }

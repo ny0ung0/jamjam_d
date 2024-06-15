@@ -38,6 +38,10 @@ public class CompanyController {
 	public void company_introduction_create() {
 		
 	}
+	@RequestMapping("/company_edit_profile")
+	public void company_edit_profile(){
+		
+	}
 
 	
 }

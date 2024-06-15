@@ -141,5 +141,43 @@ public class JsonController {
 		return regions;
 	}
 	
+	@GetMapping("/required_skill1")
+	public Map<String, List<String>> required_skill1() throws StreamReadException, DatabindException, IOException {
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<Map<String, Object>> skillData = objectMapper.readValue(
+				new ClassPathResource("static/json/skillList.json").getFile(),
+				new TypeReference<List<Map<String, Object>>>() {
+				});
+		Map<String, List<String>> skills = skillData.stream()
+				.collect(Collectors.toMap(map -> map.keySet().iterator().next(), // key 값 (서울특별시, 부산광역시 등)
+						map -> (List<String>) map.values().iterator().next() // value 값 (구, 군 리스트)
+				));
+
+		return skills;
+	}
+	
+	@GetMapping("/required_skill2/{required_skill1}")
+	public List<String> required_skill2(@PathVariable("required_skill1") String required_skill1)
+			throws StreamReadException, DatabindException, IOException {
+		//System.out.println("address1에 접근 성공 +" + address1);
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<String> required_skill2 = null;
+		List<Map<String, Object>> skillData = objectMapper.readValue(
+				new ClassPathResource("static/json/skillList.json").getFile(),
+				new TypeReference<List<Map<String, Object>>>() {
+				});
+		Map<String, List<String>> skills = skillData.stream()
+				.collect(Collectors.toMap(map -> map.keySet().iterator().next(), // key 값 (서울특별시, 부산광역시 등)
+						map -> (List<String>) map.values().iterator().next() // value 값 (구, 군 리스트)
+				));
+		for (Map<String, Object> map : skillData) {
+			if (map.containsKey(required_skill1)) {
+				required_skill2 = (List<String>) map.get(required_skill1);
+			}
+		}
+		
+		return required_skill2;
+	}
 	
 }
