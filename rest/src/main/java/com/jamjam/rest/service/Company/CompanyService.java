@@ -16,4 +16,11 @@ public class CompanyService {
 		
 		return companyMapper.getCompany(company_id);
 	}
+	public int updateCompany(Company company) {
+		return companyMapper.updateCompany(company);
+	}
+	
+	public int deleteCompany(Integer company_id) {
+		return companyMapper.deleteCompany(company_id);
+	}
 }

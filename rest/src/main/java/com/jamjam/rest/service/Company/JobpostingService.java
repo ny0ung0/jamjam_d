@@ -21,4 +21,7 @@ public class JobpostingService {
 			return "등록실패";
 		}
 	}
+	public JobPosting getJobPosting(Integer posting_id) {
+		return jobpostingMapper.getJobPosting(posting_id);
+	}
 }
