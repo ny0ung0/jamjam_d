@@ -13,5 +13,13 @@ public class UserController {
 		return "/user/resumeForm";
 	}
 	
+	@GetMapping("resumeDetail")
+	public String resumeDetsil() {
+		return "/user/resumeDetail";
+	}
 	
+	@GetMapping("resumeList")
+	public String resumeList() {
+		return "/user/resumeList";
+	}
 }

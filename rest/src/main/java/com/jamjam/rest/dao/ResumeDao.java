@@ -22,4 +22,11 @@ public interface ResumeDao {
 	
 	@Select("SELECT * FROM resume WHERE resume_id = #{resume_id")
 	Resume findByResumeId(Long resumeId);
+
+	@Select("SELECT * FROM resume WHERE resume_id = #{resume_id}")
+    ResumeDB findById(int resume_id);
+	
+	@Select("SELECT resume_id, title, created_at FROM resume WHERE user_id = (SELECT user_id FROM user WHERE email = #{email})")
+    List<ResumeDB> findByEmail(String email);
+	
 }

@@ -1,12 +1,12 @@
 package com.jamjam.rest.userController;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -92,4 +92,22 @@ public class UserController {
         }
 
     }
+    
+    
+
+    @GetMapping("/resumes")
+    public List<ResumeDB> listResumes(@RequestParam("email") String email) {
+    	 System.out.println(email);
+    	 List<ResumeDB> resumedb = resumeMapper.findByEmail(email);
+    	 System.out.println(resumedb.toString());
+    	 
+        return resumeMapper.findByEmail(email);
+    }
+
+    @GetMapping("/resume")
+    public ResumeDB viewResume(@RequestParam("resume_id") int resumeId) {
+        return resumeMapper.findById(resumeId);
+    }
+    
+
 }
