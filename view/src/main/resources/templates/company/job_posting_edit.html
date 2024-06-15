@@ -6,17 +6,16 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1>채용 공고 등록</h1>
+<h1>채용 공고 수정</h1>
 
 <form id="postingFrm">
-	<input type="hidden" name="company_id" th:value="${session.loginCompany.company_id}">
+	posting_id : <input type="number" th:value="${posting_id}">
+	company_id : <input type="number" name="company_id" th:value="${session.loginCompany.company_id}">
 	공고제목 : <input type="text" name="title" > <br>
 	모집업종 :  <select id="sector1" name="sector1" onchange="sector1SelectChanged()"></select>
-	<select id="sector2" name="sector2"></select>
-	<br>
-	모집직무 : <select id="job_role1" name="job_role1" onchange="job_role1SelectChanged()">
-				
-	</select> <select id="job_role2" name="job_role2" onchange="job_role2SelectChanged()"></select><br>
+	<select id="sector2" name="sector2"></select><br>
+	모집직무 : <select id="job_role1" name="job_role1" onchange="job_role1SelectChanged()"></select> 
+	<select id="job_role2" name="job_role2" onchange="job_role2SelectChanged()"></select><br>
 	직무내용 : <textarea name="job_description" ></textarea> <br>
 	경력사항 : <input type="text" name="experience_required"><br>
 	고용형태 :  <select id="employment_type" name="employment_type"></select><br>
@@ -52,6 +51,7 @@ pre3();
 pre4();
 pre5();
 pre6();
+preJobposting();
 //직무2를 선택하면 키워드가 저장되는 메서드
 function job_role2SelectChanged(){
 	let job_role2 = document.querySelector("#job_role2").value;
@@ -66,7 +66,22 @@ function required_skill2SelectChanged(){
 	 document.getElementById("keyword2").innerHTML =required_skill2;
 	 
 }
-
+//페이지 이동시 기존 정보 불러오기
+function preJobposting() {
+	let posting_id = "[[${posting_id}]]";
+	let frm = document.querySelector("#postingFrm");
+	alert(posting_id);
+  const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        let posting = this.responseText;
+        alert(posting);
+        //title 값이 안들어감 여기부터 시작!!!!!!!!!!!!!!!!post알러트는 값이 나옴!!!!!!!!!!!!!!!!
+        frm.title.value = posting.title;
+    };
+    xhttp.open("get", "http://localhost:8888/company/jobposting/"+posting_id);
+   // xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send();
+}
 
 function reg(e) {
     e.preventDefault();

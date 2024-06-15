@@ -11,6 +11,7 @@
 <h1>기업정보 수정</h1>
 <div id="companyContainer">
         <form id="companyFrm">
+        	<input type="text" name="company_id"><br>
             이메일 : <input type="text" name="email"><br> 
             업종 :<select id="sector1" name="sector1" onchange="sector1SelectChanged()"></select>
 	<select id="sector2" name="sector2"></select><br>
@@ -21,141 +22,101 @@
 	<select id="address2" name="address2"></select>
 	<input type="text" name="detailAddress"><br>
             전화번호 : <input type="text" name="tel"><br>
-            <button onclick="reg(event)">회원가입</button>
+            <button onclick="update(event)">정보수정</button>
+            <input type="button" value="회원탈퇴" onclick="deleteCompany()" >
         </form>
     </div>
-    <div id="result_post"></div>
+    <div id="result_put"></div>
+    <div id="result_delete"></div>
 
+<script src="/js/json.js"></script>
     <script>
-    pre1();
-    pre2();
-    function pre1(){
-    	//업종 관련
-    	let sector1 =document.getElementById("sector1");
-    	sector1.innerHTML ='<option value="" class="always">선택</option>';
-    	document.getElementById("sector2").innerHTML ='<option value="" class="always">선택</option>';
-       const xhttp = new XMLHttpRequest();
-       xhttp.onload = function() {
-    	  
-       	let results =JSON.parse(this.responseText);
-       	//alert(results);
-       	results.forEach(result => {
-       		//아직 미완성 
-       		//alert(result);
-       		let code =result.코드;
-       		let name = result.업종명;
-       		sector1.innerHTML += '<option value =' +code+'>'+name+'</option>';
-       		pre1_1();
-       	})
-          
-       };
-       xhttp.open("get", "http://localhost:8888/json/sector_category", true);
-      // xhttp.setRequestHeader("Content-type", "application/json");
-       xhttp.send();
-    }
-    function pre1_1(){
-    	//업종 관련
-    	let sector1 =document.getElementById("sector1");
-       const xhttp = new XMLHttpRequest();
-       xhttp.onload = function() {
-    	  
-       	let results =JSON.parse(this.responseText);
-       	//alert(results);
-       	results.forEach(result => {
-       		//아직 미완성 
-       		//alert(result);
-       		let code =result.코드;
-       		let name = result.업종명;
-       		sector1.innerHTML += '<option value =' +code+'>'+name+'</option>';
-       		
-       	})
-          
-       };
-       xhttp.open("get", "http://localhost:8888/company", true);
-      // xhttp.setRequestHeader("Content-type", "application/json");
-       xhttp.send();
-    }
-    function pre2(){
-    	let address1 =document.getElementById("address1");
-    	address1.innerHTML ='<option value="" class="always">선택</option>';
-    	document.getElementById("address2").innerHTML ='<option value="" class="always">선택</option>';
-       const xhttp = new XMLHttpRequest();
-       xhttp.onload = function() {
-    	  
-       	let result =JSON.parse(this.responseText);
-        Object.keys(result).forEach(key => {
-            address1.innerHTML += '<option value="' + key + '">' + key + '</option>';
-        });
-          
-       };
-       xhttp.open("get", "http://localhost:8888/json/address1", true);
-      // xhttp.setRequestHeader("Content-type", "application/json");
-       xhttp.send();
-    }
-    
-  //업종1을 선택하면 업종2를 바꿔주는 메서드
-    function sector1SelectChanged() {
-    	let sector1 = document.querySelector("#sector1").value;
-    	//alert(sector1);
-    	 document.getElementById("sector2").innerHTML ='<option value="" class="always">선택</option>';
-       
-       const xhttp = new XMLHttpRequest();
-       xhttp.onload = function() {
-       	let sector2 =JSON.parse(this.responseText);
-       	
-       	sector2.forEach(sector => {
-       		 document.getElementById("sector2").innerHTML += '<option value =' +sector+'>'+sector+'</option>';
-       	})
-          
-       };
-       xhttp.open("get", "http://localhost:8888/json/sector/" + sector1, true);
-      // xhttp.setRequestHeader("Content-type", "application/json");
-       xhttp.send();
-    }
-  //주소1을 선택하면 주소2내용을 바꿔주는 메서드
-    function address1SelectChanged() {
-    	let address1 = document.querySelector("#address1").value;
-    	//alert(sector1);
-    	 document.getElementById("address2").innerHTML ='<option value="" class="always">선택</option>';
-       
-       const xhttp = new XMLHttpRequest();
-       xhttp.onload = function() {
-       	let address2 =JSON.parse(this.responseText);
-       	
-       	address2.forEach(address => {
-       		 document.getElementById("address2").innerHTML += '<option value =' +address+'>'+address+'</option>';
-       	})
-          
-       };
-       xhttp.open("get", "http://localhost:8888/json/address2/" + address1, true);
-      // xhttp.setRequestHeader("Content-type", "application/json");
-       xhttp.send();
+    pre4();//업종 카테고리
+    pre5();//주소 카테고리
+    preCompany();
+    function preCompany(){	
+    	let frm = document.querySelector("#companyFrm");
+    	let id = "[[${session.loginCompany.company_id}]]";
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+           let company = JSON.parse(this.responseText);
+           frm.company_id.value = company.company_id;
+           frm.email.value = company.email;
+           frm.registration_number.value = company.registration_number;
+           frm.company_name.value = company.company_name;
+           frm.representative_name.value = company.representative_name;  
+           frm.tel.value = company.tel;
+           	//업종 부분
+       		// 문자열을 공백으로 나눔
+           let parts = company.company_type.split(' ');
+           // 공백이 두 개 미만이면 빈 문자열 반환
+           let sector1=parts[0];
+           let sector2=parts[1];           
+           selectOptionByValue("sector1", sector1);
+           //비동기로 실행해야해서 콜백함수 씀(json.js의 코드도 바뀜)
+           sector1SelectChanged(function() {
+               selectOptionByValue("sector2", sector2);
+           });
+         //주소 부분
+      		// 문자열을 공백으로 나눔
+          parts = company.address.split(' ');
+          // 공백이 두 개 미만이면 빈 문자열 반환
+          let address1=parts[0];
+          let address2=parts[1];
+          let detailAddress='';
+          if (parts.length <= 2) {
+       	   detailAddress = '';
+          }
+          // 두 번째 공백 이후의 부분 문자열 추출
+          detailAddress = parts.slice(2).join(' ');
+          frm.detailAddress.value = detailAddress;
+          selectOptionByValue("address1", address1);
+          //비동기로 실행해야해서 콜백함수 씀(json.js의 코드도 바뀜)
+          address1SelectChanged(function() {
+              selectOptionByValue("address2", address2);
+          });
+           
+        };
+        xhttp.open("get", "http://localhost:8888/company/"+id);
+        xhttp.send();
     }
     
     
-    
-    
-        function reg(e) {
+        function update(e) {
             e.preventDefault();
             let frm = document.querySelector("#companyFrm");
             let data = {
-                "email": frm.email.value,
-                "company_name": frm.company_name.value,
-                "registration_number": frm.registration_number.value,
-                "company_type": frm.sector2.value,
-                "representative_name": frm.representative_name.value,
-                "address": frm.address1.value + " " + frm.address2.value + " "+frm.detailAddress.value,
-                "tel": frm.tel.value,
+            		"company_id" : frm.company_id.value,
+            		"email": frm.email.value,
+                    "company_name": frm.company_name.value,
+                    "registration_number": frm.registration_number.value,
+                    "company_type": frm.sector1.value + " " + frm.sector2.value,
+                    "representative_name": frm.representative_name.value,
+                    "address": frm.address1.value + " " + frm.address2.value + " "+frm.detailAddress.value,
+                    "tel": frm.tel.value,
             };
             let sendData = JSON.stringify(data);
             const xhttp = new XMLHttpRequest();
             xhttp.onload = function() {
-                document.getElementById("result_post").innerHTML = this.responseText;
+                document.getElementById("result_put").innerHTML = this.responseText;
             };
-            xhttp.open("post", "http://localhost:8888/signup/company");
+            xhttp.open("put", "http://localhost:8888/company");
             xhttp.setRequestHeader("Content-type", "application/json");
             xhttp.send(sendData);
         }
+        
+        function deleteCompany() {
+            //e.preventDefault();
+            let frm = document.querySelector("#companyFrm");
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+                document.getElementById("result_delete").innerHTML = this.responseText;
+            };
+            xhttp.open("delete", "http://localhost:8888/company/" + frm.company_id.value);
+            //xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send();
+        }
+       
     </script>
 </body>
 </html>

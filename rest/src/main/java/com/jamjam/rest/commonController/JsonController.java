@@ -74,7 +74,7 @@ public class JsonController {
 				address2 = (List<String>) map.get(address1);
 			}
 		}
-		System.out.println("address2 :" + address2);
+		//System.out.println("address2 :" + address2);
 		return address2;
 	}
 
@@ -121,7 +121,7 @@ public class JsonController {
 				result.add((String)map.get("업종명"));
 			}
 		}
-		System.out.println(result);
+		//System.out.println(result);
 		return result;
 
 	}
