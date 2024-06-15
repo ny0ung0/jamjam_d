@@ -24,13 +24,15 @@
 	임금조건 : <input type="text" name="salary_condition"><br>
 	임금형태 : <input type="text" name="salary_type"><br>
 	학력조건 : <select id="education_requirement" name="education_requirement"></select><br>
-	필요스킬 : <input type="text" name="required_skills"><br>
+	필요스킬 : <select id="required_skill1" name="required_skill1" onchange="required_skill1SelectChanged()"></select>
+	<select id="required_skill2" name="required_skill2" onchange="required_skill2SelectChanged()"></select><br>
 	근무지역 : <select id="address1" name="address1" onchange="address1SelectChanged()"></select>
 	<select id="address2" name="address2"></select>
 	<input type="text" name="detailAddress"><br>
 	근무시간 : <input type="text" name="working_hours"><br>
 	기타복리후생 : <input type="text" name="benefits"><br>
-	키워드 :  <span id="keywords"></span> <br>
+	키워드 :  <span id="keyword1"></span> <br>
+	<span id="keyword2"></span><br>
 	담당자 이름 : <input type="text" name="contact_person_name"><br>
 	담당자 이메일 : <input type="text" name="contact_person_email"><br>
 	담당자 연락처 : <input type="text" name="contact_person_phone"><br>
@@ -44,12 +46,8 @@
 
 <script>
 pre1();
-pre2();
-pre3();
-pre4();
-pre5();
 
-//업종1을 선택하면 업종2를 바꿔주는 메서드(수정필요)
+//업종1을 선택하면 업종2를 바꿔주는 메서드
 function sector1SelectChanged() {
 	let sector1 = document.querySelector("#sector1").value;
 	//alert(sector1);
@@ -91,7 +89,7 @@ function address1SelectChanged() {
 function job_role1SelectChanged() {
 	let job_role1 = document.querySelector("#job_role1").value;
 	 document.getElementById("job_role2").innerHTML ='<option value="" class="always">선택</option>';
-	 document.getElementById("keywords").innerHTML ='';
+	 document.getElementById("keyword1").innerHTML ='';
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
     	let job_role2 =JSON.parse(this.responseText);
@@ -112,7 +110,33 @@ function job_role1SelectChanged() {
 function job_role2SelectChanged(){
 	let job_role2 = document.querySelector("#job_role2").value;
 	//alert(job_role1);
-	 document.getElementById("keywords").innerHTML =job_role2;
+	 document.getElementById("keyword1").innerHTML =job_role2;
+	 
+}
+//스킬1을 선택하면 스킬2내용을 바꿔주는 메서드
+function required_skill1SelectChanged() {
+	let required_skill1 = document.querySelector("#required_skill1").value;
+	//alert(sector1);
+	 document.getElementById("required_skill2").innerHTML ='<option value="" class="always">선택</option>';
+	 document.getElementById("keyword2").innerHTML ='';
+   const xhttp = new XMLHttpRequest();
+   xhttp.onload = function() {
+   	let required_skill2 =JSON.parse(this.responseText);
+   	
+   	required_skill2.forEach(required_skill => {
+   		 document.getElementById("required_skill2").innerHTML += '<option value ="' +required_skill+'">'+required_skill+'</option>';
+   	})
+      
+   };
+   xhttp.open("get", "http://localhost:8888/json/required_skill2/" + required_skill1, true);
+  // xhttp.setRequestHeader("Content-type", "application/json");
+   xhttp.send();
+}
+//스킬2를 선택하면 키워드가 저장되는 메서드
+function required_skill2SelectChanged(){
+	let required_skill2 = document.querySelector("#required_skill2").value;
+	//alert(job_role1);
+	 document.getElementById("keyword2").innerHTML =required_skill2;
 	 
 }
 
@@ -133,8 +157,9 @@ function pre1(){
    		let code =result.코드;
    		let role = result.상위직무;
    		job_role1.innerHTML += '<option value =' +code+'>'+role+'</option>';
+   		
    	})
-      
+   	pre2();
    };
    xhttp.open("get", "http://localhost:8888/json/job_category", true);
   // xhttp.setRequestHeader("Content-type", "application/json");
@@ -157,7 +182,7 @@ function  pre2(){
    		let text = result.근무형태;
    		employment_type.innerHTML += '<option value =' +text+'>'+text+'</option>';
    	})
-      
+      pre3();
    };
    xhttp.open("get", "http://localhost:8888/json/workType", true);
   // xhttp.setRequestHeader("Content-type", "application/json");
@@ -180,8 +205,9 @@ function  pre3(){
 	   		//let code =result.코드;
 	   		let text = result.학력;
 	   		education_requirement.innerHTML += '<option value =' +text+'>'+text+'</option>';
+	   		
 	   	})
-	      
+	   	pre4();
 	   };
 	   xhttp.open("get", "http://localhost:8888/json/eduCode", true);
 	  // xhttp.setRequestHeader("Content-type", "application/json");
@@ -189,6 +215,7 @@ function  pre3(){
 	   
 	}
 function pre4(){
+	//업종 관련
 	let sector1 =document.getElementById("sector1");
 	sector1.innerHTML ='<option value="" class="always">선택</option>';
 	document.getElementById("sector2").innerHTML ='<option value="" class="always">선택</option>';
@@ -203,14 +230,16 @@ function pre4(){
    		let code =result.코드;
    		let name = result.업종명;
    		sector1.innerHTML += '<option value =' +code+'>'+name+'</option>';
+   		
    	})
-      
+   	pre5(); 
    };
    xhttp.open("get", "http://localhost:8888/json/sector_category", true);
   // xhttp.setRequestHeader("Content-type", "application/json");
    xhttp.send();
 }
 function pre5(){
+	//주소관련
 	let address1 =document.getElementById("address1");
 	address1.innerHTML ='<option value="" class="always">선택</option>';
 	document.getElementById("address2").innerHTML ='<option value="" class="always">선택</option>';
@@ -221,9 +250,27 @@ function pre5(){
     Object.keys(result).forEach(key => {
         address1.innerHTML += '<option value="' + key + '">' + key + '</option>';
     });
-      
+      pre6();
    };
    xhttp.open("get", "http://localhost:8888/json/address1", true);
+  // xhttp.setRequestHeader("Content-type", "application/json");
+   xhttp.send();
+}
+function pre6(){
+	//필요스킬 관련
+	let required_skill1 =document.getElementById("required_skill1");
+	required_skill1.innerHTML ='<option value="" class="always">선택</option>';
+	document.getElementById("required_skill2").innerHTML ='<option value="" class="always">선택</option>';
+   const xhttp = new XMLHttpRequest();
+   xhttp.onload = function() {
+	  
+   	let result =JSON.parse(this.responseText);
+    Object.keys(result).forEach(key => {
+    	required_skill1.innerHTML += '<option value="' + key + '">' + key + '</option>';
+    });
+      
+   };
+   xhttp.open("get", "http://localhost:8888/json/required_skill1", true);
   // xhttp.setRequestHeader("Content-type", "application/json");
    xhttp.send();
 }
@@ -243,11 +290,11 @@ function reg(e) {
         "salary_condition": frm.salary_condition.value,
         "salary_type": frm.salary_type.value,
         "education_requirement": frm.education_requirement.value,
-        "required_skills": frm.required_skills.value,
+        "required_skills": frm.required_skill1.value + " " + frm.required_skill2.value,
         "location": frm.address1.value +" "+frm.address2.value +" "+frm.detailAddress.value ,
         "working_hours": frm.working_hours.value,
         "benefits": frm.benefits.value,
-        "keywords": frm.job_role2.value,
+        "keywords": frm.job_role2.value + " " + frm.required_skill2.value,
         "contact_person_name": frm.contact_person_name.value,
         "contact_person_email": frm.contact_person_email.value,
         "contact_person_phone": frm.contact_person_phone.value,

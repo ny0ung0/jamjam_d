@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="https://code.jquery.com/jquery-3.7.1.js"
-    integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-    crossorigin="anonymous"></script>
+	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+	crossorigin="anonymous"></script>
 </head>
 <body>
-    <div id="companyContainer">
+<h1>기업정보 수정</h1>
+<div id="companyContainer">
         <form id="companyFrm">
             이메일 : <input type="text" name="email"><br> 
             업종 :<select id="sector1" name="sector1" onchange="sector1SelectChanged()"></select>
@@ -44,10 +45,33 @@
        		let code =result.코드;
        		let name = result.업종명;
        		sector1.innerHTML += '<option value =' +code+'>'+name+'</option>';
+       		pre1_1();
        	})
           
        };
        xhttp.open("get", "http://localhost:8888/json/sector_category", true);
+      // xhttp.setRequestHeader("Content-type", "application/json");
+       xhttp.send();
+    }
+    function pre1_1(){
+    	//업종 관련
+    	let sector1 =document.getElementById("sector1");
+       const xhttp = new XMLHttpRequest();
+       xhttp.onload = function() {
+    	  
+       	let results =JSON.parse(this.responseText);
+       	//alert(results);
+       	results.forEach(result => {
+       		//아직 미완성 
+       		//alert(result);
+       		let code =result.코드;
+       		let name = result.업종명;
+       		sector1.innerHTML += '<option value =' +code+'>'+name+'</option>';
+       		
+       	})
+          
+       };
+       xhttp.open("get", "http://localhost:8888/company", true);
       // xhttp.setRequestHeader("Content-type", "application/json");
        xhttp.send();
     }

@@ -96,8 +96,13 @@ public class MainController {
     @PostMapping("/signup/company")
     public ResponseEntity<?> processSignup(@RequestBody Company company){
     	System.out.println("기업회원가입 컨틀롤러 들어옴...");
-    	companyMapper.insertCompany(company);
-    	return ResponseEntity.ok().body("Signup successful");
+    	try {
+    		companyMapper.insertCompany(company);
+        	return ResponseEntity.ok().body("Signup successful");
+    	}catch(Exception e) {
+    		return  ResponseEntity.status(500).body("Signup failed: " + e.getMessage());
+    	}
+    	
     }
 	
 	
