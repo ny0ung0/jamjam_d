@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Job Posting Detail</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1, h2, h3 {
+        color: #333;
+    }
+
+    .job-header {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    .job-details, .job-contact, .job-footer {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .job-details h3, .job-contact h3 {
+        color: #007bff;
+        border-bottom: 1px solid #007bff;
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+    }
+
+    .field {
+        margin-bottom: 10px;
+    }
+
+    .field .label {
+        font-weight: bold;
+    }
+
+    .job-footer p {
+        font-size: 14px;
+        color: #777;
+    }
+
+    #result_post, #result_delete {
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: #f5f5f5;
+    }
+
+    .application-deadline {
+        font-size: 20px;
+        font-weight: bold;
+        color: #dc3545; /* Bootstrap danger color for emphasis */
+    }
+</style>
+</head>
+<body>
+<h1>채용 공고 상세페이지</h1>
+//기업 로고,회사명 넣어야함!!!!!
+<div id="postingContainer">
+<div class="logoBox">
+	<img src="#" id="logo">
+</div>
+    <div class="job-header">
+        <h2><span id="title"></span></h2>
+        <p>Company: <span id="company_id"></span></p>
+        <p>모집업종: <span id="industry"></span></p>
+    </div>
+    <div class="job-details">
+        <h3>공고 상세정보</h3>
+        <div class="field">
+            <span class="label">모집직무 : </span> <span id="job_role"></span>
+        </div>
+        <div class="field">
+            <span class="label">직무내용 : </span> <span id="job_description"></span>
+        </div>
+        <div class="field">
+            <span class="label">경력사항 :</span> <span id="experience_required"></span>
+        </div>
+        <div class="field">
+            <span class="label">고용형태 :</span> <span id="employment_type"></span>
+        </div>
+        <div class="field">
+            <span class="label">모집인원 :</span> <span id="number_of_positions"></span>
+        </div>
+        <div class="field">
+            <span class="label">임금조건 :</span> <span id="salary_condition"></span>
+        </div>
+        <div class="field">
+            <span class="label">임금형태:</span> <span id="salary_type"></span>
+        </div>
+        <div class="field">
+            <span class="label">학력조건:</span> <span id="education_requirement"></span>
+        </div>
+        <div class="field">
+            <span class="label">필요스킬:</span> <span id="required_skills"></span>
+        </div>
+        <div class="field">
+            <span class="label">근무지역:</span> <span id="location"></span>
+        </div>
+        <div class="field">
+            <span class="label">근무시간:</span> <span id="working_hours"></span>
+        </div>
+        <div class="field">
+            <span class="label">기타복리후생:</span> <span id="benefits"></span>
+        </div>
+        <div class="field">
+            <span class="label">키워드 :</span> <span id="keywords"></span>
+        </div>
+    </div>
+    <div class="job-contact">
+        <h3>Contact Information</h3>
+        <div class="field">
+            <span class="label">담당자 :</span> <span id="contact_person_name"></span>
+        </div>
+        <div class="field">
+            <span class="label">담당자 이메일 :</span> <span id="contact_person_email"></span>
+        </div>
+        <div class="field">
+            <span class="label">담당자 연락처 :</span> <span id="contact_person_phone"></span>
+        </div>
+    </div>
+    <div class="job-footer">
+        <p>View Count: <span id="view_count"></span></p>
+        <p>Posted on: <span id="created_at"></span></p>
+        <p>Last Updated: <span id="updated_at"></span></p>
+    </div>
+</div>
+
+<div class="application-deadline">
+    <h3> 공고 마감일자:</h3>
+    <p id="application_deadline" class="application-deadline-value"></p>
+</div>
+
+<div id="result_post"></div>
+<div id="result_delete"></div>
+
+<script>
+preJobposting();
+//회사 이름 넣기 !~!!!!!!!!!!!!!!!!!!!!!!
+//preCompany();
+
+// 페이지 이동시 기존 정보 불러오기
+function preJobposting() {
+    let posting_id = "[[${posting_id}]]";
+    let postingContainer = document.querySelector("#postingContainer");
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        let posting = JSON.parse(this.responseText);
+        document.querySelector("#title").innerHTML = posting.title;
+        document.querySelector("#company_id").innerHTML = posting.company_id;
+        let parts = posting.industry.split('//');
+        let sector1=parts[0];
+        let sector2=parts[1];  
+        document.querySelector("#industry").innerHTML = sector2;
+        parts = posting.job_role.split('//');
+        let job_role1=parts[0];
+        let job_role2=parts[1];  
+        document.querySelector("#job_role").innerHTML = job_role2;
+        document.querySelector("#job_description").innerHTML = posting.job_description;
+        document.querySelector("#experience_required").innerHTML = posting.experience_required;
+        document.querySelector("#employment_type").innerHTML = posting.employment_type;
+        document.querySelector("#number_of_positions").innerHTML = posting.number_of_positions;
+        document.querySelector("#salary_condition").innerHTML = posting.salary_condition;
+        document.querySelector("#salary_type").innerHTML = posting.salary_type;
+        document.querySelector("#education_requirement").innerHTML = posting.education_requirement;
+        parts = posting.required_skills.split('//');
+        let required_skills1=parts[0];
+        let required_skills2=parts[1];
+        document.querySelector("#required_skills").innerHTML =required_skills2;
+        parts = posting.location.split('//');
+        let location1=parts[0];
+        let location2=parts[1];
+        let location3=parts[2];
+        document.querySelector("#location").innerHTML = location1 + " " + location2 + " " +location3;
+        document.querySelector("#working_hours").innerHTML = posting.working_hours;
+        document.querySelector("#benefits").innerHTML = posting.benefits;
+        parts = posting.keywords.split('//');
+        let keywords1=parts[0];
+        let keywords2=parts[1];
+        document.querySelector("#keywords").innerHTML =keywords1 + " " + keywords2;
+        document.querySelector("#contact_person_name").innerHTML = posting.contact_person_name;
+        document.querySelector("#contact_person_email").innerHTML = posting.contact_person_email;
+        document.querySelector("#contact_person_phone").innerHTML = posting.contact_person_phone;
+        document.querySelector("#application_deadline").innerHTML = posting.application_deadline;
+
+        // Application deadline formatting
+        let deadline = new Date(posting.application_deadline);
+        let formattedDeadline = deadline.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        document.querySelector(".application-deadline-value").innerHTML = formattedDeadline;
+
+        document.querySelector("#view_count").innerHTML = posting.view_count;
+        document.querySelector("#created_at").innerHTML = posting.created_at;
+        document.querySelector("#updated_at").innerHTML = posting.updated_at;
+        preCompanyInfo();
+    };
+    xhttp.open("GET", "http://localhost:8888/company/jobposting/" + posting_id);
+    xhttp.send();
+}
+function preCompanyInfo(){
+	let company_id = document.querySelector("#company_id").textContent;
+
+	    const xhttp = new XMLHttpRequest();
+	    xhttp.onload = function() {
+	       let companyInfo = JSON.parse(this.responseText);
+	       alert(companyInfo.new_name);
+	        document.querySelector("#logo").src="/images/"+ companyInfo.new_name;
+	        
+	       
+	    };
+	    xhttp.open("GET", "http://localhost:8888/company/companyInfo/" + company_id);
+	    xhttp.send();
+}
+
+</script>
+</body>
+</html>

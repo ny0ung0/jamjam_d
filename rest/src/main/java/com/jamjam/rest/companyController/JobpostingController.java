@@ -2,9 +2,11 @@ package com.jamjam.rest.companyController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,4 +34,25 @@ public class JobpostingController {
 		System.out.println(jobPosting);
 		return jobPosting;
 	}
+	@PutMapping("/jobposting")
+	public ResponseEntity<?> updateJobposting(@RequestBody JobPosting jobposting) {
+		
+		int result = jobpostingService.updateJobposting(jobposting);
+		if(result ==1) {
+			return ResponseEntity.ok().body("등록성공");
+		}else {
+			return ResponseEntity.status(500).body("등록실패");
+		}
+	}
+	
+	@DeleteMapping("/jobposting/{posting_id}")
+	public ResponseEntity<?> deleteCompany(@PathVariable("posting_id") Integer posting_id){
+		int result=jobpostingService.deletePosting(posting_id);
+		if(result==1) {
+			return ResponseEntity.ok().body("공고삭제 성공");
+		}else {
+			return ResponseEntity.status(500).body("공고삭제 실패");
+		}
+	}
+	
 }

@@ -9,7 +9,7 @@
 <h1>채용 공고 수정</h1>
 
 <form id="postingFrm">
-	posting_id : <input type="number" th:value="${posting_id}">
+	posting_id : <input type="number" name="posting_id" th:value="${posting_id}">
 	company_id : <input type="number" name="company_id" th:value="${session.loginCompany.company_id}">
 	공고제목 : <input type="text" name="title" > <br>
 	모집업종 :  <select id="sector1" name="sector1" onchange="sector1SelectChanged()"></select>
@@ -36,10 +36,11 @@
 	담당자 이메일 : <input type="text" name="contact_person_email"><br>
 	담당자 연락처 : <input type="text" name="contact_person_phone"><br>
 	마감일자 : <input type="date" name="application_deadline"><br>
-<button onclick="reg(event)">등록</button>
+<button onclick="update(event)">수정</button>
+<button onclick="deleteJobposting()">삭제</button>
 </form>
 <div id = "result_post"></div>
-
+<div id = "result_delete"></div>
 
 
 <script src="/js/json.js"></script>
@@ -70,27 +71,86 @@ function required_skill2SelectChanged(){
 function preJobposting() {
 	let posting_id = "[[${posting_id}]]";
 	let frm = document.querySelector("#postingFrm");
-	alert(posting_id);
+	
   const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-        let posting = this.responseText;
-        alert(posting);
-        //title 값이 안들어감 여기부터 시작!!!!!!!!!!!!!!!!post알러트는 값이 나옴!!!!!!!!!!!!!!!!
+        let posting =JSON.parse(this.responseText);
+       // alert(posting);
         frm.title.value = posting.title;
+        frm.job_description.value =posting.job_description;
+        frm.experience_required.value = posting.experience_required;
+        frm.number_of_positions.value = posting.number_of_positions;
+        frm.salary_condition.value = posting.salary_condition;
+        frm.salary_type.value = posting.salary_type;
+        frm.working_hours.value = posting.working_hours;
+        frm.benefits.value = posting.benefits;
+        frm.contact_person_name.value = posting.contact_person_name;
+        frm.contact_person_email.value = posting.contact_person_email;
+        frm.contact_person_phone.value = posting.contact_person_phone;
+        frm.application_deadline.value = posting.application_deadline.substring(0, 10);
+      //업종 부분    안됨 !!!!! 수정 해야함!!!!!!!!!!!!!!!!!!!!!!!!!!
+   	let parts = posting.industry.split('//');
+           // 공백이 두 개 미만이면 빈 문자열 반환
+           let sector1=parts[0];
+           let sector2=parts[1];           
+           selectOptionByValue("sector1", sector1);
+           //비동기로 실행해야해서 콜백함수 씀(json.js의 코드도 바뀜)
+           sector1SelectChanged(function() {
+               selectOptionByValue("sector2", sector2);
+           });
+     //주소 부분
+     parts = posting.location.split('//');
+     let address1=parts[0];
+     let address2=parts[1];
+     let detailAddress='';
+     if (parts.length <= 2) {
+  	   detailAddress = '';
+     }
+     detailAddress = parts[2];
+     frm.detailAddress.value = detailAddress;
+     selectOptionByValue("address1", address1);
+     address1SelectChanged(function() {
+         selectOptionByValue("address2", address2);
+     });
+     //직무 부분   안됨 !!!!! 수정 해야함!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// 문자열을 공백으로 나눔
+    parts = posting.job_role.split('//');
+    let job_role1=parts[0];
+    let job_role2=parts[1];           
+    selectOptionByValue("job_role1", job_role1);
+    job_role1SelectChanged(function() {
+        selectOptionByValue("job_role2", job_role2);
+        job_role2SelectChanged();
+    });
+    //고용형태
+    selectOptionByValue("employment_type", posting.employment_type);
+    //학력조건
+    selectOptionByValue("education_requirement", posting.education_requirement);
+    //필요스킬
+    parts = posting.required_skills.split('//');
+    let required_skills1=parts[0];
+    let required_skills2=parts[1];
+    selectOptionByValue("required_skill1", required_skills1);
+    required_skill1SelectChanged(function() {
+        selectOptionByValue("required_skill2", required_skills2);
+        required_skill2SelectChanged();
+    });
     };
     xhttp.open("get", "http://localhost:8888/company/jobposting/"+posting_id);
    // xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.send();
 }
 
-function reg(e) {
+function update(e) {
     e.preventDefault();
     let frm = document.querySelector("#postingFrm");
+    let p_id ="[[${posting_id}]]";
     let data = {
+    	"posting_id" : frm.posting_id.value,
         "company_id": frm.company_id.value,
         "title": frm.title.value,
-        "industry": frm.sector1.value + " " + frm.sector2.value,
-        "job_role": frm.job_role1.value + " " + frm.job_role2.value,
+        "industry": frm.sector1.value + "//" + frm.sector2.value,
+        "job_role": frm.job_role1.value + "//" + frm.job_role2.value,
         "job_description": frm.job_description.value,
         "experience_required": frm.experience_required.value ,
         "employment_type": frm.employment_type.value,
@@ -98,11 +158,11 @@ function reg(e) {
         "salary_condition": frm.salary_condition.value,
         "salary_type": frm.salary_type.value,
         "education_requirement": frm.education_requirement.value,
-        "required_skills": frm.required_skill1.value + " " + frm.required_skill2.value,
-        "location": frm.address1.value +" "+frm.address2.value +" "+frm.detailAddress.value ,
+        "required_skills": frm.required_skill1.value + "//" + frm.required_skill2.value,
+        "location": frm.address1.value +"//"+frm.address2.value +"//"+frm.detailAddress.value ,
         "working_hours": frm.working_hours.value,
         "benefits": frm.benefits.value,
-        "keywords": frm.job_role2.value + " " + frm.required_skill2.value,
+        "keywords": frm.job_role2.value + "//" + frm.required_skill2.value,
         "contact_person_name": frm.contact_person_name.value,
         "contact_person_email": frm.contact_person_email.value,
         "contact_person_phone": frm.contact_person_phone.value,
@@ -113,9 +173,20 @@ function reg(e) {
     xhttp.onload = function() {
         document.getElementById("result_post").innerHTML = this.responseText;
     };
-    xhttp.open("post", "http://localhost:8888/company/jobposting");
+    xhttp.open("put", "http://localhost:8888/company/jobposting");
     xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.send(sendData);
+}
+function deleteJobposting(){
+	 //e.preventDefault();
+    let frm = document.querySelector("#postingFrm");
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        document.getElementById("result_delete").innerHTML = this.responseText;
+    };
+    xhttp.open("delete", "http://localhost:8888/company/jobposting/" + frm.posting_id.value);
+    //xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send();
 }
 
 </script>

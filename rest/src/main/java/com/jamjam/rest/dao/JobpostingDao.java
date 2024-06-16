@@ -1,8 +1,10 @@
 package com.jamjam.rest.dao;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.jamjam.rest.dto.JobPosting;
 
@@ -15,4 +17,32 @@ public interface JobpostingDao {
 	
 	@Select("select * from jobposting where posting_id=#{posting_id}")
 	public JobPosting getJobPosting(Integer posting_id);
+	
+	@Update("UPDATE jobposting "
+			+ "SET "
+			+ "    company_id = #{company_id},"
+			+ "title = #{title},"
+			+ "industry = #{industry},"
+			+ "job_role = #{job_role},"
+			+ "job_description = #{job_description},"
+			+ "experience_required = #{experience_required},"
+			+ "employment_type = #{employment_type},"
+			+ "number_of_positions = #{number_of_positions},"
+			+ "salary_condition = #{salary_condition},"
+			+ "salary_type = #{salary_type},"
+			+ "education_requirement = #{education_requirement},"
+			+ "required_skills = #{required_skills},"
+			+ "location = #{location},"
+			+ "working_hours = #{working_hours},"
+			+ "benefits = #{benefits},"
+			+ "keywords = #{keywords},"
+			+ "contact_person_name = #{contact_person_name},"
+			+ "contact_person_email = #{contact_person_email},"
+			+ "contact_person_phone = #{contact_person_phone},"
+			+ "application_deadline = #{application_deadline} "
+			+ " WHERE posting_id = #{posting_id}")
+	public int updateJobposting(JobPosting jobposting);
+	
+	 @Delete("delete from jobposting where posting_id = #{posting_id}")
+	 public int deletePosting(Integer posting_id);
 }
