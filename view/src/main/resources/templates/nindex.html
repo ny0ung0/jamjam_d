@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>현용</title>
+<title>user_main page</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 function fetchUserInfo() {
@@ -50,9 +50,10 @@ $(document).ready(function() {
         </h1>
         <p>Your email is <span id="userEmail"></span>.</p>
         <a href="http://localhost:8888/logout">Logout</a>
-    </div>
-    <a href="/user/resume">이력서 등록</a>
-    <a href="/user/resumeDetail">이력서 상세보기</a>
+        
+        <a href="/user/resume">이력서 등록</a>
     <a href="/user/resumeList">이력서 리스트</a>
+    </div>
+    
 </body>
 </html>

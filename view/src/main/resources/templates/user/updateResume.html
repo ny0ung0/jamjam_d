@@ -1,31 +1,29 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <title>이력서 수정</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
 </head>
-
 <body>
     <h2>이력서 수정 페이지</h2>
     <div>
         <form name="resume" id="resumeForm">
-            <input type="hidden" id="resumeId" name="resumeId" />
-            이메일: <input type="email" id="email" name="email" /><br />
-            제목: <input type="text" id="title" name="title" /><br />
-            프로필사진: <input type="file" id="profilePhoto" name="profile_photo" /><br />
+            <input type="hidden" id="resume_id" name="resume_id" />
+            <input type="text" id="email" name="email" readonly />
+            제목<input type="text" name="title" id="title" /><br />
+            프로필사진<input type="file" name="profile_photo" id="profile_photo" /><br />
             <div>
                 <label for="desired_job">희망직무</label>
-                <select id="desired_job" name="desired_job" required>
+                <select id="desired_job" name="desired_job" onchange="addJob()" required>
                     <option value="">선택</option>
                 </select>
                 <div id="selectdesired_job"></div>
             </div>
             <div>
                 <label for="gotSkills">보유스킬</label>
-                <select id="selectSkill" name="selectSkill" required>
+                <select id="selectSkill" name="selectSkill" onchange="addSkill()" required>
                     <option value="">선택</option>
                 </select>
                 <div id="selectedSkills"></div>
@@ -48,7 +46,7 @@
             </div>
             <div>
                 <label>취업우대사항</label>
-                <div>
+                <div id="preferences">
                     <input type="checkbox" name="preferences" value="보훈대상"> 보훈대상
                     <input type="checkbox" name="preferences" value="취업보호 대상"> 취업보호 대상
                     <input type="checkbox" name="preferences" value="고용지원금 대상"> 고용지원금 대상
@@ -66,7 +64,7 @@
                     <option value="">선택</option>
                 </select>
             </div>
-            <input type="text" id="portfolio" name="portfolio" placeholder="포트폴리오" /><br />
+            <input type="text" name="portfolio" id="portfolio" placeholder="포트폴리오" /><br />
             <button type="submit" onclick="submitResume(event)">이력서 수정 완료</button>
         </form>
     </div>
@@ -75,31 +73,137 @@
             const urlParams = new URLSearchParams(window.location.search);
             const resumeId = urlParams.get('resume_id');
             if (resumeId) {
-                loadResume(resumeId);
+                fetchResume(resumeId);
+                fetchUserInfo();
+            } else {
+                alert('이력서 ID가 필요합니다.');
             }
-
-            // Load job and skill options
-            loadJobOptions();
-            loadSkillOptions();
-
-            $('#resumeForm').on('submit', function (event) {
-                event.preventDefault();
-                submitResume(resumeId);
-            });
         });
 
-        function loadResume(resumeId) {
+        
+        function fetchUserInfo() {
+            $.ajax({
+                url: "http://localhost:8888/userInfo",
+                method: "GET",
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data) {
+                    if (data) {
+                        $("#userName").text(data.name);
+                        $("#userEmail").text(data.email);
+                        $("#email").val(data.email);
+                        $("#name").val(data.name);
+                    }
+                },
+                error: function () {
+                    alert('사용자 정보를 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+        
+        
+        function fetchResume(resumeId) {
             $.ajax({
                 url: `http://localhost:8888/user/resume?resume_id=${resumeId}`,
                 method: "GET",
                 success: function (data) {
                     if (data) {
-                        $('#resumeId').val(data.resume_id);
+                        $('#resume_id').val(data.resume_id);
                         $('#email').val(data.email);
                         $('#title').val(data.title);
                         $('#desired_job').val(data.desired_job);
                         $('#skills').val(data.skills);
-                        // Populate other fields similarly
+                        $('#selectedSkills').html(data.skills.split(', ').map(skill => `<span class="skill-item">${skill} <button type="button" onclick="removeSkill(this)">X</button></span>`).join(''));
+
+                        // Populate licenses
+                        const licensesArray = data.license.split(' | ');
+                        licensesArray.forEach(license => {
+                            const [name, issuer, date] = license.split(', ');
+                            const licenseDiv = document.createElement('div');
+                            licenseDiv.classList.add('license-item');
+                            licenseDiv.innerHTML = `
+                                자격증 이름<input type="text" name="license_name[]" value="${name}" />
+                                발행처<input type="text" name="license_issuer[]" value="${issuer}" />
+                                취득연월<input type="date" name="license_date[]" value="${date}" /><br />
+                                <button type="button" onclick="removeLicense(this)">X</button>
+                            `;
+                            document.getElementById('licenses').appendChild(licenseDiv);
+                        });
+
+                        // Populate experiences
+                        const experiencesArray = data.experience.split(' | ');
+                        experiencesArray.forEach(exp => {
+                            const [company, department, start, end, position, responsibility] = exp.split(', ');
+                            const experienceDiv = document.createElement('div');
+                            experienceDiv.classList.add('experience-item');
+                            experienceDiv.innerHTML = `
+                                회사명<input type="text" name="company_name[]" value="${company}" />
+                                부서명<input type="text" name="department_name[]" value="${department}" />
+                                입사년월<input type="date" name="start_date[]" value="${start}" />
+                                퇴사년월<input type="date" name="end_date[]" value="${end}" />
+                                직급/직책<input type="text" name="position[]" value="${position}" />
+                                담당직무<input type="text" name="responsibility[]" value="${responsibility}" /><br />
+                                <button type="button" onclick="removeExperience(this)">X</button>
+                            `;
+                            document.getElementById('experiences').appendChild(experienceDiv);
+                        });
+
+                        // Populate educations
+                        const educationsArray = data.education.split(' | ');
+                        educationsArray.forEach(edu => {
+                            const [level, school, entrance, graduation, status, major, gpa] = edu.split(', ');
+                            const educationDiv = document.createElement('div');
+                            educationDiv.classList.add('education-item');
+                            educationDiv.innerHTML = `
+                                학교구분<select name="education_level[]" class="education-level" onchange="toggleMajorAndGPA(this)">
+                                    <option value="">선택</option>
+                                    <option value="고등학교졸업" ${level === '고등학교졸업' ? 'selected' : ''}>고등학교졸업</option>
+                                    <option value="대학졸업(2,3년)" ${level === '대학졸업(2,3년)' ? 'selected' : ''}>대학졸업(2,3년)</option>
+                                    <option value="대학교졸업(4년)" ${level === '대학교졸업(4년)' ? 'selected' : ''}>대학교졸업(4년)</option>
+                                    <option value="석사졸업" ${level === '석사졸업' ? 'selected' : ''}>석사졸업</option>
+                                    <option value="박사졸업" ${level === '박사졸업' ? 'selected' : ''}>박사졸업</option>
+                                </select>
+                                학교명<input type="text" name="school_name[]" value="${school}" />
+                                입학년월<input type="date" name="entrance_date[]" value="${entrance}" />
+                                졸업년월<input type="date" name="graduation_date[]" value="${graduation}" />
+                                졸업상태<select name="graduation_status[]">
+                                    <option value="중퇴" ${status === '중퇴' ? 'selected' : ''}>중퇴</option>
+                                    <option value="재학중" ${status === '재학중' ? 'selected' : ''}>재학중</option>
+                                    <option value="졸업" ${status === '졸업' ? 'selected' : ''}>졸업</option>
+                                </select>
+                                <div class="major-gpa" style="display:${['대학졸업(2,3년)', '대학교졸업(4년)', '석사졸업', '박사졸업'].includes(level) ? 'block' : 'none'};">
+                                    전공명<input type="text" name="major[]" value="${major || ''}" />
+                                    학점<input type="text" name="gpa[]" value="${gpa || ''}" /><br />
+                                </div>
+                                <button type="button" onclick="removeEducation(this)">X</button>
+                            `;
+                            document.getElementById('educations').appendChild(educationDiv);
+                        });
+
+                        // Populate cover letters
+                        const coverLettersArray = data.cover_letter_title.split(', ');
+                        const coverLettersContentArray = data.cover_letter_content.split(', ');
+                        coverLettersArray.forEach((title, index) => {
+                            const content = coverLettersContentArray[index];
+                            const coverLetterDiv = document.createElement('div');
+                            coverLetterDiv.classList.add('cover-letter-item');
+                            coverLetterDiv.innerHTML = `
+                                자기소개서 제목<input type="text" name="cover_letter_title[]" value="${title}" />
+                                자기소개서 내용<input type="text" name="cover_letter_content[]" value="${content}" /><br />
+                                <button type="button" onclick="removeCoverLetter(this)">X</button>
+                            `;
+                            document.getElementById('cover_letters').appendChild(coverLetterDiv);
+                        });
+
+                        // Populate preferences
+                        const preferences = data.preferences.split(', ');
+                        preferences.forEach(pref => {
+                            $(`#preferences input[value="${pref}"]`).prop('checked', true);
+                        });
+
+                        $('#portfolio').val(data.portfolio);
+                        $('#desired_conditions').val(data.desired_conditions);
                     } else {
                         alert('이력서를 찾을 수 없습니다.');
                     }
@@ -110,9 +214,231 @@
             });
         }
 
-        function submitResume(resumeId) {
-            var formData = new FormData($('#resumeForm')[0]);
-            formData.append('resume_id', resumeId);
+        fetch('/json/eduCode.json')
+    	.then(response => response.json())
+    	.then(data => {
+    		const select = document.getElementById('selectEducation');
+    		const keywordSet = new Set();
+    		data.forEach(item => {
+    			if(!keywordSet.has(item["학력"])){
+    				const option = document.createElement('option');
+    				option.value = item["학력"];
+    				option.text = item["학력"];
+    				select.add(option);
+    			}
+    		});
+    		
+    	});
+    
+    fetch('/json/skillList.json')
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById('selectSkill');
+            const keywordSete = new Set();
+            data.forEach(item => {
+                if (!keywordSete.has(item["직무 키워드명"])) {
+                    const option = document.createElement('option');
+                    option.value = item["직무 키워드명"];
+                    option.text = item["직무 키워드명"];
+                    select.add(option);
+                }
+            });
+        });
+    
+    fetch('/json/korea-administrative-district.json')
+    .then(response => response.json())
+    .then(data => {
+        const citySelect = document.getElementById('city');
+        data.forEach(city => {
+            for (const cityName in city) {
+                const option = document.createElement('option');
+                option.value = cityName;
+                option.text = cityName;
+                citySelect.add(option);
+            }
+        });
+    });
+
+    fetch('/json/job_category.json')
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById('desired_job');
+            const keywordSet = new Set();
+            data.forEach(item => {
+                if (!keywordSet.has(item["상위직무"])) {
+                    const option = document.createElement('option');
+                    option.value = item["상위직무"];
+                    option.text = item["상위직무"];
+                    select.add(option);
+                }
+            });
+        });
+        
+    function addJob() {
+        const select = document.getElementById('desired_job');
+        const selectedJob = select.options[select.selectedIndex].value;
+
+        if (selectedJob) {
+            const selectedDiv = document.getElementById('selectdesired_job');
+            selectedDiv.innerHTML = `${selectedJob}`;
+            updateSkills(selectedJob);
+        }
+    }
+
+    function updateSkills(selectedJob) {
+        const select = document.getElementById('selectSkill');
+        select.innerHTML = '<option value="">선택</option>';
+        fetch('/json/skillList.json')
+            .then(response => response.json())
+            .then(data => {
+                const skills = data[0][selectedJob];
+                if (skills) {
+                    skills.forEach(skill => {
+                        const option = document.createElement('option');
+                        option.value = skill;
+                        option.text = skill;
+                        select.add(option);
+                    });
+                }
+            });
+    }
+        function addSkill() {
+            const select = document.getElementById('selectSkill');
+            const selectedSkill = select.options[select.selectedIndex].value;
+
+            if (selectedSkill) {
+                const selectedDiv = document.getElementById('selectedSkills');
+                const newSkillDiv = document.createElement('span');
+                newSkillDiv.classList.add('skill-item');
+                newSkillDiv.innerHTML = `${selectedSkill} <button type="button" onclick="removeSkill(this)">X</button>`;
+                selectedDiv.appendChild(newSkillDiv);
+
+                updateSkillsInput();
+            }
+        }
+
+        function removeSkill(button) {
+            const skillItem = button.parentNode;
+            skillItem.parentNode.removeChild(skillItem);
+
+            updateSkillsInput();
+        }
+
+        function updateSkillsInput() {
+            const selectedDiv = document.getElementById('selectedSkills');
+            const skillItems = selectedDiv.getElementsByClassName('skill-item');
+            const skills = Array.from(skillItems).map(item => item.textContent.trim().slice(0, -1)); // Remove the trailing 'X'
+            const skillsString = skills.join(', ');
+
+            document.getElementById('skills').value = skillsString;
+        }
+
+        function addLicense() {
+            const licensesDiv = document.getElementById('licenses');
+            const newLicenseDiv = document.createElement('div');
+            newLicenseDiv.classList.add('license-item');
+            newLicenseDiv.innerHTML = `
+                자격증 이름<input type="text" name="license_name[]" />
+                발행처<input type="text" name="license_issuer[]" />
+                취득연월<input type="date" name="license_date[]" /><br />
+                <button type="button" onclick="removeLicense(this)">X</button>
+            `;
+            licensesDiv.appendChild(newLicenseDiv);
+        }
+
+        function removeLicense(button) {
+            const licenseItem = button.parentNode;
+            licenseItem.parentNode.removeChild(licenseItem);
+        }
+
+        function addExperience() {
+            const experiencesDiv = document.getElementById('experiences');
+            const newExperienceDiv = document.createElement('div');
+            newExperienceDiv.classList.add('experience-item');
+            newExperienceDiv.innerHTML = `
+                회사명<input type="text" name="company_name[]" />
+                부서명<input type="text" name="department_name[]" />
+                입사년월<input type="date" name="start_date[]" />
+                퇴사년월<input type="date" name="end_date[]" />
+                직급/직책<input type="text" name="position[]" />
+                담당직무<input type="text" name="responsibility[]" /><br />
+                <button type="button" onclick="removeExperience(this)">X</button>
+            `;
+            experiencesDiv.appendChild(newExperienceDiv);
+        }
+
+        function removeExperience(button) {
+            const experienceItem = button.parentNode;
+            experienceItem.parentNode.removeChild(experienceItem);
+        }
+
+        function addCoverLetter() {
+            const coverLettersDiv = document.getElementById('cover_letters');
+            const newCoverLetterDiv = document.createElement('div');
+            newCoverLetterDiv.classList.add('cover-letter-item');
+            newCoverLetterDiv.innerHTML = `
+                자기소개서 제목<input type="text" name="cover_letter_title[]" />
+                자기소개서 내용<input type="text" name="cover_letter_content[]" /><br />
+                <button type="button" onclick="removeCoverLetter(this)">X</button>
+            `;
+            coverLettersDiv.appendChild(newCoverLetterDiv);
+        }
+
+        function removeCoverLetter(button) {
+            const coverLetterItem = button.parentNode;
+            coverLetterItem.parentNode.removeChild(coverLetterItem);
+        }
+
+        function addEducation() {
+            const educationsDiv = document.getElementById('educations');
+            const newEducationDiv = document.createElement('div');
+            newEducationDiv.classList.add('education-item');
+            newEducationDiv.innerHTML = `
+                학교구분<select name="education_level[]" class="education-level" onchange="toggleMajorAndGPA(this)">
+                    <option value="">선택</option>
+                    <option value="고등학교졸업">고등학교졸업</option>
+                    <option value="대학졸업(2,3년)">대학졸업(2,3년)</option>
+                    <option value="대학교졸업(4년)">대학교졸업(4년)</option>
+                    <option value="석사졸업">석사졸업</option>
+                    <option value="박사졸업">박사졸업</option>
+                </select>
+                학교명<input type="text" name="school_name[]" />
+                입학년월<input type="date" name="entrance_date[]" />
+                졸업년월<input type="date" name="graduation_date[]" />
+                졸업상태<select name="graduation_status[]">
+                    <option value="중퇴">중퇴</option>
+                    <option value="재학중">재학중</option>
+                    <option value="졸업">졸업</option>
+                </select>
+                <div class="major-gpa" style="display:none;">
+                    전공명<input type="text" name="major[]" />
+                    학점<input type="text" name="gpa[]" /><br />
+                </div>
+                <button type="button" onclick="removeEducation(this)">X</button>
+            `;
+            educationsDiv.appendChild(newEducationDiv);
+        }
+
+        function toggleMajorAndGPA(selectElement) {
+            const educationItem = selectElement.closest('.education-item');
+            const majorGPA = educationItem.querySelector('.major-gpa');
+            if (selectElement.value === '대학졸업(2,3년)' || selectElement.value === '대학교졸업(4년)' || selectElement.value === '석사졸업' || selectElement.value === '박사졸업') {
+                majorGPA.style.display = 'block';
+            } else {
+                majorGPA.style.display = 'none';
+            }
+        }
+
+        function removeEducation(button) {
+            const educationItem = button.parentNode;
+            educationItem.parentNode.removeChild(educationItem);
+        }
+
+        function submitResume(event) {
+            event.preventDefault();
+            alert("이력서 수정 중..");
+            var form = document.forms['resume'];
+            var formData = new FormData(form);
 
             $.ajax({
                 type: "POST",
@@ -120,49 +446,20 @@
                 enctype: "multipart/form-data",
                 data: formData,
                 dataType: "text",
-                processData: false,
-                contentType: false,
+                processData: false,  // 필수: 파일 데이터를 문자열로 변환하지 않음
+                contentType: false,  // 필수: 파일 데이터의 Content-Type 설정
                 cache: false,
                 success: function (response) {
                     alert("이력서 수정 성공");
-                    window.location.href = "/user/resumeList";
+                    if (response != null) {
+                        window.location.href = `/user/resumeDetail?resume_id=${$('#resume_id').val()}`;
+                    }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     alert("에러발생: " + textStatus + ", " + errorThrown);
                 }
             });
         }
-
-        function loadJobOptions() {
-            fetch('/json/job_category.json')
-                .then(response => response.json())
-                .then(data => {
-                    const select = document.getElementById('desired_job');
-                    data.forEach(item => {
-                        const option = document.createElement('option');
-                        option.value = item["상위직무"];
-                        option.text = item["상위직무"];
-                        select.add(option);
-                    });
-                });
-        }
-
-        function loadSkillOptions() {
-            fetch('/json/skillList.json')
-                .then(response => response.json())
-                .then(data => {
-                    const select = document.getElementById('selectSkill');
-                    data.forEach(item => {
-                        const option = document.createElement('option');
-                        option.value = item["직무 키워드명"];
-                        option.text = item["직무 키워드명"];
-                        select.add(option);
-                    });
-                });
-        }
-
-        // Define addLicense, addExperience, addEducation, addCoverLetter functions similarly as in the resume registration form
     </script>
 </body>
-
 </html>
