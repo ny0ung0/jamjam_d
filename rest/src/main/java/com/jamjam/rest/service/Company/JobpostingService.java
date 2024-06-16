@@ -21,7 +21,17 @@ public class JobpostingService {
 			return "등록실패";
 		}
 	}
+	
 	public JobPosting getJobPosting(Integer posting_id) {
 		return jobpostingMapper.getJobPosting(posting_id);
+	}
+	
+	public int updateJobposting(JobPosting jobposting) {
+		int result = jobpostingMapper.updateJobposting(jobposting);
+		return result;
+	}
+	
+	public int deletePosting(Integer posting_id) {
+		return jobpostingMapper.deletePosting(posting_id);
 	}
 }

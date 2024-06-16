@@ -26,6 +26,6 @@ public class CompanyInfo {
 	private Date created_at;
 	private Date updated_at;
 	
-	private String originName;
-	private String newName;
+	private String origin_name;
+	private String new_name;
 }

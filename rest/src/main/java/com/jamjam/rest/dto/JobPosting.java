@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JobPosting {
 
-	private Integer positing_id;
+	private Integer posting_id;
 	private Integer company_id;
 	private String title;
 	private String industry;

@@ -2,11 +2,14 @@ package com.jamjam.rest.companyController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jamjam.rest.dto.CompanyInfo;
 import com.jamjam.rest.dto.CompanyInfoDto;
 import com.jamjam.rest.service.Company.CompanyInfoService;
 
@@ -28,5 +31,14 @@ public class CompanyInfoController {
 			return  ResponseEntity.status(500).body(result);
 		}
 		
+	}
+	
+	@GetMapping("/companyInfo/{company_id}")
+	public CompanyInfo getCompanyInfo(@PathVariable("company_id") Integer company_id) {
+		System.out.println("회사소개get 들어옴");
+		CompanyInfo result =companyInfoService.getCompanyInfo(company_id);
+		System.out.println(result); 
+		
+		return result;
 	}
 }

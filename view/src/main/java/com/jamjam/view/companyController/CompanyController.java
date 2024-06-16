@@ -38,5 +38,8 @@ public class CompanyController {
 		model.addAttribute("posting_id", posting_id);
 	}
 
-	
+	@RequestMapping("/job_posting_detail_company")
+	public void job_posting_detail_company(@RequestParam("posting_id") Integer posting_id,Model model) {
+		model.addAttribute("posting_id", posting_id);
+	}
 }

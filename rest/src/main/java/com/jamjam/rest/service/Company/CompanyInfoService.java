@@ -33,9 +33,9 @@ public class CompanyInfoService {
 		companyInfo.setMain_email(companyInfoDto.getMain_email());
 		//파일 관련 멤버변수 세팅
 				String originName =companyInfoDto.getFileName();
-				companyInfo.setOriginName(originName);
+				companyInfo.setOrigin_name(originName);
 				String newName = UUID.randomUUID().toString() + originName;//중복되지 않는 새이름
-				companyInfo.setNewName(newName);
+				companyInfo.setNew_name(newName);
 				//String thumbNailName = "";
 		File file = new File(newName);
 		
@@ -57,6 +57,10 @@ public class CompanyInfoService {
 			return "등록실패" + e.getMessage();
 		}
 		
+	}
+	
+	public CompanyInfo getCompanyInfo(Integer compnay_id) {
+		return companyInfoMapper.getCompanyInfo(compnay_id);
 	}
 	
 }

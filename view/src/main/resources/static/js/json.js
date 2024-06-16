@@ -9,9 +9,10 @@ function sector1SelectChanged(callback = null) {
    	let sector2 =JSON.parse(this.responseText);
    	
    	sector2.forEach(sector => {
-   		 document.getElementById("sector2").innerHTML += '<option value =' +sector+'>'+sector+'</option>';
-   	})
+   		 document.getElementById("sector2").innerHTML += '<option value ="'+sector+'">'+sector+'</option>';
+   	});
       if (callback) {
+		console.log("Sector1 callback called");
             callback();
         }
    };
@@ -29,7 +30,7 @@ function address1SelectChanged(callback = null) {
     xhttp.onload = function () {
         let address2 = JSON.parse(this.responseText);
         address2.forEach(address => {
-            document.getElementById("address2").innerHTML += '<option value="' + address + '">' + address + '</option>';
+            document.getElementById("address2").innerHTML += '<option value="'+ address +'">' + address + '</option>';
         });
 
         if (callback) {
@@ -51,9 +52,9 @@ function job_role1SelectChanged(callback = null) {
     	job_role2.forEach(role => {
     		
     		
-    		 document.getElementById("job_role2").innerHTML += '<option value =' +role+'>'+role+'</option>';
+    		 document.getElementById("job_role2").innerHTML += '<option value ="' +role+'">'+role+'</option>';
     		 
-    	})
+    	});
       if (callback) {
             callback();
         } 
@@ -75,7 +76,7 @@ function required_skill1SelectChanged(callback = null) {
    	
    	required_skill2.forEach(required_skill => {
    		 document.getElementById("required_skill2").innerHTML += '<option value ="' +required_skill+'">'+required_skill+'</option>';
-   	})
+   	});
      if (callback) {
             callback();
         } 

@@ -22,6 +22,7 @@ public interface CompanyDao {
 	 @Update("UPDATE company SET email=#{email}, company_name=#{company_name},registration_number=#{registration_number},company_type=#{company_type},representative_name=#{representative_name},address=#{address},tel=#{tel}  "
 	 		+ "WHERE company_id =#{company_id} ")
 	 public int updateCompany(Company company);
+	 
 	 @Delete("delete from company where company_id = #{company_id}")
 	 public int deleteCompany(Integer Company_id);
 }
