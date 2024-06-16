@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.jamjam.rest.dto.Resume;
 import com.jamjam.rest.dto.ResumeDB;
@@ -29,4 +30,6 @@ public interface ResumeDao {
 	@Select("SELECT resume_id, title, created_at FROM resume WHERE user_id = (SELECT user_id FROM user WHERE email = #{email})")
     List<ResumeDB> findByEmail(String email);
 	
+	@Update("UPDATE resume SET profile_photo = #{profile_photo}, photo_newName = #{photo_newName}, title = #{title}, desired_job = #{desired_job}, skills = #{skills}, license = #{license}, education = #{education}, experience = #{experience}, preferences = #{preferences}, cover_letter_title = #{cover_letter_title}, cover_letter_content = #{cover_letter_content}, desired_conditions = #{desired_conditions}, portfolio = #{portfolio} WHERE resume_id = #{resume_id}")
+    int updateResume(ResumeDB resume);
 }

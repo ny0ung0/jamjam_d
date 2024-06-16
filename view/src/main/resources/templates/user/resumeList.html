@@ -58,7 +58,7 @@
                     if (data.length > 0) {
                         data.forEach(resume => {
                             const row = `<tr>
-                                <td><a href="/viewResume.html?resume_id=${resume.resume_id}">${resume.title}</a></td>
+                                <td><a href="/user/resumeDetail?resume_id=${resume.resume_id}">${resume.title}</a></td>
                                 <td>${resume.created_at}</td>
                             </tr>`;
                             tableBody.append(row);

@@ -1,6 +1,7 @@
 package com.jamjam.rest.userController;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,16 +28,16 @@ import jakarta.servlet.http.HttpSession;
 public class UserController {
     @Value("${spring.servlet.multipart.location}")
     private String uploadPath;
-    
+
     @Autowired
     ResumeDao resumeMapper;
-    
+
     @Autowired
     UserDao userMapper;
-    
+
     @Autowired
     HttpSession httpSession;
-    
+
     @PostMapping("/resume")
     public String regResume(@RequestParam("email") String email_, Resume resume, @RequestPart("profile_photo") MultipartFile profilePhoto,
                             @RequestParam("license_name[]") List<String> licenseNames, @RequestParam("license_issuer[]") List<String> licenseIssuers,
@@ -47,21 +48,58 @@ public class UserController {
                             @RequestParam("cover_letter_content[]") List<String> coverLetterContents, @RequestParam("education_level[]") List<String> educationLevels,
                             @RequestParam("school_name[]") List<String> schoolNames, @RequestParam("entrance_date[]") List<String> entranceDates,
                             @RequestParam("graduation_date[]") List<String> graduationDates, @RequestParam("graduation_status[]") List<String> graduationStatuses,
-                            @RequestParam("major[]") List<String> majors, @RequestParam("gpa[]") List<String> gpas) {
+                            @RequestParam(value = "major[]", required = false) List<String> majors, @RequestParam(value = "gpa[]", required = false) List<String> gpas) {
 
         System.out.println(resume);
         ResumeDB resumedb = new ResumeDB();
         resumedb.setTitle(resume.getTitle());
         resumedb.setDesired_job(resume.getDesired_job());
         resumedb.setSkills(resume.getSkills());
-        resumedb.setLicense(licenseNames.toString() + ", " + licenseIssuers.toString() + ", " + licenseDates.toString());
-        resumedb.setEducation(educationLevels.toString() + ", " + schoolNames.toString() + ", " + entranceDates.toString() + ", " +
-                graduationDates.toString() + ", " + graduationStatuses.toString() + ", " + majors.toString() + ", " + gpas.toString());
-        resumedb.setExperience(companyNames.toString() + ", " + departmentNames.toString() + ", " + startDates.toString() + ", " +
-                endDates.toString() + ", " + positions.toString() + ", " + responsibilities.toString());
+
+        // Convert licenses to a single string
+        StringBuilder licenses = new StringBuilder();
+        for (int i = 0; i < licenseNames.size(); i++) {
+            licenses.append(licenseNames.get(i)).append(", ").append(licenseIssuers.get(i)).append(", ").append(licenseDates.get(i));
+            if (i < licenseNames.size() - 1) licenses.append(" | ");
+        }
+        resumedb.setLicense(licenses.toString());
+
+        // Convert education to a single string
+        StringBuilder educations = new StringBuilder();
+        for (int i = 0; i < educationLevels.size(); i++) {
+            educations.append(educationLevels.get(i)).append(", ").append(schoolNames.get(i)).append(", ").append(entranceDates.get(i)).append(", ")
+                    .append(graduationDates.get(i)).append(", ").append(graduationStatuses.get(i));
+            if (educationLevels.get(i).equals("대학졸업(2,3년)") || educationLevels.get(i).equals("대학교졸업(4년)") || educationLevels.get(i).equals("석사졸업") || educationLevels.get(i).equals("박사졸업")) {
+                educations.append(", ").append(majors.get(i)).append(", ").append(gpas.get(i));
+            }
+            if (i < educationLevels.size() - 1) educations.append(" | ");
+        }
+        resumedb.setEducation(educations.toString());
+
+        // Convert experiences to a single string
+        StringBuilder experiences = new StringBuilder();
+        for (int i = 0; i < companyNames.size(); i++) {
+            experiences.append(companyNames.get(i)).append(", ").append(departmentNames.get(i)).append(", ").append(startDates.get(i)).append(", ")
+                    .append(endDates.get(i)).append(", ").append(positions.get(i)).append(", ").append(responsibilities.get(i));
+            if (i < companyNames.size() - 1) experiences.append(" | ");
+        }
+        resumedb.setExperience(experiences.toString());
+
+        // Convert cover letters to a single string
+        StringBuilder coverLetterTitlesStr = new StringBuilder();
+        StringBuilder coverLetterContentsStr = new StringBuilder();
+        for (int i = 0; i < coverLetterTitles.size(); i++) {
+            coverLetterTitlesStr.append(coverLetterTitles.get(i));
+            coverLetterContentsStr.append(coverLetterContents.get(i));
+            if (i < coverLetterTitles.size() - 1) {
+                coverLetterTitlesStr.append(", ");
+                coverLetterContentsStr.append(", ");
+            }
+        }
+        resumedb.setCover_letter_title(coverLetterTitlesStr.toString());
+        resumedb.setCover_letter_content(coverLetterContentsStr.toString());
+
         resumedb.setPreferences(resume.getPreferences());
-        resumedb.setCover_letter_title(coverLetterTitles.toString());
-        resumedb.setCover_letter_content(coverLetterContents.toString());
         resumedb.setDesired_conditions(resume.getDesired_conditions());
         resumedb.setPortfolio(resume.getPortfolio());
         String email = email_;
@@ -92,22 +130,94 @@ public class UserController {
         }
 
     }
-    
-    
 
+    @PostMapping("/updateResume")
+    public String updateResume(@RequestParam("resume_id") int resumeId, @RequestParam("email") String email_, Resume resume, @RequestPart("profile_photo") MultipartFile profilePhoto,
+                               @RequestParam("license_name[]") List<String> licenseNames, @RequestParam("license_issuer[]") List<String> licenseIssuers,
+                               @RequestParam("license_date[]") List<String> licenseDates, @RequestParam("company_name[]") List<String> companyNames,
+                               @RequestParam("department_name[]") List<String> departmentNames, @RequestParam("start_date[]") List<String> startDates,
+                               @RequestParam("end_date[]") List<String> endDates, @RequestParam("position[]") List<String> positions,
+                               @RequestParam("responsibility[]") List<String> responsibilities, @RequestParam("cover_letter_title[]") List<String> coverLetterTitles,
+                               @RequestParam("cover_letter_content[]") List<String> coverLetterContents, @RequestParam("education_level[]") List<String> educationLevels,
+                               @RequestParam("school_name[]") List<String> schoolNames, @RequestParam("entrance_date[]") List<String> entranceDates,
+                               @RequestParam("graduation_date[]") List<String> graduationDates, @RequestParam("graduation_status[]") List<String> graduationStatuses,
+                               @RequestParam(value = "major[]", required = false) List<String> majors, @RequestParam(value = "gpa[]", required = false) List<String> gpas) {
+
+        ResumeDB resumedb = resumeMapper.findById(resumeId);
+        resumedb.setTitle(resume.getTitle());
+        resumedb.setDesired_job(resume.getDesired_job());
+        resumedb.setSkills(resume.getSkills());
+
+        // Convert licenses to a single string
+        StringBuilder licenses = new StringBuilder();
+        for (int i = 0; i < licenseNames.size(); i++) {
+            licenses.append(licenseNames.get(i)).append(", ").append(licenseIssuers.get(i)).append(", ").append(licenseDates.get(i));
+            if (i < licenseNames.size() - 1) licenses.append(" | ");
+        }
+        resumedb.setLicense(licenses.toString());
+
+        // Convert education to a single string
+        StringBuilder educations = new StringBuilder();
+        for (int i = 0; i < educationLevels.size(); i++) {
+            educations.append(educationLevels.get(i)).append(", ").append(schoolNames.get(i)).append(", ").append(entranceDates.get(i)).append(", ")
+                    .append(graduationDates.get(i)).append(", ").append(graduationStatuses.get(i));
+            if (educationLevels.get(i).equals("대학졸업(2,3년)") || educationLevels.get(i).equals("대학교졸업(4년)") || educationLevels.get(i).equals("석사졸업") || educationLevels.get(i).equals("박사졸업")) {
+                educations.append(", ").append(majors.get(i)).append(", ").append(gpas.get(i));
+            }
+            if (i < educationLevels.size() - 1) educations.append(" | ");
+        }
+        resumedb.setEducation(educations.toString());
+
+        // Convert experiences to a single string
+        StringBuilder experiences = new StringBuilder();
+        for (int i = 0; i < companyNames.size(); i++) {
+            experiences.append(companyNames.get(i)).append(", ").append(departmentNames.get(i)).append(", ").append(startDates.get(i)).append(", ")
+                    .append(endDates.get(i)).append(", ").append(positions.get(i)).append(", ").append(responsibilities.get(i));
+            if (i < companyNames.size() - 1) experiences.append(" | ");
+        }
+        resumedb.setExperience(experiences.toString());
+
+        // Convert cover letters to a single string
+        StringBuilder coverLetters = new StringBuilder();
+        for (int i = 0; i < coverLetterTitles.size(); i++) {
+            coverLetters.append(coverLetterTitles.get(i)).append(": ").append(coverLetterContents.get(i));
+            if (i < coverLetterTitles.size() - 1) coverLetters.append(" | ");
+        }
+        resumedb.setCover_letter_title(coverLetters.toString());
+
+        resumedb.setPreferences(resume.getPreferences());
+        resumedb.setDesired_conditions(resume.getDesired_conditions());
+        resumedb.setPortfolio(resume.getPortfolio());
+        resumedb.setPhoto_newName(profilePhoto.getOriginalFilename());
+        
+        String newName = UUID.randomUUID().toString() + profilePhoto.getOriginalFilename();
+        resumedb.setPhoto_newName(newName);
+        File file = new File(newName);
+        try {
+            profilePhoto.transferTo(file);
+            System.out.println("파일업로드 성공");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int resu = resumeMapper.updateResume(resumedb);
+        if (resu > 0) {
+            return "성공";
+        } else {
+            return "실패";
+        }
+    }
+    
+    
     @GetMapping("/resumes")
     public List<ResumeDB> listResumes(@RequestParam("email") String email) {
-    	 System.out.println(email);
-    	 List<ResumeDB> resumedb = resumeMapper.findByEmail(email);
-    	 System.out.println(resumedb.toString());
-    	 
-        return resumeMapper.findByEmail(email);
+        List<ResumeDB> resumedb = resumeMapper.findByEmail(email);
+        return resumedb;
     }
 
     @GetMapping("/resume")
     public ResumeDB viewResume(@RequestParam("resume_id") int resumeId) {
-        return resumeMapper.findById(resumeId);
+        ResumeDB resume = resumeMapper.findById(resumeId);
+        return resume;
     }
-    
-
 }

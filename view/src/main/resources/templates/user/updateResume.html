@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>이력서 수정</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <h2>이력서 수정 페이지</h2>
+    <div>
+        <form name="resume" id="resumeForm">
+            <input type="hidden" id="resumeId" name="resumeId" />
+            이메일: <input type="email" id="email" name="email" /><br />
+            제목: <input type="text" id="title" name="title" /><br />
+            프로필사진: <input type="file" id="profilePhoto" name="profile_photo" /><br />
+            <div>
+                <label for="desired_job">희망직무</label>
+                <select id="desired_job" name="desired_job" required>
+                    <option value="">선택</option>
+                </select>
+                <div id="selectdesired_job"></div>
+            </div>
+            <div>
+                <label for="gotSkills">보유스킬</label>
+                <select id="selectSkill" name="selectSkill" required>
+                    <option value="">선택</option>
+                </select>
+                <div id="selectedSkills"></div>
+            </div>
+            <input type="text" id="skills" name="skills" /><br />
+            <div>
+                <label>보유자격증</label>
+                <div id="licenses"></div>
+                <button type="button" onclick="addLicense()">+추가</button>
+            </div>
+            <div>
+                <label>경력사항</label>
+                <div id="experiences"></div>
+                <button type="button" onclick="addExperience()">+추가</button>
+            </div>
+            <div>
+                <label>학력사항</label>
+                <div id="educations"></div>
+                <button type="button" onclick="addEducation()">+추가</button>
+            </div>
+            <div>
+                <label>취업우대사항</label>
+                <div>
+                    <input type="checkbox" name="preferences" value="보훈대상"> 보훈대상
+                    <input type="checkbox" name="preferences" value="취업보호 대상"> 취업보호 대상
+                    <input type="checkbox" name="preferences" value="고용지원금 대상"> 고용지원금 대상
+                    <input type="checkbox" name="preferences" value="병역"> 병역
+                </div>
+            </div>
+            <div>
+                <label>자기소개서</label>
+                <div id="cover_letters"></div>
+                <button type="button" onclick="addCoverLetter()">+추가</button>
+            </div>
+            <div>
+                <label for="city">희망근무지</label>
+                <select id="city" name="desired_conditions" required>
+                    <option value="">선택</option>
+                </select>
+            </div>
+            <input type="text" id="portfolio" name="portfolio" placeholder="포트폴리오" /><br />
+            <button type="submit" onclick="submitResume(event)">이력서 수정 완료</button>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const resumeId = urlParams.get('resume_id');
+            if (resumeId) {
+                loadResume(resumeId);
+            }
+
+            // Load job and skill options
+            loadJobOptions();
+            loadSkillOptions();
+
+            $('#resumeForm').on('submit', function (event) {
+                event.preventDefault();
+                submitResume(resumeId);
+            });
+        });
+
+        function loadResume(resumeId) {
+            $.ajax({
+                url: `http://localhost:8888/user/resume?resume_id=${resumeId}`,
+                method: "GET",
+                success: function (data) {
+                    if (data) {
+                        $('#resumeId').val(data.resume_id);
+                        $('#email').val(data.email);
+                        $('#title').val(data.title);
+                        $('#desired_job').val(data.desired_job);
+                        $('#skills').val(data.skills);
+                        // Populate other fields similarly
+                    } else {
+                        alert('이력서를 찾을 수 없습니다.');
+                    }
+                },
+                error: function () {
+                    alert('이력서를 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+
+        function submitResume(resumeId) {
+            var formData = new FormData($('#resumeForm')[0]);
+            formData.append('resume_id', resumeId);
+
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8888/user/updateResume",
+                enctype: "multipart/form-data",
+                data: formData,
+                dataType: "text",
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (response) {
+                    alert("이력서 수정 성공");
+                    window.location.href = "/user/resumeList";
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert("에러발생: " + textStatus + ", " + errorThrown);
+                }
+            });
+        }
+
+        function loadJobOptions() {
+            fetch('/json/job_category.json')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('desired_job');
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item["상위직무"];
+                        option.text = item["상위직무"];
+                        select.add(option);
+                    });
+                });
+        }
+
+        function loadSkillOptions() {
+            fetch('/json/skillList.json')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('selectSkill');
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item["직무 키워드명"];
+                        option.text = item["직무 키워드명"];
+                        select.add(option);
+                    });
+                });
+        }
+
+        // Define addLicense, addExperience, addEducation, addCoverLetter functions similarly as in the resume registration form
+    </script>
+</body>
+
+</html>
