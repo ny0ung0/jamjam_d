@@ -177,28 +177,38 @@ public class UserController {
         }
         resumedb.setExperience(experiences.toString());
 
-        // Convert cover letters to a single string
-        StringBuilder coverLetters = new StringBuilder();
+     // Convert cover letters to a single string
+        StringBuilder coverLetterTitlesStr = new StringBuilder();
+        StringBuilder coverLetterContentsStr = new StringBuilder();
         for (int i = 0; i < coverLetterTitles.size(); i++) {
-            coverLetters.append(coverLetterTitles.get(i)).append(": ").append(coverLetterContents.get(i));
-            if (i < coverLetterTitles.size() - 1) coverLetters.append(" | ");
+            coverLetterTitlesStr.append(coverLetterTitles.get(i));
+            coverLetterContentsStr.append(coverLetterContents.get(i));
+            if (i < coverLetterTitles.size() - 1) {
+                coverLetterTitlesStr.append(", ");
+                coverLetterContentsStr.append(", ");
+            }
         }
-        resumedb.setCover_letter_title(coverLetters.toString());
+        resumedb.setCover_letter_title(coverLetterTitlesStr.toString());
+        resumedb.setCover_letter_content(coverLetterContentsStr.toString());
 
         resumedb.setPreferences(resume.getPreferences());
         resumedb.setDesired_conditions(resume.getDesired_conditions());
         resumedb.setPortfolio(resume.getPortfolio());
-        resumedb.setPhoto_newName(profilePhoto.getOriginalFilename());
-        
-        String newName = UUID.randomUUID().toString() + profilePhoto.getOriginalFilename();
+        String email = email_;
+        User user = userMapper.findByEmail(email);
+        resumedb.setUser_id(user.getUser_id());
+        String originalName = resume.getFileName();
+        resumedb.setProfile_photo(originalName);
+        String newName = UUID.randomUUID().toString() + originalName;
         resumedb.setPhoto_newName(newName);
         File file = new File(newName);
         try {
-            profilePhoto.transferTo(file);
-            System.out.println("파일업로드 성공");
-        } catch (IOException e) {
+            resume.getProfile_photo().transferTo(file);
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+        File ufile = new File(uploadPath + newName);
 
         int resu = resumeMapper.updateResume(resumedb);
         if (resu > 0) {

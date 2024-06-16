@@ -69,6 +69,7 @@
             <p id="portfolio"></p>
         </div>
     </div>
+    <button id="editButton">수정하기</button>
 
     <script>
         $(document).ready(function () {
@@ -79,6 +80,10 @@
             } else {
                 alert('이력서 ID가 필요합니다.');
             }
+
+            $('#editButton').click(function () {
+                window.location.href = `/user/updateResume?resume_id=${resumeId}`;
+            });
         });
 
         function formatDate(dateString) {

@@ -22,4 +22,9 @@ public class UserController {
 	public String resumeList() {
 		return "/user/resumeList";
 	}
+	
+	@GetMapping("updateResume")
+	public String updateResumePage() {
+		return "/user/updateResume";
+	}
 }
