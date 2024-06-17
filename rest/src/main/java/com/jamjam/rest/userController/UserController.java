@@ -141,7 +141,7 @@ public class UserController {
                                @RequestParam("cover_letter_content[]") List<String> coverLetterContents, @RequestParam("education_level[]") List<String> educationLevels,
                                @RequestParam("school_name[]") List<String> schoolNames, @RequestParam("entrance_date[]") List<String> entranceDates,
                                @RequestParam("graduation_date[]") List<String> graduationDates, @RequestParam("graduation_status[]") List<String> graduationStatuses,
-                               @RequestParam(value = "major[]", required = false) List<String> majors, @RequestParam(value = "gpa[]", required = false) List<String> gpas) {
+                               @RequestParam(value = "major[]", required = false) List<String> majors, @RequestParam(value = "gpa[]", required = false) List<String> gpas, @RequestParam("photo")String photo) {
 
         ResumeDB resumedb = resumeMapper.findById(resumeId);
         resumedb.setTitle(resume.getTitle());
@@ -197,18 +197,23 @@ public class UserController {
         String email = email_;
         User user = userMapper.findByEmail(email);
         resumedb.setUser_id(user.getUser_id());
-        String originalName = resume.getFileName();
-        resumedb.setProfile_photo(originalName);
-        String newName = UUID.randomUUID().toString() + originalName;
-        resumedb.setPhoto_newName(newName);
-        File file = new File(newName);
-        try {
-            resume.getProfile_photo().transferTo(file);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(photo != null) {
+        	resumedb.setPhoto_newName(photo);
+        }else {
+        	String originalName = resume.getFileName();
+            resumedb.setProfile_photo(originalName);
+            String newName = UUID.randomUUID().toString() + originalName;
+            resumedb.setPhoto_newName(newName);
+            File file = new File(newName);
+            try {
+                resume.getProfile_photo().transferTo(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            File ufile = new File(uploadPath + newName);
         }
-
-        File ufile = new File(uploadPath + newName);
+        
 
         int resu = resumeMapper.updateResume(resumedb);
         if (resu > 0) {
