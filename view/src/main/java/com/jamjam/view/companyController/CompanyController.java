@@ -14,10 +14,8 @@ import jakarta.servlet.http.HttpSession;
 public class CompanyController {
 	@RequestMapping("/log")
 	public String log(HttpSession session) {
-		Company com = new Company(
-					1,"aaa@aaa.com","00호텔","123-12-1234","호텔·여행·항공","김대표","세종특별자치시","010-1234-1234",null,null
-				);
-		session.setAttribute("loginCompany", com);
+		
+		session.setAttribute("company_id", 5);
 		
 		return "/leindex";
 	}

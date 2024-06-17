@@ -13,7 +13,7 @@
 pre();
 function pre(){
 	let box = document.querySelector("#box");
-	let company_id="[[${session.loginCompany.company_id}]]";
+	let company_id="[[${session.company_id}]]";
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
        let postings = JSON.parse(this.responseText);
@@ -48,7 +48,7 @@ function closePosting(e){
     xhttp.onload = function() {
     	document.querySelector("#result").innerHTML=this.responseText;
     };
-    xhttp.open("delete", "http://localhost:8888/company/jobposting/" + id);
+    xhttp.open("put", "http://localhost:8888/company/jobposting/status/" + id);
     xhttp.send();
 }
 </script>

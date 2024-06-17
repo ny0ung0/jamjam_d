@@ -36,7 +36,7 @@
     
     function preCompany(){	
     	let frm = document.querySelector("#companyFrm");
-    	let id = "[[${session.loginCompany.company_id}]]";
+    	let id = "[[${session.company_id}]]";
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
            let company = JSON.parse(this.responseText);

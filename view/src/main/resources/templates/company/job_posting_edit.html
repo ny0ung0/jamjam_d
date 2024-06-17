@@ -10,7 +10,7 @@
 
 <form id="postingFrm">
 	posting_id : <input type="number" name="posting_id" th:value="${posting_id}">
-	company_id : <input type="number" name="company_id" th:value="${session.loginCompany.company_id}">
+	company_id : <input type="number" name="company_id" th:value="${session.company_id}">
 	공고제목 : <input type="text" name="title" > <br>
 	모집업종 :  <select id="sector1" name="sector1" onchange="sector1SelectChanged()"></select>
 	<select id="sector2" name="sector2"></select><br>
