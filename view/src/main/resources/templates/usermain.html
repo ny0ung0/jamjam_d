@@ -30,7 +30,9 @@
                         		
                         		window.location.href ="/nindex";
                         	}else{
-                        		window.location.href ="/leindex";
+                        		console.log(data.user_id);
+                        		
+                        		window.location.href ="/leindex?company_id="+data.user_id;
                         	}
                             
                         }

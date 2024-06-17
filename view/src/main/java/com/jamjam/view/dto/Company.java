@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Company {
 
-	private Integer company_id;
+	private Integer user_id;
 	private String company_name;
 	private String email;
 	private String registration_number;

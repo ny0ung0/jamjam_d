@@ -16,15 +16,15 @@ public interface CompanyDao {
 		 		+ "WHERE email =#{email} ")
 	 public int insertCompany(Company company);
 	 
-	 @Select("select * from user where user_id = #{company_id}")
-	 public  Company getCompany(Integer company_id);
+	 @Select("select * from user where user_id = #{user_id}")
+	 public  Company getCompany(Integer user_id);
 	 
 	 @Update("UPDATE user SET email=#{email}, company_name=#{company_name},registration_number=#{registration_number},company_type=#{company_type},representative_name=#{representative_name},address=#{address},tel=#{tel}  "
-	 		+ "WHERE user_id =#{company_id} ")
+	 		+ "WHERE user_id =#{user_id} ")
 	 public int updateCompany(Company company);
 	 
-	 @Delete("delete from user where user_id = #{company_id}")
-	 public int deleteCompany(Integer Company_id);
+	 @Delete("delete from user where user_id = #{user_id}")
+	 public int deleteCompany(Integer user_id);
 	 
 	 @Select("select * from user where email = #{email}")
 	 public Company getCompanyByEmail(String email);
