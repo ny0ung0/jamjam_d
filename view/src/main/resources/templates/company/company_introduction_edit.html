@@ -9,9 +9,9 @@
 </head>
 <body>
 <h1>기업소개 수정</h1>
-
+파일 처리 어떻게 할껀지 부터 시작!!!!!!!
 <form name="frm" id="companyInfoFrm" method="POST">
-	<input type="text" name="company_id" th:value="${session.company_id}">
+	공고번호:<input type="text" name="company_id" th:value="${info_id}">
 	회사로고 :<input type="file" name="file"><br>
 	회사소개 :<textarea name="description"></textarea><br>
 	사원수 :<input type="number" name="number_of_employees"><br>
@@ -24,52 +24,28 @@
 	
 </form>
 <div id="demo"></div>
+
+<script src="/js/json.js"></script>
 <script>
+
 preCompanyInfo();
+
 function preCompanyInfo(){	
 	let frm = document.querySelector("#companyInfoFrm");
-	let id = "[[${session.company_id}]]";
+	let id = "[[${info_id}]]";
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-       let company = JSON.parse(this.responseText);
-       frm.user_id.value = company.user_id;
-       frm.email.value = company.email;
-       frm.registration_number.value = company.registration_number;
-       frm.company_name.value = company.company_name;
-       frm.representative_name.value = company.representative_name;  
-       frm.tel.value = company.tel;
-       	//업종 부분
-   		// 문자열을 공백으로 나눔
-       let parts = company.company_type.split('//');
-       // 공백이 두 개 미만이면 빈 문자열 반환
-       let sector1=parts[0];
-       let sector2=parts[1];           
-       selectOptionByValue("sector1", sector1);
-       //비동기로 실행해야해서 콜백함수 씀(json.js의 코드도 바뀜)
-       sector1SelectChanged(function() {
-           selectOptionByValue("sector2", sector2);
-       });
-     //주소 부분
-  		// 문자열을 공백으로 나눔
-      parts = company.address.split('//');
-      // 공백이 두 개 미만이면 빈 문자열 반환
-      let address1=parts[0];
-      let address2=parts[1];
-      let detailAddress='';
-      if (parts.length <= 2) {
-   	   detailAddress = '';
-      }
-      // 두 번째 공백 이후의 부분 문자열 추출
-      detailAddress = parts.slice(2).join('//');
-      frm.detailAddress.value = detailAddress;
-      selectOptionByValue("address1", address1);
-      //비동기로 실행해야해서 콜백함수 씀(json.js의 코드도 바뀜)
-      address1SelectChanged(function() {
-          selectOptionByValue("address2", address2);
-      });
+       let companyInfo = JSON.parse(this.responseText);
        
+       frm.description.value = companyInfo.description;
+       frm.number_of_employees.value = companyInfo.number_of_employees;
+       frm.working_environment.value = companyInfo.working_environment;
+       frm.benefits.value = companyInfo.benefits;
+       frm.ideal_candidate.value = companyInfo.ideal_candidate;  
+       frm.main_contact.value = companyInfo.main_contact;
+       frm.main_email.value = companyInfo.main_email;
     };
-    xhttp.open("get", "http://localhost:8888/company/"+id);
+    xhttp.open("get", "http://localhost:8888/company/companyInfo/info_id/"+id);
     xhttp.send();
 }
 	

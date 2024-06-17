@@ -47,4 +47,8 @@ public class CompanyController {
 	public void company_introduction_detail(@RequestParam("info_id")Integer info_id,Model model) {
 		model.addAttribute("info_id",info_id);
 	}
+	@RequestMapping("/company_introduction_edit")
+	public void company_introduction_edit(@RequestParam("info_id")Integer info_id,Model model) {
+		model.addAttribute("info_id",info_id);
+	}
 }
