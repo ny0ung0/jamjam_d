@@ -16,10 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jamjam.rest.dao.CompanyDao;
-import com.jamjam.rest.dao.RoleDao;
 import com.jamjam.rest.dao.UserDao;
 import com.jamjam.rest.dto.Company;
-import com.jamjam.rest.dto.Role;
 import com.jamjam.rest.dto.User;
 
 @RestController
@@ -29,8 +27,6 @@ public class MainController {
 	UserDao userMapper;
 	@Autowired
 	CompanyDao companyMapper;
-	@Autowired
-	RoleDao roleMapper;
 	
 	 @GetMapping("/userInfo")
 	    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal OAuth2User principal) {
@@ -46,7 +42,7 @@ public class MainController {
 	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
 	        }
 	        
-	        boolean hasAdditionalInfo = user.getGender() != null;
+	        boolean hasAdditionalInfo = user.getAddress() != null;
 	        Map<String, Object> response = new HashMap<>();
 	        response.put("name", user.getName());
 	        response.put("email", user.getEmail());
@@ -78,14 +74,9 @@ public class MainController {
 
             // Save user
             userMapper.updateUser(user);
-            Role role = new Role();
             System.out.println(user.getEmail());
             User userid = userMapper.findByEmail(user.getEmail());
             System.out.println(userid);
-            role.setUser_id(userid.getUser_id());
-            role.setRole("ROLE_USER");
-            
-            roleMapper.insertRole(role);
             return ResponseEntity.ok().body("Signup successful");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Signup failed: " + e.getMessage());
