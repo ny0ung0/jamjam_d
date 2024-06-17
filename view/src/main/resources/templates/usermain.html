@@ -9,7 +9,7 @@
     crossorigin="anonymous"></script>
     <script>
     $(document).ready(function() {
-        function fetchUserInfo() {
+    	function fetchUserInfo() {
             $.ajax({
                 url: "http://localhost:8888/userInfo",
                 method: "GET",
@@ -25,7 +25,14 @@
                         $("#name").val(data.name);
                         // Check for additional info
                         if (data.hasAdditionalInfo) {
-                            window.location.href = "/nindex";
+                        	console.log(data.role);
+                        	if(data.role == "ROLE_USER"){
+                        		
+                        		window.location.href ="/nindex";
+                        	}else{
+                        		window.location.href ="/leindex";
+                        	}
+                            
                         }
                     }
                 },
