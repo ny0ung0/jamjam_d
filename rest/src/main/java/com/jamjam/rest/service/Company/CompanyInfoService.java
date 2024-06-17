@@ -51,6 +51,7 @@ public class CompanyInfoService {
 			File ufile = new File(uploadPath + newName);
 			
 			//Thumbnails.of(ufile).size(100,100).toFile(thumbfile);
+			System.out.println(companyInfo);
 			companyInfoMapper.insertCompanyInfo(companyInfo);
 			return "등록성공";
 		}catch(Exception e){

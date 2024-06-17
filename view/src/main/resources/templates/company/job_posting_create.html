@@ -9,7 +9,7 @@
 <h1>채용 공고 등록</h1>
 
 <form id="postingFrm">
-	<input type="hidden" name="company_id" th:value="${session.loginCompany.company_id}">
+	<input type="hidden" name="company_id" th:value="${session.company_id}">
 	공고제목 : <input type="text" name="title" > <br>
 	모집업종 :  <select id="sector1" name="sector1" onchange="sector1SelectChanged()"></select>
 	<select id="sector2" name="sector2"></select>

@@ -24,6 +24,7 @@ public class CompanyInfoController {
 	@PostMapping("/companyInfo")
 	public ResponseEntity<?> insertCompanyinfo11(@ModelAttribute CompanyInfoDto companyInfoDto) {
 		System.out.println("컨트롤러 들어옴");
+		System.out.println(companyInfoDto);
 		String result = companyInfoService.insertCompanyInfo(companyInfoDto);
 		if(result.contains("성공")) {
 			return ResponseEntity.ok().body(result);

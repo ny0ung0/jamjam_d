@@ -68,6 +68,11 @@ public class JobpostingController {
 		}
 		
 	}
+	@PutMapping("/jobposting/status/{posting_id}")
+	public void deadlineStatus(@PathVariable("posting_id")Integer posting_id) {
+		System.out.println("deadlineStatus 들어옴");
+	}
+	
 	
 	
 }
