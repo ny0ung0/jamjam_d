@@ -25,4 +25,7 @@ public interface CompanyDao {
 	 
 	 @Delete("delete from company where company_id = #{company_id}")
 	 public int deleteCompany(Integer Company_id);
+	 
+	 @Select("select * from company where email = #{email}")
+	 public Company getCompanyByEmail(String email);
 }
