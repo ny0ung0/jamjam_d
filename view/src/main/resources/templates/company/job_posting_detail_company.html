@@ -173,11 +173,48 @@ function fetchUserInfo() {
             	userEmail = data.email;
                 if (data.role === "ROLE_USER") {
                     document.getElementById("actions").style.display = "block";
+                    checkJobApplicationStatus();
+                    checkJobScrapStatus();
                 }
             }
         },
         error: function() {
             alert("Failed to fetch user info.");
+        }
+    });
+}
+
+
+function checkJobApplicationStatus() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const post_id = urlParams.get('posting_id');
+
+    $.ajax({
+        url: `http://localhost:8888/user/applied/${post_id}?email=${userEmail}`,
+        method: "GET",
+        success: function(hasApplied) {
+            if (hasApplied) {
+                const applyButton = document.querySelector("#actions button[onclick='applyJob()']");
+                applyButton.textContent = "지원한 공고";
+                applyButton.disabled = true;
+            }
+        }
+    });
+}
+
+function checkJobScrapStatus() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const post_id = urlParams.get('posting_id');
+
+    $.ajax({
+        url: `http://localhost:8888/user/scrapped/${post_id}?email=${userEmail}`,
+        method: "GET",
+        success: function(hasScrapped) {
+            const scrapButton = document.querySelector("#actions button[onclick='scrapJob()']");
+            if (hasScrapped) {
+                scrapButton.textContent = "스크랩 취소";
+                scrapButton.onclick = cancelScrapJob;
+            }
         }
     });
 }
@@ -191,6 +228,9 @@ function applyJob(posting_id) {
         method: "POST",
         success: function(data) {
             alert("공고 지원이 성공했습니다.");
+            const applyButton = document.querySelector("#actions button[onclick='applyJob()']");
+            applyButton.textContent = "지원한 공고";
+            applyButton.disabled = true;
         },
         error: function() {
             alert("공고 지원 중 오류가 발생했습니다.");
@@ -198,17 +238,42 @@ function applyJob(posting_id) {
     });
 }
 
-function scrapJob(posting_id) {
-	const urlParams = new URLSearchParams(window.location.search);
+function scrapJob() {
+    const urlParams = new URLSearchParams(window.location.search);
     const post_id = urlParams.get('posting_id');
     $.ajax({
-    	url: `http://localhost:8888/user/scrapJob/${post_id}?email=${userEmail}`,
+        url: `http://localhost:8888/user/scrapJob/${post_id}?email=${userEmail}`,
         method: "POST",
         success: function(data) {
             alert("공고 스크랩이 성공했습니다.");
+            const scrapButton = document.querySelector("#actions button[onclick='scrapJob()']");
+            if (scrapButton) {
+                scrapButton.textContent = "스크랩 취소";
+                scrapButton.onclick = cancelScrapJob;
+            }
         },
         error: function() {
             alert("공고 스크랩 중 오류가 발생했습니다.");
+        }
+    });
+}
+
+function cancelScrapJob() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const post_id = urlParams.get('posting_id');
+    $.ajax({
+        url: `http://localhost:8888/user/cancelScrapJob/${post_id}?email=${userEmail}`,
+        method: "POST",
+        success: function(data) {
+            alert("스크랩 취소가 성공했습니다.");
+            const scrapButton = document.querySelector("#actions button[onclick='scrapJob()']");
+            if (scrapButton) {
+                scrapButton.textContent = "공고 스크랩하기";
+                scrapButton.onclick = scrapJob;
+            }
+        },
+        error: function() {
+            alert("스크랩 취소 중 오류가 발생했습니다.");
         }
     });
 }

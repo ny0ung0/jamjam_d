@@ -42,16 +42,16 @@ public class UserController {
     private String uploadPath;
 
     @Autowired
-    ResumeDao resumeMapper;
+    private ResumeDao resumeMapper;
 
     @Autowired
-    UserDao userMapper;
+    private UserDao userMapper;
     
     @Autowired
-    JobpostingDao jobpostMapper;
+    private JobpostingDao jobpostMapper;
 
     @Autowired
-    HttpSession httpSession;
+    private HttpSession httpSession;
 
     @Autowired
     private JobpostingScrapDao jobScrapMapper;
@@ -255,42 +255,6 @@ public class UserController {
     public ResumeDB viewResume(@RequestParam("resume_id") int resumeId) {
         ResumeDB resume = resumeMapper.findById(resumeId);
         return resume;
-    }
-    
-    @GetMapping("/jobPosts")
-    public List<JobPosting> jobPostList(){
-    	List<JobPosting> postList = jobpostMapper.getPostingAll();
-    	
-		return postList;
-    	
-    }
-    
-    @PostMapping("/applyJob/{post_id}")
-    public ResponseEntity<?> applyJob(@PathVariable("post_id")Integer post_id, @RequestParam ("email") String email) {
-        Integer user_id = userMapper.findByEmailInteger(email);
-        
-        JobApplication jobApplication = new JobApplication();
-        jobApplication.setUser_id(user_id);
-        jobApplication.setPosting_id(post_id);
-        
-        jobApplicationMapper.applyJob(jobApplication);
-
-        return ResponseEntity.ok("Job application successful");
-    }
-
-    @PostMapping("/scrapJob/{post_id}")
-    public ResponseEntity<?> scrapJob(@PathVariable("post_id")Integer post_id, @RequestParam ("email") String email) {
-
-
-        Integer user_id = userMapper.findByEmailInteger(email);
-        
-        JobPostingScrap jobPostingScrap = new JobPostingScrap();
-        jobPostingScrap.setUser_id(user_id);
-        jobPostingScrap.setPosting_id(post_id);
-
-        jobScrapMapper.scrapJob(jobPostingScrap);
-
-        return ResponseEntity.ok("Job scrap successful");
     }
     
 }
