@@ -1,5 +1,7 @@
 package com.jamjam.rest.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -45,4 +47,7 @@ public interface JobpostingDao {
 	
 	 @Delete("delete from jobposting where posting_id = #{posting_id}")
 	 public int deletePosting(Integer posting_id);
+	 
+	 @Select("Select * from jobposting")
+	 public List<JobPosting> getPostingAll();
 }

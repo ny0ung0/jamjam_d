@@ -220,7 +220,7 @@ function preCompanyInfo(){
 	    const xhttp = new XMLHttpRequest();
 	    xhttp.onload = function() {
 	       let companyInfo = JSON.parse(this.responseText);
-	       alert(companyInfo.new_name);
+	      
 	        document.querySelector("#logo").src="/images/"+ companyInfo.new_name;
 	        preCompany();
 	       
