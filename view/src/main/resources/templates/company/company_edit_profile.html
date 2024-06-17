@@ -11,7 +11,7 @@
 <h1>기업정보 수정</h1>
 <div id="companyContainer">
         <form id="companyFrm">
-        	<input type="text" name="company_id"><br>
+        	<input type="text" name="user_id"><br>
             이메일 : <input type="text" name="email"><br> 
             업종 :<select id="sector1" name="sector1" onchange="sector1SelectChanged()"></select>
 	<select id="sector2" name="sector2"></select><br>
@@ -40,7 +40,7 @@
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
            let company = JSON.parse(this.responseText);
-           frm.company_id.value = company.company_id;
+           frm.user_id.value = company.user_id;
            frm.email.value = company.email;
            frm.registration_number.value = company.registration_number;
            frm.company_name.value = company.company_name;
@@ -86,7 +86,7 @@
             e.preventDefault();
             let frm = document.querySelector("#companyFrm");
             let data = {
-            		"company_id" : frm.company_id.value,
+            		"user_id" : frm.user_id.value,
             		"email": frm.email.value,
                     "company_name": frm.company_name.value,
                     "registration_number": frm.registration_number.value,
@@ -112,7 +112,7 @@
             xhttp.onload = function() {
                 document.getElementById("result_delete").innerHTML = this.responseText;
             };
-            xhttp.open("delete", "http://localhost:8888/company/" + frm.company_id.value);
+            xhttp.open("delete", "http://localhost:8888/company/" + frm.user_id.value);
             //xhttp.setRequestHeader("Content-type", "application/json");
             xhttp.send();
         }

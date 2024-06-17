@@ -19,9 +19,9 @@ public class CompanyController {
 
 	@Autowired
 	CompanyService companyService;
-	@GetMapping("/company/{company_id}")
-	public Company getCompany(@PathVariable("company_id") Integer company_id) {
-		Company company = companyService.getCompany(company_id);
+	@GetMapping("/company/{user_id}")
+	public Company getCompany(@PathVariable("user_id") Integer user_id) {
+		Company company = companyService.getCompany(user_id);
 		return company;
 	}
 	@PutMapping("/company")
@@ -33,9 +33,9 @@ public class CompanyController {
 			return ResponseEntity.status(500).body("업데이트 실패");
 		}
 	}
-	@DeleteMapping("/company/{company_id}")
-	public ResponseEntity<?> deleteCompany(@PathVariable("company_id") Integer Company_id){
-		int result=companyService.deleteCompany(Company_id);
+	@DeleteMapping("/company/{user_id}")
+	public ResponseEntity<?> deleteCompany(@PathVariable("user_id") Integer user_id){
+		int result=companyService.deleteCompany(user_id);
 		if(result==1) {
 			return ResponseEntity.ok().body("회원탈퇴 성공");
 		}else {

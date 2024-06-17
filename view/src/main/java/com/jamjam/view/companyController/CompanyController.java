@@ -12,13 +12,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/company")
 public class CompanyController {
-	@RequestMapping("/log")
-	public String log(HttpSession session) {
-		
-		session.setAttribute("company_id", 5);
-		
-		return "/leindex";
-	}
+	
 	@RequestMapping("/job_posting_create")
 	public void job_posting_create()  {
 		

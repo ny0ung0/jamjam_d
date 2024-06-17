@@ -47,6 +47,8 @@ public class MainController {
 	        response.put("name", user.getName());
 	        response.put("email", user.getEmail());
 	        response.put("role", user.getRole()); // 역할 정보를 추가합니다.
+	        response.put("user_id",user.getUser_id());
+	        System.out.println(user.getUser_id());
 	        System.out.println(user.getRole());
 	        response.put("hasAdditionalInfo", hasAdditionalInfo);
 	        
