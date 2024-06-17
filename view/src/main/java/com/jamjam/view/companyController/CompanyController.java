@@ -43,4 +43,8 @@ public class CompanyController {
 	public void company_job_postings_list() {
 		
 	}
+	@RequestMapping("/company_introduction_detail")
+	public void company_introduction_detail(@RequestParam("info_id")Integer info_id,Model model) {
+		model.addAttribute("info_id",info_id);
+	}
 }

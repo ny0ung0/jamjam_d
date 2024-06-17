@@ -21,6 +21,7 @@ public class CompanyController {
 	CompanyService companyService;
 	@GetMapping("/company/{user_id}")
 	public Company getCompany(@PathVariable("user_id") Integer user_id) {
+		System.out.println("회사회원정보 접근");
 		Company company = companyService.getCompany(user_id);
 		return company;
 	}

@@ -63,5 +63,7 @@ public class CompanyInfoService {
 	public CompanyInfo getCompanyInfo(Integer compnay_id) {
 		return companyInfoMapper.getCompanyInfo(compnay_id);
 	}
-	
+	public CompanyInfo getCompanyInfoByInfo_id(Integer info_id) {
+		return companyInfoMapper.getCompanyInfoByInfoId(info_id);
+	}
 }

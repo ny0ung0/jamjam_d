@@ -37,6 +37,7 @@ public class JobPosting {
 	private Integer view_count;
 	private Date created_at;
 	private Date updated_at;
+	private int deadline_status;
 
 
 

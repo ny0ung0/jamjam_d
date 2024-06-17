@@ -54,4 +54,8 @@ public interface JobpostingDao {
 	 @Select("Select * from jobposting where company_id = #{company_id}")
 	 public List<JobPosting> getPostingListByCompanyId(Integer company_id);
 	
+	 @Update("update jobposting set deadline_status = 1 where posting_id=#{posting_id}")
+	 public void updateDeadlineStatus1(Integer posting_id);
+	 @Update("update jobposting set deadline_status = 0 where posting_id=#{posting_id}")
+	 public void updateDeadlineStatus0(Integer posting_id);
 }

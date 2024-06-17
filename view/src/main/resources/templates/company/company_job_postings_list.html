@@ -17,13 +17,18 @@ function pre(){
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
        let postings = JSON.parse(this.responseText);
-      
+       let deadline_status;
        postings.forEach(posting =>{
-    	   box.innerHTML += '<div id='+posting.posting_id+'> <span id="application_deadline">' + posting.application_deadline.slice(0, 10) + '</span>'+
-    	   '<span id="postingTitle"><p><a href="/company/job_posting_detail_company?posting_id='+posting.posting_id+'">'+posting.title+'</a></p>'+
+    	   if(posting.deadline_status==0){
+    		   deadline_status = '<button class="closeBtn" onclick="closePosting(event)">공고마감</button>';
+    	   }else{
+    		   deadline_status = '공고마감';
+    	   }
+    	   box.innerHTML += '<div id='+posting.posting_id+'> <span class="application_deadline">' + posting.application_deadline.slice(0, 10) + '</span>'+
+    	   '<span class="postingTitle"><p><a href="/company/job_posting_detail_company?posting_id='+posting.posting_id+'">'+posting.title+'</a></p>'+
     	   '<p class="applicantNumber"></p></span>'+
-    	   '<span id="postingClose"><button class="closeBtn" onclick="closePosting(event)">공고마감</button></span>'+
-    	   '<span id="postingDelete"><button class="deleteBtn" onclick="deletePosting(event)">공고삭제</button></span></div>';
+    	   '<span class="postingClose">'+deadline_status+'</span>'+
+    	   '<span class="postingDelete"><button class="deleteBtn" onclick="deletePosting(event)">공고삭제</button></span></div>';
        });
        
        
@@ -42,13 +47,14 @@ function deletePosting(e){
     xhttp.send();
 }
 function closePosting(e){
-	let id = e.target.closest('div').id;
+	let div = e.target.closest('div');
 
 	const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-    	document.querySelector("#result").innerHTML=this.responseText;
+    	let postingClose = e.target.closest('.postingClose');
+    	postingClose.innerHTML = "공고마감";
     };
-    xhttp.open("put", "http://localhost:8888/company/jobposting/status/" + id);
+    xhttp.open("put", "http://localhost:8888/company/jobposting/status/" + div.id);
     xhttp.send();
 }
 </script>
