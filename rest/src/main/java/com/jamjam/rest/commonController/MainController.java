@@ -46,11 +46,13 @@ public class MainController {
 	        Map<String, Object> response = new HashMap<>();
 	        response.put("name", user.getName());
 	        response.put("email", user.getEmail());
-	        response.put("gender", user.getGender());
+	        response.put("role", user.getRole()); // 역할 정보를 추가합니다.
+	        System.out.println(user.getRole());
 	        response.put("hasAdditionalInfo", hasAdditionalInfo);
 	        
 	        return ResponseEntity.ok(response);
 	    }
+	 
 
     @PostMapping("/signup")
     public ResponseEntity<?> processSignup(@RequestBody Map<String, Object> requestData) {

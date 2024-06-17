@@ -20,6 +20,13 @@ function fetchUserInfo() {
                 $("#name").val(data.name);
                 $("#loggedInSection").show();
                 $("#loggedOutSection").hide();
+                
+                if(data.role == "ROLE_USER"){
+            		
+            		window.location.href ="/nindex";
+            	}else{
+            		window.location.href ="/leindex";
+            	}
             } else {
                 window.location.href = "/";
             }
