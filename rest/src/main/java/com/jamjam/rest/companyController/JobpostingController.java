@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jamjam.rest.dto.JobPosting;
@@ -57,8 +58,16 @@ public class JobpostingController {
 		}
 	}
 	@GetMapping("/jobposting")
-	public List<JobPosting> getPostinAll(){
-		return jobpostingService.getPostingAll();
+	public List<JobPosting> getPostinAll(@RequestParam(value="company_id", required = false) Integer company_id){
+		
+		if(company_id ==null) {
+			return jobpostingService.getPostingAll();
+			
+		}else {
+			return jobpostingService.getPostingListByCompanyId(company_id);
+		}
+		
 	}
+	
 	
 }

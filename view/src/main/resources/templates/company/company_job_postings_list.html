@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+점수 마감 버튼 있어야함!!!!!!!!!!!!!!!!!!!그러고 공고 지원 생기면 공고지원자수 받을꺼임!!!!!!!!!!!!!!!!!!!!!!
+<h1>자신이 작성한 공고 리스트</h1>
+<div id = "box"></div>
+<div id="result"></div>
+<script >
+pre();
+function pre(){
+	let box = document.querySelector("#box");
+	let company_id="[[${session.loginCompany.company_id}]]";
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+       let postings = JSON.parse(this.responseText);
+      
+       postings.forEach(posting =>{
+    	   box.innerHTML += '<div id='+posting.posting_id+'> <span id="application_deadline">' + posting.application_deadline.slice(0, 10) + '</span>'+
+    	   '<span id="postingTitle"><p><a href="/company/job_posting_detail_company?posting_id='+posting.posting_id+'">'+posting.title+'</a></p>'+
+    	   '<p class="applicantNumber"></p></span>'+
+    	   '<span id="공고삭제"><button class="deleteBtn" onclick="deletePosting(event)">공고삭제</button></span></div>';
+       });
+       
+       
+    };
+    xhttp.open("GET", "http://localhost:8888/company/jobposting?company_id=" + company_id);
+    xhttp.send();
+}
+function deletePosting(e){
+	let id = e.target.closest('div').id;
+
+	const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+    	document.querySelector("#result").innerHTML=this.responseText;
+    };
+    xhttp.open("delete", "http://localhost:8888/company/jobposting/" + id);
+    xhttp.send();
+}
+</script>
+</body>
+</html>

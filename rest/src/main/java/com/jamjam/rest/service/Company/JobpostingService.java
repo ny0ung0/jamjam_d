@@ -40,4 +40,8 @@ public class JobpostingService {
 	public List<JobPosting> getPostingAll() {
 		return jobpostingMapper.getPostingAll();
 	}
+	
+	public List<JobPosting> getPostingListByCompanyId(Integer company_id) {
+		return jobpostingMapper.getPostingListByCompanyId(company_id);
+	}
 }

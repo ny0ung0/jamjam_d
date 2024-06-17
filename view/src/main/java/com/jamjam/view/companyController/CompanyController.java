@@ -42,4 +42,13 @@ public class CompanyController {
 	public void job_posting_detail_company(@RequestParam("posting_id") Integer posting_id,Model model) {
 		model.addAttribute("posting_id", posting_id);
 	}
+	@RequestMapping("/all")
+	public String all() {
+		return "/company/all";
+	}
+	
+	@RequestMapping("/company_job_postings_list")
+	public void company_job_postings_list() {
+		
+	}
 }

@@ -73,7 +73,7 @@
 </div>
     <div class="job-header">
         <h2><span id="title"></span></h2>
-        <p>Company: <span id="company_name" style="display : none;"></span>
+        <p>Company: <span id="company_name"></span>
         <span id="company_id" style="display : none;"></span></p>
         <p>모집업종: <span id="industry"></span></p>
     </div>
@@ -235,7 +235,7 @@ function preCompany(){
     xhttp.onload = function() {
        let company = JSON.parse(this.responseText);
       
-        document.querySelector("#company_id").innerHTML=company.company_name;
+        document.querySelector("#company_name").innerHTML=company.company_name;
         preCompany();
        
     };
