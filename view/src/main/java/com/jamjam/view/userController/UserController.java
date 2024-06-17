@@ -27,4 +27,11 @@ public class UserController {
 	public String updateResumePage() {
 		return "/user/updateResume";
 	}
+	
+	@GetMapping("postList")
+	public String postList() {
+		return "/user/postingList";
+	}
+	
+	
 }

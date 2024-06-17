@@ -1,7 +1,6 @@
 package com.jamjam.rest.userController;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.jamjam.rest.dao.JobpostingDao;
 import com.jamjam.rest.dao.ResumeDao;
 import com.jamjam.rest.dao.UserDao;
+import com.jamjam.rest.dto.JobPosting;
 import com.jamjam.rest.dto.Resume;
 import com.jamjam.rest.dto.ResumeDB;
 import com.jamjam.rest.dto.User;
@@ -34,6 +35,9 @@ public class UserController {
 
     @Autowired
     UserDao userMapper;
+    
+    @Autowired
+    JobpostingDao jobpostMapper;
 
     @Autowired
     HttpSession httpSession;
@@ -234,5 +238,13 @@ public class UserController {
     public ResumeDB viewResume(@RequestParam("resume_id") int resumeId) {
         ResumeDB resume = resumeMapper.findById(resumeId);
         return resume;
+    }
+    
+    @GetMapping("/jobPosts")
+    public List<JobPosting> jobPostList(){
+    	List<JobPosting> postList = jobpostMapper.getPostingAll();
+    	
+		return postList;
+    	
     }
 }
