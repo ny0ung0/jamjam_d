@@ -11,9 +11,10 @@
     <div>
         <form name="resume" id="resumeForm">
             <input type="hidden" id="resume_id" name="resume_id" />
-            <input type="text" id="email" name="email" readonly />
+            <input type="text" id="email" name="email" readonly autocomplete="email"/>
             제목<input type="text" name="title" id="title" /><br />
             프로필사진<input type="file" name="profile_photo" id="profile_photo" /><br />
+            <input type="hidden" name="photo" id="photo"/>
             <div>
                 <label for="desired_job">희망직무</label>
                 <select id="desired_job" name="desired_job" onchange="addJob()" required>
@@ -22,7 +23,7 @@
                 <div id="selectdesired_job"></div>
             </div>
             <div>
-                <label for="gotSkills">보유스킬</label>
+                <label for="selectSkill">보유스킬</label>
                 <select id="selectSkill" name="selectSkill" onchange="addSkill()" required>
                     <option value="">선택</option>
                 </select>
@@ -30,22 +31,22 @@
             </div>
             <input type="text" id="skills" name="skills" /><br />
             <div>
-                <label>보유자격증</label>
+                보유자격증
                 <div id="licenses"></div>
                 <button type="button" onclick="addLicense()">+추가</button>
             </div>
             <div>
-                <label>경력사항</label>
+                경력사항
                 <div id="experiences"></div>
                 <button type="button" onclick="addExperience()">+추가</button>
             </div>
             <div>
-                <label>학력사항</label>
+                학력사항
                 <div id="educations"></div>
                 <button type="button" onclick="addEducation()">+추가</button>
             </div>
             <div>
-                <label>취업우대사항</label>
+                취업우대사항
                 <div id="preferences">
                     <input type="checkbox" name="preferences" value="보훈대상"> 보훈대상
                     <input type="checkbox" name="preferences" value="취업보호 대상"> 취업보호 대상
@@ -54,7 +55,7 @@
                 </div>
             </div>
             <div>
-                <label>자기소개서</label>
+                자기소개서
                 <div id="cover_letters"></div>
                 <button type="button" onclick="addCoverLetter()">+추가</button>
             </div>
@@ -73,8 +74,8 @@
             const urlParams = new URLSearchParams(window.location.search);
             const resumeId = urlParams.get('resume_id');
             if (resumeId) {
+            	fetchUserInfo();
                 fetchResume(resumeId);
-                fetchUserInfo();
             } else {
                 alert('이력서 ID가 필요합니다.');
             }
@@ -90,14 +91,12 @@
                 },
                 success: function (data) {
                     if (data) {
-                        $("#userName").text(data.name);
-                        $("#userEmail").text(data.email);
                         $("#email").val(data.email);
-                        $("#name").val(data.name);
+                        console.log("User info fetched successfully:", data);
                     }
                 },
                 error: function () {
-                    alert('사용자 정보를 가져오는 중 오류가 발생했습니다.');
+                	console.error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
                 }
             });
         }
@@ -110,12 +109,12 @@
                 success: function (data) {
                     if (data) {
                         $('#resume_id').val(data.resume_id);
-                        $('#email').val(data.email);
                         $('#title').val(data.title);
                         $('#desired_job').val(data.desired_job);
+                        $('#photo').val(data.photo_newName);
                         $('#skills').val(data.skills);
                         $('#selectedSkills').html(data.skills.split(', ').map(skill => `<span class="skill-item">${skill} <button type="button" onclick="removeSkill(this)">X</button></span>`).join(''));
-
+						$('#city').val(data.desired_conditions);
                         // Populate licenses
                         const licensesArray = data.license.split(' | ');
                         licensesArray.forEach(license => {
@@ -125,7 +124,7 @@
                             licenseDiv.innerHTML = `
                                 자격증 이름<input type="text" name="license_name[]" value="${name}" />
                                 발행처<input type="text" name="license_issuer[]" value="${issuer}" />
-                                취득연월<input type="date" name="license_date[]" value="${date}" /><br />
+                                취득연월<input type="date" name="license_date[]" value="${date}" autocomplete="off"/><br />
                                 <button type="button" onclick="removeLicense(this)">X</button>
                             `;
                             document.getElementById('licenses').appendChild(licenseDiv);
@@ -140,8 +139,8 @@
                             experienceDiv.innerHTML = `
                                 회사명<input type="text" name="company_name[]" value="${company}" />
                                 부서명<input type="text" name="department_name[]" value="${department}" />
-                                입사년월<input type="date" name="start_date[]" value="${start}" />
-                                퇴사년월<input type="date" name="end_date[]" value="${end}" />
+                                입사년월<input type="date" name="start_date[]" value="${start}" autocomplete="off"/>
+                                퇴사년월<input type="date" name="end_date[]" value="${end}" autocomplete="off"/>
                                 직급/직책<input type="text" name="position[]" value="${position}" />
                                 담당직무<input type="text" name="responsibility[]" value="${responsibility}" /><br />
                                 <button type="button" onclick="removeExperience(this)">X</button>
@@ -156,7 +155,7 @@
                             const educationDiv = document.createElement('div');
                             educationDiv.classList.add('education-item');
                             educationDiv.innerHTML = `
-                                학교구분<select name="education_level[]" class="education-level" onchange="toggleMajorAndGPA(this)">
+                                학교구분<select name="education_level[]" class="education-level" onchange="toggleMajorAndGPA(this)" autocomplete="off">
                                     <option value="">선택</option>
                                     <option value="고등학교졸업" ${level === '고등학교졸업' ? 'selected' : ''}>고등학교졸업</option>
                                     <option value="대학졸업(2,3년)" ${level === '대학졸업(2,3년)' ? 'selected' : ''}>대학졸업(2,3년)</option>
@@ -164,17 +163,17 @@
                                     <option value="석사졸업" ${level === '석사졸업' ? 'selected' : ''}>석사졸업</option>
                                     <option value="박사졸업" ${level === '박사졸업' ? 'selected' : ''}>박사졸업</option>
                                 </select>
-                                학교명<input type="text" name="school_name[]" value="${school}" />
-                                입학년월<input type="date" name="entrance_date[]" value="${entrance}" />
-                                졸업년월<input type="date" name="graduation_date[]" value="${graduation}" />
-                                졸업상태<select name="graduation_status[]">
-                                    <option value="중퇴" ${status === '중퇴' ? 'selected' : ''}>중퇴</option>
-                                    <option value="재학중" ${status === '재학중' ? 'selected' : ''}>재학중</option>
-                                    <option value="졸업" ${status === '졸업' ? 'selected' : ''}>졸업</option>
+                                학교명<input type="text" name="school_name[]" value="${school}" autocomplete="off"/>
+                                입학년월<input type="date" name="entrance_date[]" value="${entrance}" autocomplete="off"/>
+                                졸업년월<input type="date" name="graduation_date[]" value="${graduation}" autocomplete="off"/>
+                                졸업상태<select name="graduation_status[]" autocomplete="off">
+                                    <option value="중퇴">중퇴</option>
+                                    <option value="재학중">재학중</option>
+                                    <option value="졸업">졸업</option>
                                 </select>
                                 <div class="major-gpa" style="display:${['대학졸업(2,3년)', '대학교졸업(4년)', '석사졸업', '박사졸업'].includes(level) ? 'block' : 'none'};">
-                                    전공명<input type="text" name="major[]" value="${major || ''}" />
-                                    학점<input type="text" name="gpa[]" value="${gpa || ''}" /><br />
+                                    전공명<input type="text" name="major[]" value="${major || ''}" autocomplete="off"/>
+                                    학점<input type="text" name="gpa[]" value="${gpa || ''}" autocomplete="off"/><br />
                                 </div>
                                 <button type="button" onclick="removeEducation(this)">X</button>
                             `;
@@ -197,7 +196,7 @@
                         });
 
                         // Populate preferences
-                        const preferences = data.preferences.split(', ');
+                        const preferences = data.preferences.split(',');
                         preferences.forEach(pref => {
                             $(`#preferences input[value="${pref}"]`).prop('checked', true);
                         });
@@ -214,21 +213,6 @@
             });
         }
 
-        fetch('/json/eduCode.json')
-    	.then(response => response.json())
-    	.then(data => {
-    		const select = document.getElementById('selectEducation');
-    		const keywordSet = new Set();
-    		data.forEach(item => {
-    			if(!keywordSet.has(item["학력"])){
-    				const option = document.createElement('option');
-    				option.value = item["학력"];
-    				option.text = item["학력"];
-    				select.add(option);
-    			}
-    		});
-    		
-    	});
     
     fetch('/json/skillList.json')
         .then(response => response.json())
@@ -340,7 +324,7 @@
             newLicenseDiv.innerHTML = `
                 자격증 이름<input type="text" name="license_name[]" />
                 발행처<input type="text" name="license_issuer[]" />
-                취득연월<input type="date" name="license_date[]" /><br />
+                취득연월<input type="date" name="license_date[]" autocomplete="off"/><br />
                 <button type="button" onclick="removeLicense(this)">X</button>
             `;
             licensesDiv.appendChild(newLicenseDiv);
@@ -358,8 +342,8 @@
             newExperienceDiv.innerHTML = `
                 회사명<input type="text" name="company_name[]" />
                 부서명<input type="text" name="department_name[]" />
-                입사년월<input type="date" name="start_date[]" />
-                퇴사년월<input type="date" name="end_date[]" />
+                입사년월<input type="date" name="start_date[]" autocomplete="off"/>
+                퇴사년월<input type="date" name="end_date[]" autocomplete="off"/>
                 직급/직책<input type="text" name="position[]" />
                 담당직무<input type="text" name="responsibility[]" /><br />
                 <button type="button" onclick="removeExperience(this)">X</button>
@@ -394,7 +378,7 @@
             const newEducationDiv = document.createElement('div');
             newEducationDiv.classList.add('education-item');
             newEducationDiv.innerHTML = `
-                학교구분<select name="education_level[]" class="education-level" onchange="toggleMajorAndGPA(this)">
+                학교구분<select name="education_level[]" class="education-level" onchange="toggleMajorAndGPA(this)" autocomplete="off">
                     <option value="">선택</option>
                     <option value="고등학교졸업">고등학교졸업</option>
                     <option value="대학졸업(2,3년)">대학졸업(2,3년)</option>
@@ -402,17 +386,17 @@
                     <option value="석사졸업">석사졸업</option>
                     <option value="박사졸업">박사졸업</option>
                 </select>
-                학교명<input type="text" name="school_name[]" />
-                입학년월<input type="date" name="entrance_date[]" />
-                졸업년월<input type="date" name="graduation_date[]" />
-                졸업상태<select name="graduation_status[]">
+                학교명<input type="text" name="school_name[]" autocomplete="off"/>
+                입학년월<input type="date" name="entrance_date[]" autocomplete="off"/>
+                졸업년월<input type="date" name="graduation_date[]" autocomplete="off"/>
+                졸업상태<select name="graduation_status[]" autocomplete="off">
                     <option value="중퇴">중퇴</option>
                     <option value="재학중">재학중</option>
                     <option value="졸업">졸업</option>
                 </select>
                 <div class="major-gpa" style="display:none;">
-                    전공명<input type="text" name="major[]" />
-                    학점<input type="text" name="gpa[]" /><br />
+                    전공명<input type="text" name="major[]" autocomplete="off"/>
+                    학점<input type="text" name="gpa[]" autocomplete="off"/><br />
                 </div>
                 <button type="button" onclick="removeEducation(this)">X</button>
             `;
