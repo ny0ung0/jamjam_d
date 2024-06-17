@@ -73,7 +73,8 @@
 </div>
     <div class="job-header">
         <h2><span id="title"></span></h2>
-        <p>Company: <span id="company_id"></span></p>
+        <p>Company: <span id="company_name" style="display : none;"></span>
+        <span id="company_id" style="display : none;"></span></p>
         <p>모집업종: <span id="industry"></span></p>
     </div>
     <div class="job-details">
@@ -148,7 +149,7 @@
 <script>
 preJobposting();
 //회사 이름 넣기 !~!!!!!!!!!!!!!!!!!!!!!!
-//preCompany();
+
 
 // 페이지 이동시 기존 정보 불러오기
 function preJobposting() {
@@ -221,11 +222,25 @@ function preCompanyInfo(){
 	       let companyInfo = JSON.parse(this.responseText);
 	       alert(companyInfo.new_name);
 	        document.querySelector("#logo").src="/images/"+ companyInfo.new_name;
-	        
+	        preCompany();
 	       
 	    };
 	    xhttp.open("GET", "http://localhost:8888/company/companyInfo/" + company_id);
 	    xhttp.send();
+}
+function preCompany(){
+	let company_id = document.querySelector("#company_id").textContent;
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+       let company = JSON.parse(this.responseText);
+      
+        document.querySelector("#company_id").innerHTML=company.company_name;
+        preCompany();
+       
+    };
+    xhttp.open("GET", "http://localhost:8888/company/" + company_id);
+    xhttp.send();
 }
 
 </script>
