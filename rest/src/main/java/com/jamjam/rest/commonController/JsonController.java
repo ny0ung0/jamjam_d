@@ -110,6 +110,7 @@ public class JsonController {
 
 	@GetMapping("/sector/{sector1}")
 	public List<String> sector(@PathVariable("sector1") Integer sector1) throws StreamReadException, DatabindException, IOException {
+		System.out.println("섹터 들어옴");
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Map<String, Object>> allSectors = objectMapper.readValue(
 				new ClassPathResource("static/json/sector.json").getFile(),

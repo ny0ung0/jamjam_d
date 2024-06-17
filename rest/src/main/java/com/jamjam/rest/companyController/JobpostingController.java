@@ -1,5 +1,7 @@
 package com.jamjam.rest.companyController;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -53,6 +55,10 @@ public class JobpostingController {
 		}else {
 			return ResponseEntity.status(500).body("공고삭제 실패");
 		}
+	}
+	@GetMapping("/jobposting")
+	public List<JobPosting> getPostinAll(){
+		return jobpostingService.getPostingAll();
 	}
 	
 }

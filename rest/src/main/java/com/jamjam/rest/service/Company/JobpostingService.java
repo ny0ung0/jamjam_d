@@ -1,5 +1,7 @@
 package com.jamjam.rest.service.Company;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,5 +35,9 @@ public class JobpostingService {
 	
 	public int deletePosting(Integer posting_id) {
 		return jobpostingMapper.deletePosting(posting_id);
+	}
+	
+	public List<JobPosting> getPostingAll() {
+		return jobpostingMapper.getPostingAll();
 	}
 }

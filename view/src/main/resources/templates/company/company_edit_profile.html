@@ -31,9 +31,9 @@
 
 <script src="/js/json.js"></script>
     <script>
-    pre4();//업종 카테고리
-    pre5();//주소 카테고리
-    preCompany();
+    pre4(pre5(preCompany()));//업종 카테고리
+    //주소 카테고리
+    
     function preCompany(){	
     	let frm = document.querySelector("#companyFrm");
     	let id = "[[${session.loginCompany.company_id}]]";
@@ -48,7 +48,7 @@
            frm.tel.value = company.tel;
            	//업종 부분
        		// 문자열을 공백으로 나눔
-           let parts = company.company_type.split(' ');
+           let parts = company.company_type.split('//');
            // 공백이 두 개 미만이면 빈 문자열 반환
            let sector1=parts[0];
            let sector2=parts[1];           
@@ -59,7 +59,7 @@
            });
          //주소 부분
       		// 문자열을 공백으로 나눔
-          parts = company.address.split(' ');
+          parts = company.address.split('//');
           // 공백이 두 개 미만이면 빈 문자열 반환
           let address1=parts[0];
           let address2=parts[1];
@@ -68,7 +68,7 @@
        	   detailAddress = '';
           }
           // 두 번째 공백 이후의 부분 문자열 추출
-          detailAddress = parts.slice(2).join(' ');
+          detailAddress = parts.slice(2).join('//');
           frm.detailAddress.value = detailAddress;
           selectOptionByValue("address1", address1);
           //비동기로 실행해야해서 콜백함수 씀(json.js의 코드도 바뀜)
@@ -90,9 +90,9 @@
             		"email": frm.email.value,
                     "company_name": frm.company_name.value,
                     "registration_number": frm.registration_number.value,
-                    "company_type": frm.sector1.value + " " + frm.sector2.value,
+                    "company_type": frm.sector1.value + "//" + frm.sector2.value,
                     "representative_name": frm.representative_name.value,
-                    "address": frm.address1.value + " " + frm.address2.value + " "+frm.detailAddress.value,
+                    "address": frm.address1.value + "//" + frm.address2.value + " "+frm.detailAddress.value,
                     "tel": frm.tel.value,
             };
             let sendData = JSON.stringify(data);
