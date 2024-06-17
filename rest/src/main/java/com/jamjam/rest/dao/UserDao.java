@@ -17,6 +17,9 @@ public interface UserDao {
     @Select("SELECT * FROM User WHERE email = #{email}")
     User findByEmail(String email);
     
+    @Select("SELECT * FROM User WHERE email = #{email}")
+    Integer findByEmailInteger(String email);
+    
     @Update("UPDATE User SET name = #{name}, contact = #{contact}, address = #{address}, birth_date = #{birth_date}, gender = #{gender} WHERE email = #{email}")
     void updateUser(User user);
 }
