@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Company Introduction</title>
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+    integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1, h2, h3 {
+        color: #333;
+    }
+
+    .company-info {
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #ddd;
+        margin-bottom: 20px;
+    }
+
+    .field {
+        margin-bottom: 10px;
+    }
+
+    .field label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .field span {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .logoBox img {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+</head>
+<body>
+<h1>기업소개</h1>
+
+<div id="companyInfoContainer" class="company-info">
+    <div class="logoBox">
+        <img src="" id="logo" alt="Company Logo">
+    </div>
+     <div class="field">
+        <label>회사 이름:</label>
+        <span id="company_name"></span>
+    </div>
+    <div class="field">
+        <label>업종 :</label>
+        <span id="company_type"></span>
+    </div>
+    <div class="field">
+        <label>회사 소개:</label>
+        <span id="description"></span>
+    </div>
+    <div class="field">
+        <label>사원수:</label>
+        <span id="number_of_employees"></span>
+    </div>
+    <div class="field">
+        <label>근무환경:</label>
+        <span id="working_environment"></span>
+    </div>
+    <div class="field">
+        <label>복리후생:</label>
+        <span id="benefits"></span>
+    </div>
+    <div class="field">
+        <label>인재상:</label>
+        <span id="ideal_candidate"></span>
+    </div>
+    <div class="field">
+        <label>전화번호:</label>
+        <span id="main_contact"></span>
+    </div>
+    <div class="field">
+        <label>이메일:</label>
+        <span id="main_email"></span>
+    </div>
+    <div class="field">
+        <label>회사대표 :</label>
+        <span id="representative_name"></span>
+    </div>
+</div>
+<div id="map" style="width:500px;height:400px;"></div>
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=906820dc89cc6e06ebf1f3063fe49049"></script>
+	<script>
+		var container = document.getElementById('map');
+		var options = {
+			center: new kakao.maps.LatLng(33.450701, 126.570667),
+			level: 3
+		};
+
+		var map = new kakao.maps.Map(container, options);
+	</script>
+<script>
+$(document).ready(function() {
+    fetchCompanyInfo();
+    fetchCompany();
+});
+
+
+
+
+
+
+
+function fetchCompany() {
+    let company_id = "[[${session.conpany_id}]]"; // Thymeleaf syntax to get company_id from session
+
+    $.ajax({
+        url: "http://localhost:8888/company/" + company_id,
+        method: "GET",
+        success: function(data) {
+            displayCompany(data);
+        },
+        error: function() {
+            console.log("Error fetching company info");
+        }
+    });
+}
+function displayCompany(company) {
+    
+    $("#company_name").text(company.company_name);
+    $("#company_type").text(company.company_type);
+    $("#representative_name").text(company.representative_name);
+    
+}
+
+
+
+function fetchCompanyInfo() {
+    let info_id = "[[${info_id}]]"; // Thymeleaf syntax to get company_id from session
+
+    $.ajax({
+        url: "http://localhost:8888/company/companyInfo/info_id/" + info_id,
+        method: "GET",
+        success: function(data) {
+            displayCompanyInfo(data);
+        },
+        error: function() {
+            console.log("Error fetching company info");
+        }
+    });
+}
+
+function displayCompanyInfo(companyInfo) {
+    $("#logo").attr("src", "/images/" + companyInfo.new_name);
+    $("#description").text(companyInfo.description);
+    $("#number_of_employees").text(companyInfo.number_of_employees);
+    $("#working_environment").text(companyInfo.working_environment);
+    $("#benefits").text(companyInfo.benefits);
+    $("#ideal_candidate").text(companyInfo.ideal_candidate);
+    $("#main_contact").text(companyInfo.main_contact);
+    $("#main_email").text(companyInfo.main_email);
+}
+</script>
+
+</body>
+</html>

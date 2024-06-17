@@ -44,4 +44,12 @@ public class JobpostingService {
 	public List<JobPosting> getPostingListByCompanyId(Integer company_id) {
 		return jobpostingMapper.getPostingListByCompanyId(company_id);
 	}
+	
+	public void updateDeadlineStatus1(Integer posting_id) {
+		jobpostingMapper.updateDeadlineStatus1(posting_id);
+	}
+	public void updateDeadlineStatus0(Integer posting_id) {
+		jobpostingMapper.updateDeadlineStatus0(posting_id);
+	}
+	
 }

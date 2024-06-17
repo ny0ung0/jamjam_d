@@ -9,10 +9,14 @@ import com.jamjam.rest.dto.CompanyInfo;
 @Mapper
 public interface CompanyInfoDao {
 
-	@Insert("insert into companyinfo (company_id,description,number_of_employees,working_environment,benefits,ideal_candidate,main_contact,main_email,origin_name,new_name) "
+	@Insert("insert into companyinfo(company_id,description,number_of_employees,working_environment,benefits,ideal_candidate,main_contact,main_email,origin_name,new_name) "
 			+ "values(#{company_id},#{description},#{number_of_employees},#{working_environment},#{benefits},#{ideal_candidate},#{main_contact},#{main_email},#{origin_name},#{new_name})")
 	public int insertCompanyInfo(CompanyInfo companyInfo);
 	
-	@Select("select * from Companyinfo where company_id = #{company_id}")
+	@Select("select * from companyinfo where company_id = #{company_id}")
 	public CompanyInfo getCompanyInfo(Integer company_id);
+	
+	
+	@Select("select * from companyinfo where info_id = #{info_id}")
+	public CompanyInfo getCompanyInfoByInfoId(Integer info_id);
 }

@@ -42,4 +42,12 @@ public class CompanyInfoController {
 		
 		return result;
 	}
+	@GetMapping("/companyInfo/info_id/{info_id}")
+	public CompanyInfo getCompanyInfoByInfoId(@PathVariable("info_id") Integer info_id) {
+		System.out.println("회사소개get 들어옴 infoId");
+		CompanyInfo result =companyInfoService.getCompanyInfoByInfo_id(info_id);
+		System.out.println(result); 
+		
+		return result;
+	}
 }
