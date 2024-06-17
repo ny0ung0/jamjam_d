@@ -10,7 +10,7 @@ import com.jamjam.rest.dto.User;
 
 @Mapper
 public interface UserDao {
-    @Insert("INSERT INTO User (email, name) VALUES (#{email}, #{name})")
+    @Insert("INSERT INTO User (email, name, role) VALUES (#{email}, #{name}, #{role})")
     @Options(useGeneratedKeys = true, keyProperty = "user_id")
     void insertUser(User user);
 

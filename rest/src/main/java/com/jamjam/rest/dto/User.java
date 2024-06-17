@@ -24,6 +24,7 @@ public class User {
 	private String gender;
 	private Date created_at;
 	private Date updated_at;
+	private String role;
 	
 	public void setBirth_date(String birth_date) {
         try {
