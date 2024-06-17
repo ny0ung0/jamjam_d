@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Job Posting Detail</title>
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+    integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -69,7 +72,7 @@
 //기업 로고,회사명 넣어야함!!!!!
 <div id="postingContainer">
 <div class="logoBox">
-	<img src="#" id="logo">
+    <img src="#" id="logo">
 </div>
     <div class="job-header">
         <h2><span id="title"></span></h2>
@@ -143,10 +146,73 @@
     <p id="application_deadline" class="application-deadline-value"></p>
 </div>
 
+<div class="actions" id="actions" style="display: none;">
+    <button onclick="applyJob()">공고 지원하기</button>
+    <button onclick="scrapJob()">공고 스크랩하기</button>
+</div>
+
 <div id="result_post"></div>
 <div id="result_delete"></div>
 
 <script>
+
+$(document).ready(function() {
+    fetchUserInfo();
+});
+
+
+function fetchUserInfo() {
+    $.ajax({
+        url: "http://localhost:8888/userInfo",
+        method: "GET",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: function(data) {
+            if (data) {
+            	userEmail = data.email;
+                if (data.role === "ROLE_USER") {
+                    document.getElementById("actions").style.display = "block";
+                }
+            }
+        },
+        error: function() {
+            alert("Failed to fetch user info.");
+        }
+    });
+}
+
+
+function applyJob(posting_id) {
+	const urlParams = new URLSearchParams(window.location.search);
+    const post_id = urlParams.get('posting_id');
+    $.ajax({
+        url: `http://localhost:8888/user/applyJob/${post_id}?email=${userEmail}`,
+        method: "POST",
+        success: function(data) {
+            alert("공고 지원이 성공했습니다.");
+        },
+        error: function() {
+            alert("공고 지원 중 오류가 발생했습니다.");
+        }
+    });
+}
+
+function scrapJob(posting_id) {
+	const urlParams = new URLSearchParams(window.location.search);
+    const post_id = urlParams.get('posting_id');
+    $.ajax({
+    	url: `http://localhost:8888/user/scrapJob/${post_id}?email=${userEmail}`,
+        method: "POST",
+        success: function(data) {
+            alert("공고 스크랩이 성공했습니다.");
+        },
+        error: function() {
+            alert("공고 스크랩 중 오류가 발생했습니다.");
+        }
+    });
+}
+
 preJobposting();
 //회사 이름 넣기 !~!!!!!!!!!!!!!!!!!!!!!!
 
@@ -215,28 +281,27 @@ function preJobposting() {
     xhttp.send();
 }
 function preCompanyInfo(){
-	let company_id = document.querySelector("#company_id").textContent;
+    let company_id = document.querySelector("#company_id").textContent;
 
-	    const xhttp = new XMLHttpRequest();
-	    xhttp.onload = function() {
-	       let companyInfo = JSON.parse(this.responseText);
-	      
-	        document.querySelector("#logo").src="/images/"+ companyInfo.new_name;
-	        preCompany();
-	       
-	    };
-	    xhttp.open("GET", "http://localhost:8888/company/companyInfo/" + company_id);
-	    xhttp.send();
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+           let companyInfo = JSON.parse(this.responseText);
+          
+            document.querySelector("#logo").src="/images/"+ companyInfo.new_name;
+            fetchCompanyInfo();
+           
+        };
+        xhttp.open("GET", "http://localhost:8888/company/companyInfo/" + company_id);
+        xhttp.send();
 }
-function preCompany(){
-	let company_id = document.querySelector("#company_id").textContent;
+function fetchCompanyInfo(){
+    let company_id = document.querySelector("#company_id").textContent;
 
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
        let company = JSON.parse(this.responseText);
       
         document.querySelector("#company_name").innerHTML=company.company_name;
-        preCompany();
        
     };
     xhttp.open("GET", "http://localhost:8888/company/" + company_id);

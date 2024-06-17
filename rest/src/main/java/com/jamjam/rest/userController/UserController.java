@@ -2,22 +2,33 @@ package com.jamjam.rest.userController;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.jamjam.rest.dao.JobapplicationDao;
 import com.jamjam.rest.dao.JobpostingDao;
+import com.jamjam.rest.dao.JobpostingScrapDao;
 import com.jamjam.rest.dao.ResumeDao;
 import com.jamjam.rest.dao.UserDao;
+import com.jamjam.rest.dto.JobApplication;
 import com.jamjam.rest.dto.JobPosting;
+import com.jamjam.rest.dto.JobPostingScrap;
 import com.jamjam.rest.dto.Resume;
 import com.jamjam.rest.dto.ResumeDB;
 import com.jamjam.rest.dto.User;
@@ -42,6 +53,12 @@ public class UserController {
     @Autowired
     HttpSession httpSession;
 
+    @Autowired
+    private JobpostingScrapDao jobScrapMapper;
+    
+    @Autowired
+    private JobapplicationDao jobApplicationMapper;
+    
     @PostMapping("/resume")
     public String regResume(@RequestParam("email") String email_, Resume resume, @RequestPart("profile_photo") MultipartFile profilePhoto,
                             @RequestParam("license_name[]") List<String> licenseNames, @RequestParam("license_issuer[]") List<String> licenseIssuers,
@@ -247,4 +264,33 @@ public class UserController {
 		return postList;
     	
     }
+    
+    @PostMapping("/applyJob/{post_id}")
+    public ResponseEntity<?> applyJob(@PathVariable("post_id")Integer post_id, @RequestParam ("email") String email) {
+        Integer user_id = userMapper.findByEmailInteger(email);
+        
+        JobApplication jobApplication = new JobApplication();
+        jobApplication.setUser_id(user_id);
+        jobApplication.setPosting_id(post_id);
+        
+        jobApplicationMapper.applyJob(jobApplication);
+
+        return ResponseEntity.ok("Job application successful");
+    }
+
+    @PostMapping("/scrapJob/{post_id}")
+    public ResponseEntity<?> scrapJob(@PathVariable("post_id")Integer post_id, @RequestParam ("email") String email) {
+
+
+        Integer user_id = userMapper.findByEmailInteger(email);
+        
+        JobPostingScrap jobPostingScrap = new JobPostingScrap();
+        jobPostingScrap.setUser_id(user_id);
+        jobPostingScrap.setPosting_id(post_id);
+
+        jobScrapMapper.scrapJob(jobPostingScrap);
+
+        return ResponseEntity.ok("Job scrap successful");
+    }
+    
 }
