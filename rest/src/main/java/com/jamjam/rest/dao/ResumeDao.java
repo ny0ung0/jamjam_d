@@ -21,9 +21,6 @@ public interface ResumeDao {
 	@Select("SELECT * FROM resume WHERE user_id = #{user_id}")
 	List<Resume> findByUserId(Long user_id);
 	
-	@Select("SELECT * FROM resume WHERE resume_id = #{resume_id")
-	Resume findByResumeId(Long resumeId);
-
 	@Select("SELECT * FROM resume WHERE resume_id = #{resume_id}")
     ResumeDB findById(int resume_id);
 	
@@ -35,4 +32,7 @@ public interface ResumeDao {
 	
 	@Select("select * from resume")
 	public List<ResumeDB> findAll();
+	
+	@Select("SELECT * FROM resume RIGHT JOIN user ON resume.user_id = user.user_id WHERE resume_id = #{resume_id}")
+	ResumeDB findByResumeId(int resume_id);
 }

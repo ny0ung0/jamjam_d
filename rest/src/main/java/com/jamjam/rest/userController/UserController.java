@@ -244,7 +244,7 @@ public class UserController {
 
     @GetMapping("/resume")
     public ResumeDB viewResume(@RequestParam("resume_id") int resumeId) {
-        ResumeDB resume = resumeMapper.findById(resumeId);
+        ResumeDB resume = resumeMapper.findByResumeId(resumeId);
         return resume;
     }
     

@@ -11,16 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class JobApplication {
-	
+public class JobAppliedList {
 	private Integer application_id;
 	private Integer user_id;
 	private Integer posting_id;
-	private Integer resume_viewed;
-	private Date created_at;
-	private Date updated_at;
-	private Integer resume_id;
-	
-	
-	
+	private Integer company_id;
+	private String title;
+	private String keywords;
+	private Date application_deadline;
+	private String company_name;
 }

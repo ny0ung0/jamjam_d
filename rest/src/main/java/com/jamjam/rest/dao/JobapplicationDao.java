@@ -2,6 +2,7 @@ package com.jamjam.rest.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -9,6 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.jamjam.rest.dto.JobApplication;
+import com.jamjam.rest.dto.JobAppliedList;
 
 @Mapper
 public interface JobapplicationDao {
@@ -31,4 +33,10 @@ public interface JobapplicationDao {
 	
 	@Update("update jobapplication set resume_viewed=2 where application_id=#{application_id}")
 	public void updateNonPass(Integer application_id);
+	
+	@Select("SELECT application_id, joba.user_id AS user_id, joba.posting_id AS posting_id, resume_viewed, resume_id, title, experience_required, employment_type, keywords, application_deadline, company_name FROM jobapplication joba RIGHT JOIN jobposting jobp ON joba.posting_id = jobp.posting_id RIGHT JOIN user ON jobp.company_id = user.user_id WHERE joba.user_id = #{user_id}")
+	public List<JobAppliedList> getJobApplicationListByUserId(Integer user_id);
+	
+	@Delete("DELETE FROM jobapplication WHERE user_id = #{user_id} AND application_id = #{application_id}")
+	void cancelApplied(@Param("user_id") Integer user_id, @Param("application_id") Integer application_id);
 }

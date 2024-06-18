@@ -47,4 +47,9 @@ public class UserController {
 	public String userScrapList() {
 		return "/user/scrapList";
 	}
+	
+	@GetMapping("appliedList")
+	public String appliedList() {
+		return "/user/appliedList";
+	}
 }
