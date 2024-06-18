@@ -26,6 +26,15 @@ public class User {
 	private Date updated_at;
 	private String role;
 	
+	//공고 지원자 리스트에서 필요
+	private Integer resume_id;
+	private Integer resumeStatus;
+	private Integer application_id;
+	
+	//포지션 매칭에 필요
+	private Integer posting_id;
+	private String title;
+	
 	public void setBirth_date(String birth_date) {
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");

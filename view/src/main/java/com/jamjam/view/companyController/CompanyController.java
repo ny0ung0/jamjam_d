@@ -51,4 +51,14 @@ public class CompanyController {
 	public void company_introduction_edit(@RequestParam("info_id")Integer info_id,Model model) {
 		model.addAttribute("info_id",info_id);
 	}
+	
+	@RequestMapping("/applicants_list")
+	public void applicants_list(@RequestParam("posting_id") Integer posting_id,Model model) {
+		model.addAttribute("posting_id",posting_id);
+	}
+	
+	@RequestMapping("position_matching_list_company")
+	public void position_matching_list_company() {
+		
+	}
 }

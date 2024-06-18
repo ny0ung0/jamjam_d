@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<h1> 지원자 매칭 리스트</h1>
+<div id = "box"></div>
+<div id="result"></div>
+<script >
+pre();
+function pre(){
+	let box = document.querySelector("#box");
+	let company_id="[[${session.company_id}]]";
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+       let postings = JSON.parse(this.responseText);
+       
+       postings.forEach(posting =>{
+    	   
+    	  box.innerHTML += '<div class="application_id"id='+posting.posting_id+'> <span class="title">' +posting.title +'</span>'+
+    	   '<span class="keywords" id='+posting.keywords+'><button class="machingListBtn" onclick="machingList(event)">매칭리스트보기</button></span></div><div class="machingBox" id =machingBox'+posting.posting_id+' ></div>';
+       });
+       
+       
+    };
+    xhttp.open("GET", "http://localhost:8888/company/jobposting?company_id=" + company_id);
+    xhttp.send();
+}
+
+ function machingList(e){
+	 let keywords = e.target.closest(".keywords").id;
+	 alert(keywords);
+	 
+	 const xhttp = new XMLHttpRequest();
+	    xhttp.onload = function() {
+	       let postings = JSON.parse(this.responseText);
+	       
+	       postings.forEach(posting =>{
+	    	   
+	    	  box.innerHTML += '<div class="application_id"id='+posting.posting_id+'> <span class="title">' +posting.title +'</span>'+
+	    	   '<span class="keywords" id='+posting.keywords+'><button class="machingListBtn" onclick="machingList(event)">매칭리스트보기</button></span></div><div class="machingBox" id =machingBox'+posting.posting_id+' ></div>';
+	       });
+	       
+	       
+	    };
+	    xhttp.open("GET", "http://localhost:8888/company/machingList?keywords=" + keywords);
+	    xhttp.send();
+ }
+</script>
+</body>
+</html>

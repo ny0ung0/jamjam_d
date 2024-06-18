@@ -118,9 +118,9 @@
                 "email": frm.email.value,
                 "company_name": frm.company_name.value,
                 "registration_number": frm.registration_number.value,
-                "company_type": frm.sector1.value + " " + frm.sector2.value,
+                "company_type": frm.sector1.value + "//" + frm.sector2.value,
                 "representative_name": frm.representative_name.value,
-                "address": frm.address1.value + " " + frm.address2.value + " "+frm.detailAddress.value,
+                "address": frm.address1.value + "//" + frm.address2.value + "//"+frm.detailAddress.value,
                 "tel": frm.tel.value,
             };
             let sendData = JSON.stringify(data);

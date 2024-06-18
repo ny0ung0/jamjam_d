@@ -19,4 +19,5 @@ public class JobApplication {
 	private Integer resume_viewed;
 	private Date created_at;
 	private Date updated_at;
+	private Integer resume_id;
 }

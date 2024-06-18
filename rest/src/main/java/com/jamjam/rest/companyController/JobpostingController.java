@@ -58,13 +58,13 @@ public class JobpostingController {
 		}
 	}
 	@GetMapping("/jobposting")
-	public List<JobPosting> getPostinAll(@RequestParam(value="user_id", required = false) Integer user_id){
+	public List<JobPosting> getPostingAll(@RequestParam(value="company_id", required = false) Integer company_id){
 		
-		if(user_id ==null) {
+		if(company_id ==null) {
 			return jobpostingService.getPostingAll();
 			
 		}else {
-			return jobpostingService.getPostingListByCompanyId(user_id);
+			return jobpostingService.getPostingListByCompanyId(company_id);
 		}
 		
 	}
