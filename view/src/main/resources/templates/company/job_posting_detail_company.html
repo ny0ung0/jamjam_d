@@ -175,6 +175,7 @@ function fetchUserInfo() {
                     document.getElementById("actions").style.display = "block";
                     checkJobApplicationStatus();
                     checkJobScrapStatus();
+                    postViewedUp();
                 }
             }
         },
@@ -183,6 +184,21 @@ function fetchUserInfo() {
     });
 }
 
+function postViewedUp(){
+	const urlParams = new URLSearchParams(window.location.search);
+	const post_id = urlParams.get('posting_id');
+	
+	$.ajax({
+		url: `http://localhost:8888/user/postViewUp/${post_id}`,
+		method: "POST",
+		success: function(data){
+			console.log("view up success")
+		},
+        error: function() {
+            console.log("view up error");
+        }
+    });
+}
 
 function checkJobApplicationStatus() {
     const urlParams = new URLSearchParams(window.location.search);

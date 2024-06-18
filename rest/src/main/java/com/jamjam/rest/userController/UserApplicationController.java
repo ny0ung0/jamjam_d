@@ -111,5 +111,17 @@ public class UserApplicationController {
         return ResponseEntity.ok("Job scrap cancel successful");
     }
     
+    @PostMapping("/postViewUp/{post_id}")
+    public ResponseEntity<?> postViewUp(@PathVariable("post_id") Integer post_id) {
+        JobPosting view = jobpostMapper.getJobPosting(post_id);
+        Integer view_count = view.getView_count();
+
+        view_count++;
+
+        jobpostMapper.updatePostView(view_count, post_id);
+
+        return ResponseEntity.ok("post view up successful");
+    }
+    
 	
 }
