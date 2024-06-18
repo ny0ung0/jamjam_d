@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -58,4 +59,7 @@ public interface JobpostingDao {
 	 public void updateDeadlineStatus1(Integer posting_id);
 	 @Update("update jobposting set deadline_status = 0 where posting_id=#{posting_id}")
 	 public void updateDeadlineStatus0(Integer posting_id);
+	 
+	 @Update("UPDATE jobposting SET view_count = #{view_count} WHERE posting_id = #{posting_id}")
+	 public void updatePostView(@Param("view_count") Integer view_count, @Param("posting_id") Integer posting_id);
 }
