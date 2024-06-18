@@ -33,5 +33,8 @@ public class UserController {
 		return "/user/postingList";
 	}
 	
-	
+	@GetMapping("updateUserInfo")
+	public String updateUserInfo() {
+		return "/user/updateUserInfo";
+	}
 }

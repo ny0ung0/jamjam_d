@@ -2,19 +2,13 @@ package com.jamjam.rest.userController;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -26,9 +20,6 @@ import com.jamjam.rest.dao.JobpostingDao;
 import com.jamjam.rest.dao.JobpostingScrapDao;
 import com.jamjam.rest.dao.ResumeDao;
 import com.jamjam.rest.dao.UserDao;
-import com.jamjam.rest.dto.JobApplication;
-import com.jamjam.rest.dto.JobPosting;
-import com.jamjam.rest.dto.JobPostingScrap;
 import com.jamjam.rest.dto.Resume;
 import com.jamjam.rest.dto.ResumeDB;
 import com.jamjam.rest.dto.User;
@@ -152,7 +143,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/updateResume")
+    @PutMapping("/updateResume")
     public String updateResume(@RequestParam("resume_id") int resumeId, @RequestParam("email") String email_, Resume resume, @RequestPart("profile_photo") MultipartFile profilePhoto,
                                @RequestParam("license_name[]") List<String> licenseNames, @RequestParam("license_issuer[]") List<String> licenseIssuers,
                                @RequestParam("license_date[]") List<String> licenseDates, @RequestParam("company_name[]") List<String> companyNames,

@@ -190,7 +190,7 @@ function postViewedUp(){
 	
 	$.ajax({
 		url: `http://localhost:8888/user/postViewUp/${post_id}`,
-		method: "POST",
+		method: "PUT",
 		success: function(data){
 			console.log("view up success")
 		},
@@ -278,7 +278,7 @@ function cancelScrapJob() {
     const post_id = urlParams.get('posting_id');
     $.ajax({
         url: `http://localhost:8888/user/cancelScrapJob/${post_id}?email=${userEmail}`,
-        method: "POST",
+        method: "DELETE",
         success: function(data) {
             alert("스크랩 취소가 성공했습니다.");
             const scrapButton = document.querySelector("#actions button[onclick='scrapJob()']");
