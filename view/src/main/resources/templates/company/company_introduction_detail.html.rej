@@ -1,0 +1,9 @@
+diff a/view/src/main/resources/templates/company/company_introduction_detail.html b/view/src/main/resources/templates/company/company_introduction_detail.html	(rejected hunks)
+@@ -175,7 +175,6 @@
+     $("#company_name").text(company.company_name);
+     $("#company_type").text(company.company_type);
+     $("#representative_name").text(company.representative_name);
+-    $("#address").text(company.address);
+     let address = company.address.split("//");
+     $("#address").text(address[0] + " " + address[1] + " " +address[2] + " " );
+     addressMap(company.address,company.company_name);
