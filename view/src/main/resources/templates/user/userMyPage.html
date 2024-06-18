@@ -1,14 +1,244 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>구직자 마이페이지</title>
-<script src="https://code.jquery.com/jquery-3.7.1.js"
-	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-	crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Position Matching Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #003366;
+            color: #fff;
+            padding: 20px;
+            height: 100vh;
+        }
+        .sidebar h2 {
+            color: #fff;
+        }
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 10px 0;
+        }
+        .sidebar a:hover {
+            background-color: #002244;
+        }
+        .content {
+            flex-grow: 1;
+            background-color: #fff;
+        }
+        .header {
+            background-color: #003366;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .header .menu {
+            display: flex;
+            align-items: center;
+        }
+        .header .menu a {
+            color: #fff;
+            text-decoration: none;
+            padding: 0 10px;
+        }
+        .header .menu a:hover {
+            text-decoration: underline;
+        }
+        .header .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .header .user-info img {
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .profile-section {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #ccc;
+        }
+        .profile-section img {
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+        .profile-section div {
+            flex-grow: 1;
+        }
+        .profile-section div h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .profile-section div p {
+            margin: 5px 0;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f1f1f1;
+            padding: 10px;
+        }
+        .navigation div {
+            text-align: center;
+            flex-grow: 1;
+        }
+        .navigation div:not(:last-child) {
+            border-right: 1px solid #ccc;
+        }
+        .navigation div a {
+            text-decoration: none;
+            color: #0073b1;
+            font-weight: bold;
+        }
+        .job-list {
+            margin: 20px;
+        }
+        .job-list h3 {
+            margin: 0;
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .job-list .job-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .job-list .job-item:last-child {
+            border-bottom: none;
+        }
+        .job-list .job-item div {
+            flex-grow: 1;
+        }
+        .job-list .job-item button {
+            background-color: #ff7f00;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-
+    <div class="header">
+        <h1>취뽀 JamJam</h1>
+        <div class="menu">
+            <a href="#">채용 공고</a>
+            <a href="#">포지션 매칭</a>
+        </div>
+        <div class="user-info">
+            <img src="profile.jpg" alt="Profile Picture" width="40">
+            <span>이준형</span>
+        </div>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <h2>메뉴</h2>
+            <a href="#">개인회원 홈</a>
+            <a href="#">이력서 관리</a>
+            <div style="margin-left: 10px;">
+                <a href="#">이력서 등록</a>
+                <a href="#">이력서 현황</a>
+            </div>
+            <a href="#">입사지원·제안 관리</a>
+            <div style="margin-left: 10px;">
+                <a href="#">입사지원 현황</a>
+                <a href="#">받은 포지션 제안</a>
+            </div>
+            <a href="#">스크랩/관심기업</a>
+            <div style="margin-left: 10px;">
+                <a href="#">스크랩 공고</a>
+                <a href="#">관심기업</a>
+                <a href="#">MY 알림</a>
+            </div>
+            <a href="#">회원정보 관리</a>
+            <div style="margin-left: 10px;">
+                <a href="#">회원정보 수정</a>
+                <a href="#">비밀번호 변경</a>
+                <a href="#">메일·문자 설정</a>
+            </div>
+        </div>
+        <div class="content">
+            <div class="profile-section">
+                <img src="profile.jpg" alt="Profile Picture" width="100">
+                <div>
+                    <h2>열심히 일하겠습니다!</h2>
+                    <p>총 경력 11개월</p>
+                    <p>LG전자 마케팅 6개월 근무</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <div><a href="#">지원완료 3</a></div>
+                <div><a href="#">이력서 열람 2</a></div>
+                <div><a href="#">포지션 제안 1</a></div>
+            </div>
+            <div class="job-list">
+                <h3>포지션 매칭 공고</h3>
+                <div class="job-item">
+                    <div>
+                        <p>ARTAGE(아티지)</p>
+                        <p>고객관리, 고객지원, 소프트웨어, 외국어</p>
+                    </div>
+                    <button>즉시지원</button>
+                </div>
+                <div class="job-item">
+                    <div>
+                        <p>ARTAGE(아티지)</p>
+                        <p>고객관리, 고객지원, 소프트웨어, 외국어</p>
+                    </div>
+                    <button>즉시지원</button>
+                </div>
+                <div class="job-item">
+                    <div>
+                        <p>ARTAGE(아티지)</p>
+                        <p>고객관리, 고객지원, 소프트웨어, 외국어</p>
+                    </div>
+                    <button>즉시지원</button>
+                </div>
+            </div>
+            <div class="job-list">
+                <h3>스크랩한 공고</h3>
+                <div class="job-item">
+                    <div>
+                        <p>ARTAGE(아티지)</p>
+                        <p>고객관리, 고객지원, 소프트웨어, 외국어</p>
+                    </div>
+                    <button>즉시지원</button>
+                </div>
+                <div class="job-item">
+                    <div>
+                        <p>ARTAGE(아티지)</p>
+                        <p>고객관리, 고객지원, 소프트웨어, 외국어</p>
+                    </div>
+                    <button>즉시지원</button>
+                </div>
+                <div class="job-item">
+                    <div>
+                        <p>ARTAGE(아티지)</p>
+                        <p>고객관리, 고객지원, 소프트웨어, 외국어</p>
+                    </div>
+                    <button>즉시지원</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

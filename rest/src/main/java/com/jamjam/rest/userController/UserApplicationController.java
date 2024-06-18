@@ -3,6 +3,7 @@ package com.jamjam.rest.userController;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import com.jamjam.rest.dao.UserDao;
 import com.jamjam.rest.dto.JobApplication;
 import com.jamjam.rest.dto.JobPosting;
 import com.jamjam.rest.dto.JobPostingScrap;
+import com.jamjam.rest.dto.JobScrapList;
 
 @RestController
 @RequestMapping("/user")
@@ -75,6 +77,17 @@ public class UserApplicationController {
         jobScrapMapper.scrapJob(jobPostingScrap);
 
         return ResponseEntity.ok("Job scrap successful");
+    }
+    
+    @GetMapping("/scrapList")
+    public ResponseEntity<List<JobScrapList>> scrapList(@RequestParam("email") String email) {
+        try {
+            Integer user_id = userMapper.findByEmailInteger(email);
+            List<JobScrapList> scrapListDetails = jobScrapMapper.getScrapListDetails(user_id);
+            return ResponseEntity.ok(scrapListDetails);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
     
     

@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,7 +59,7 @@ public class MainController {
 	    }
 	 
 
-    @PostMapping("/signup")
+    @PutMapping("/signup")
     public ResponseEntity<?> processSignup(@RequestBody Map<String, Object> requestData) {
     	try {
             User user = new User();
@@ -89,6 +90,39 @@ public class MainController {
         }
         
     }
+    
+    @PutMapping("/updateUserInfo")
+    public ResponseEntity<?> updateUserInfo(@RequestBody Map<String, Object> requestData) {
+    	try {
+            User user = new User();
+            user.setEmail((String) requestData.get("email"));
+            user.setName((String) requestData.get("name"));
+            user.setContact((String) requestData.get("contact"));
+
+            // Create address JSON
+            Map<String, String> addressMap = new HashMap<>();
+            addressMap.put("city", (String) requestData.get("city"));
+            addressMap.put("district", (String) requestData.get("district"));
+            addressMap.put("address", (String) requestData.get("address"));
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            String addressJson = objectMapper.writeValueAsString(addressMap);
+            user.setAddress(addressJson);
+
+            // Save user
+            userMapper.updateUserAfterInfo(user);
+            System.out.println(user.getEmail());
+            User userid = userMapper.findByEmail(user.getEmail());
+            System.out.println(userid);
+            return ResponseEntity.ok().body("Signup successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Signup failed: " + e.getMessage());
+        }
+        
+    }
+    
+    
+    
     
     @PostMapping("/signup/company")
     public ResponseEntity<?> processSignup(@RequestBody Company company){

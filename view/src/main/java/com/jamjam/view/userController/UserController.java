@@ -37,4 +37,14 @@ public class UserController {
 	public String updateUserInfo() {
 		return "/user/updateUserInfo";
 	}
+	
+	@GetMapping("userMyPage")
+	public String userMyPage() {
+		return "/user/userMyPage";
+	}
+	
+	@GetMapping("scrapList")
+	public String userScrapList() {
+		return "/user/scrapList";
+	}
 }

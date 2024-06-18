@@ -30,4 +30,7 @@ public interface UserDao {
     
     @Select("select * from user where role='ROLE_USER'")
     public List<User> userFindAll();
+    
+    @Update("UPDATE User SET contact = #{contact}, address = #{address} WHERE email = #{email}")
+    void updateUserAfterInfo(User user);
 }
