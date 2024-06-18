@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>포지션 제안서</h1>
+<form id="frm">
+<input type="hidden" name="company_id" th:value="${company_id}">
+<input type="hidden" name="user_id" th:value="${user_id}">
+제목 : <input type="text" name="proposal_title">
+내용 : <textarea name="proposal_content"></textarea>
+<input type="button" value="제안하기" onclick="proposal()">
+
+</form>
+
+<script>
+function proposal(){
+	let frm=document.querySelector("#frm");
+	
+	let data={
+			"company_id": frm.company_id.value,
+			"user_id": frm.user_id.value,
+			"proposal_title": frm.proposal_title.value,
+			"proposal_content": frm.proposal_content.value,
+	}
+	let sendData=JSON.stringify(data);
+	const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        location.href="/company/position_matching_list_company";
+    };
+    xhttp.open("post", "http://localhost:8888/company/positionProposal");
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send(sendData);
+}
+
+</script>
+</body>
+</html>

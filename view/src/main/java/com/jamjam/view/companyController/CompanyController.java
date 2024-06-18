@@ -61,4 +61,9 @@ public class CompanyController {
 	public void position_matching_list_company() {
 		
 	}
+	@RequestMapping("position_suggestion")
+	public void position_suggestion(@RequestParam("company_id")Integer company_id,@RequestParam("user_id")Integer user_id,Model model) {
+		model.addAttribute("company_id", company_id);
+		model.addAttribute("user_id", user_id);
+	}
 }

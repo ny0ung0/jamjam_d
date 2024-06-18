@@ -19,4 +19,7 @@ public class PositionProposal {
 	private String status;
 	private Date created_at;
 	private Date updated_at;
+	
+	private String proposal_title;
+	private String proposal_content;
 }

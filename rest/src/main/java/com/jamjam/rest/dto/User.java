@@ -34,6 +34,7 @@ public class User {
 	//포지션 매칭에 필요
 	private Integer posting_id;
 	private String title;
+	private String proposalStatus;
 	
 	public void setBirth_date(String birth_date) {
         try {
