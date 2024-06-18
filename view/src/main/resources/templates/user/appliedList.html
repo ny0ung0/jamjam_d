@@ -4,27 +4,27 @@
 <meta charset="UTF-8">
 <title>지원한 공고 리스트</title>
 <script src="https://code.jquery.com/jquery-3.7.1.js"
-	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-	crossorigin="anonymous"></script>
+    integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
 </head>
 <body>
-	<h1>지원한 공고 리스트</h1>
-	<table id="appliedTable" border="1">
-		<thead>
-			<tr>
-				<th>기업 이름</th>
-				<th>공고 제목</th>
-				<th>마감일</th>
-				<th>지원 취소</th>
-			</tr>
-		</thead>
-		<tbody>
-		</tbody>
-	</table>
-	
-	
-	<script>
-	$(document).ready(function () {
+    <h1>지원한 공고 리스트</h1>
+    <table id="appliedTable" border="1">
+        <thead>
+            <tr>
+                <th>기업 이름</th>
+                <th>공고 제목</th>
+                <th>마감일</th>
+                <th>지원 취소</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    
+    
+    <script>
+    $(document).ready(function () {
         fetchUserInfo();
     });
     
@@ -36,15 +36,15 @@
                 withCredentials: true
             },
             success: function (data) {
-            	userEmail = data.email;
-            	listApplied();
+                userEmail = data.email;
+                listApplied();
             },
             error: function () {
                 alert('사용자 정보를 가져오는 중 오류가 발생했습니다.');
             }
         });
     }
-	
+    
     function formatDate(dateString) {
         const date = new Date(dateString);
         const year = date.getFullYear();
@@ -53,52 +53,64 @@
         return `${year}-${month}-${day}`;
     }
     
-    function cancelApplied(){
-    	$.ajax({
-    		url: `http://localhost:8888/user/cancelApplied/${application_id}?email=${userEmail}`,
-    		method: "DELETE",
-    		success: function(data){
-    			alert("공고 지원 취소.");
-    			window.location.href="/user/appliedList";
-    		}
-    		
-    	})
-    	
+    function cancelApplied(application_id){
+        $.ajax({
+            url: `http://localhost:8888/user/cancelApplied/${application_id}?email=${userEmail}`,
+            method: "DELETE",
+            success: function(data){
+                alert("공고 지원 취소.");
+                listApplied();
+            },
+            error: function(){
+                alert("지원 취소 중 오류가 발생했습니다.");
+            }
+        });
+    }
+    
+    function checkJobApplicationStatus(application_id, button) {
+        $.ajax({
+            url: `http://localhost:8888/user/applied?application_id=${application_id}&email=${userEmail}`,
+            method: "GET",
+            success: function(data) {
+                if (data.resume_viewed != 0) {
+                	console.log(data.resume_viewed);
+                    button.textContent = "확인 된 공고";
+                    button.disabled = true;
+                }
+            }
+        });
     }
     
     function listApplied(){
-    	$.ajax({
-    		url: `http://localhost:8888/user/appliedList?email=${userEmail}`,
-    		method: "GET",
-    		success: function (data){
-    			const tableBody = $('#appliedTable tbody');
-    			tableBody.empty();
-    			if(data.length > 0){
-    				data.forEach(applied => {
-    					post_id = applied.posting_id;
-    					application_id = applied.application_id;
-    					console.log(applied.application_id);
-    					console.log(applied.posting_id);
-    					console.log(applied.company_name);
-    					let parts = applied.keywords.split('//');
-    					const row = `<tr>
-    						<td>${applied.company_name}</td>
-    						<td><a href="/company/job_posting_detail_company?posting_id=${post_id}">${applied.title}</a><br>`+parts[0]+ parts[1]+`</td>
-    						<td>${formatDate(applied.application_deadline)}</td>
-    						<td><button type="button" onclick="cancelApplied()">공고지원 취소</button></td>
-        					</tr>`;
-        					tableBody.append(row);
-    				});
-    			}else{
-    				const row = '<tr><td colspan="2">지원한 공고가 없습니다.</td></tr>';
-    				tableBody.append(row);
-    			}
-    		},
-    		error: function(){
-    			alert('지원 공고 리스트 출력 오류');
-    		}
-    	});
+        $.ajax({
+            url: `http://localhost:8888/user/appliedList?email=${userEmail}`,
+            method: "GET",
+            success: function (data){
+                const tableBody = $('#appliedTable tbody');
+                tableBody.empty();
+                if(data.length > 0){
+                    data.forEach(applied => {
+                        const row = `<tr>
+                            <td>${applied.company_name}</td>
+                            <td><a href="/company/job_posting_detail_company?posting_id=${applied.posting_id}">${applied.title}</a></td>
+                            <td>${formatDate(applied.application_deadline)}</td>
+                            <td><button type="button" onclick="cancelApplied(${applied.application_id})">공고지원 취소</button></td>
+                            </tr>`;
+                        tableBody.append(row);
+
+                        const button = tableBody.find('button').last()[0];
+                        checkJobApplicationStatus(applied.application_id, button);
+                    });
+                }else{
+                    const row = '<tr><td colspan="4">지원한 공고가 없습니다.</td></tr>';
+                    tableBody.append(row);
+                }
+            },
+            error: function(){
+                alert('지원 공고 리스트 출력 오류');
+            }
+        });
     }
-	</script>
+    </script>
 </body>
 </html>
