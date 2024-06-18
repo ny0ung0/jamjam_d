@@ -175,8 +175,6 @@ function displayCompany(company) {
     $("#company_name").text(company.company_name);
     $("#company_type").text(company.company_type);
     $("#representative_name").text(company.representative_name);
-    let address = company.address.split("//");
-    $("#address").text(address[0] + " " + address[1] + " " +address[2] + " " );
     addressMap(company.address,company.company_name);
 }
 

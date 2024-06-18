@@ -11,7 +11,7 @@
 <h1>기업소개 수정</h1>
 파일 처리 어떻게 할껀지 부터 시작!!!!!!!
 <form name="frm" id="companyInfoFrm" method="POST">
-	공고번호:<input type="text" name="company_id" th:value="${info_id}">
+	공고번호:<input type="text" name="info_id" id ="info_id" th:value="${info_id}">
 	회사로고 :<input type="file" name="file"><br>
 	회사소개 :<textarea name="description"></textarea><br>
 	사원수 :<input type="number" name="number_of_employees"><br>
@@ -20,7 +20,8 @@
 	인재상 :<input type="text" name="ideal_candidate"><br>
 	전화번호 :<input type="text" name="main_contact"><br>
 	이메일 :<input type="text" name="main_email"><br>
-	<input type="submit" onclick="reg11(event)" value="등록">
+	<input type="submit" onclick="updateCompanyInfo(event)" value="수정">
+	<input type="button" onclick="deleteCompanyInfo()" value = "삭제">
 	
 </form>
 <div id="demo"></div>
@@ -48,7 +49,49 @@ function preCompanyInfo(){
     xhttp.open("get", "http://localhost:8888/company/companyInfo/info_id/"+id);
     xhttp.send();
 }
-	
+function updateCompanyInfo(event){
+    event.preventDefault();
+    alert("submit....");
+
+    let frm = document.querySelector("#companyInfoFrm");
+   // alert(frm.file);
+    let formData = new FormData(frm);
+
+    $.ajax({
+        type: "put",
+        url: "http://localhost:8888/company/companyInfo",
+        enctype: "multipart/form-data",
+        
+        data: formData,
+        dataType: "text",
+        contentType: false,
+        processData: false,
+        cache: false,
+        success: function(data){
+            console.log(data);
+            $("#demo").html(data);
+        },
+        error: function(){
+            console.log("에러발생" + data);
+        }
+    });
+}
+
+function deleteCompanyInfo(){
+	 $.ajax({
+	        type: "delete",
+	        url: "http://localhost:8888/company/companyInfo/"+$('#info_id').val(),
+	        
+	       
+	        success: function(data){
+	            console.log(data);
+	            $("#demo").html(data);
+	        },
+	        error: function(){
+	            console.log("에러발생" + data);
+	        }
+	    });
+}
 </script>
 
 </body>
