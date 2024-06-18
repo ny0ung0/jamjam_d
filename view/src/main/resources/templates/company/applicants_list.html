@@ -5,7 +5,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-싹다 바꿔야함
 <h1>공고 지원자 리스트</h1>
 <div id = "box"></div>
 <div id="result"></div>
@@ -13,50 +12,37 @@
 pre();
 function pre(){
 	let box = document.querySelector("#box");
-	let company_id="[[${session.company_id}]]";
+	let posting_id="[[${posting_id}]]";
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-       let postings = JSON.parse(this.responseText);
-       let deadline_status;
-       postings.forEach(posting =>{
-    	   if(posting.deadline_status==0){
-    		   deadline_status = '<button class="closeBtn" onclick="closePosting(event)">공고마감</button>';
-    	   }else{
-    		   deadline_status = '공고마감';
+       let users = JSON.parse(this.responseText);
+       
+       users.forEach(user =>{
+    	   let status ="";
+    	   if(user.resumeStatus == 0){
+    		   status = "미결정";
+    	   }else if(user.resumeStatus == 1){
+    		   status = "서류합격";
+    	   }else if(user.resumeStatus == 2){
+    		   status = "서류불합격";
     	   }
-    	   box.innerHTML += '<div id='+posting.posting_id+'> <span class="application_deadline">' + posting.application_deadline.slice(0, 10) + '</span>'+
-    	   '<span class="postingTitle"><p><a href="/company/job_posting_detail_company?posting_id='+posting.posting_id+'">'+posting.title+'</a></p>'+
-    	   '<p class="applicantNumber"></p></span>'+
-    	   '<span class="postingClose">'+deadline_status+'</span>'+
-    	   '<span class="postingDelete"><button class="deleteBtn" onclick="deletePosting(event)">공고삭제</button></span></div>';
+    	   
+    	  box.innerHTML += '<div class="application_id"id='+user.application_id+'> <span class="name">' + user.name + '</span>'+
+    	   '<span class="UserInfo">'+user.birth_date.slice(0,10)+'/'+user.gender+'/'+user.email+'</span>' +
+    	   '<span class="staus">'+status+'</span>'+
+    	   '<span class="resumeDetail" id='+user.resume_id+'><button class="resumeBtn" onclick="resumeDetail(event)">이력서보기</button></span></div>';
        });
        
        
     };
-    xhttp.open("GET", "http://localhost:8888/company/jobposting?company_id=" + company_id);
+    xhttp.open("GET", "http://localhost:8888/company/jobapplication/posting_id/" + posting_id);
     xhttp.send();
 }
-function deletePosting(e){
-	let id = e.target.closest('div').id;
-
-	const xhttp = new XMLHttpRequest();
-    xhttp.onload = function() {
-    	document.querySelector("#result").innerHTML=this.responseText;
-    };
-    xhttp.open("delete", "http://localhost:8888/company/jobposting/" + id);
-    xhttp.send();
-}
-function closePosting(e){
-	let div = e.target.closest('div');
-
-	const xhttp = new XMLHttpRequest();
-    xhttp.onload = function() {
-    	let postingClose = e.target.closest('.postingClose');
-    	postingClose.innerHTML = "공고마감";
-    };
-    xhttp.open("put", "http://localhost:8888/company/jobposting/status/" + div.id);
-    xhttp.send();
-}
+ function resumeDetail(e){
+	 let resume_id = e.target.closest(".resumeDetail").id;
+	 let application_id=e.target.closest(".application_id").id;
+	 location.href="/user/resumeDetail?resume_id="+resume_id+"&application_id="+application_id;
+ }
 </script>
 </body>
 </html>

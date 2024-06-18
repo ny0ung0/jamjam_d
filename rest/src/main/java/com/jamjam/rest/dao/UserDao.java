@@ -1,5 +1,7 @@
 package com.jamjam.rest.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
@@ -22,4 +24,10 @@ public interface UserDao {
     
     @Update("UPDATE User SET name = #{name}, contact = #{contact}, address = #{address}, birth_date = #{birth_date}, gender = #{gender} WHERE email = #{email}")
     void updateUser(User user);
+    
+    @Select("select * from user where user_id= #{user_id}")
+    public User findByUserId(Integer user_id);
+    
+    @Select("select * from user where role='ROLE_USER'")
+    public List<User> userFindAll();
 }

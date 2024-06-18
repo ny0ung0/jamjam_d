@@ -32,4 +32,7 @@ public interface ResumeDao {
 	
 	@Update("UPDATE resume SET profile_photo = #{profile_photo}, photo_newName = #{photo_newName}, title = #{title}, desired_job = #{desired_job}, skills = #{skills}, license = #{license}, education = #{education}, experience = #{experience}, preferences = #{preferences}, cover_letter_title = #{cover_letter_title}, cover_letter_content = #{cover_letter_content}, desired_conditions = #{desired_conditions}, portfolio = #{portfolio} WHERE resume_id = #{resume_id}")
     int updateResume(ResumeDB resume);
+	
+	@Select("select * from resume")
+	public List<ResumeDB> findAll();
 }
