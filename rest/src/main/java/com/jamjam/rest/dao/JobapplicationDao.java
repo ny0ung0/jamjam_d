@@ -22,6 +22,9 @@ public interface JobapplicationDao {
 	@Select("SELECT COUNT(*) > 0 FROM jobapplication WHERE user_id = #{user_id} AND posting_id = #{posting_id}")
     boolean hasApplied(@Param("user_id") Integer user_id, @Param("posting_id") Integer posting_id);
 	
+	@Select("SELECT * FROM jobapplication WHERE user_id = #{user_id} AND application_id = #{application_id}")
+	public JobApplication getJobApplicationByUserIdAndPostingId(@Param("user_id") Integer user_id, @Param("application_id") Integer application_id);
+	
 	@Select("select * from jobapplication where posting_id=#{posting_id}")
 	public List<JobApplication> getJobApplicationByPosting_id(Integer posting_id );
 	

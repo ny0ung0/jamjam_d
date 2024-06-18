@@ -110,6 +110,16 @@ public class UserApplicationController {
         boolean hasApplied = jobApplicationMapper.hasApplied(user_id, post_id);
         return ResponseEntity.ok(hasApplied);
     }
+    
+    @GetMapping("/applied")
+    public ResponseEntity<?> passCheck (@RequestParam ("application_id") Integer application_id, @RequestParam ("email") String email) {
+        
+        Integer user_id = userMapper.findByEmailInteger(email);
+        
+        JobApplication jobApplication = jobApplicationMapper.getJobApplicationByUserIdAndPostingId(user_id, application_id);
+        return ResponseEntity.ok(jobApplication);
+    }
+    
 
     @GetMapping("/scrapped/{post_id}")
     public ResponseEntity<?> hasScrapped(@PathVariable("post_id") Integer post_id, @RequestParam ("email") String email) {
