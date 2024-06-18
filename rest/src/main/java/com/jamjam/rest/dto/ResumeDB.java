@@ -37,4 +37,13 @@ public class ResumeDB {
 	private Date created_at;
 	private Date updated_at;
 	
+	//이력서 상세 보기에 유저 정보확인 및 출력용
+	private String email;
+	private String name;
+	private String contact;
+	private String address;
+	private Date birth_date;
+	private String gender;
+	private String role;
+	
 }

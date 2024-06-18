@@ -20,6 +20,7 @@ import com.jamjam.rest.dao.JobpostingScrapDao;
 import com.jamjam.rest.dao.ResumeDao;
 import com.jamjam.rest.dao.UserDao;
 import com.jamjam.rest.dto.JobApplication;
+import com.jamjam.rest.dto.JobAppliedList;
 import com.jamjam.rest.dto.JobPosting;
 import com.jamjam.rest.dto.JobPostingScrap;
 import com.jamjam.rest.dto.JobScrapList;
@@ -90,7 +91,16 @@ public class UserApplicationController {
         }
     }
     
-    
+    @GetMapping("/appliedList")
+    public ResponseEntity<List<JobAppliedList>> appliedList(@RequestParam("email") String email){
+    	try {
+    		Integer user_id = userMapper.findByEmailInteger(email);
+    		List<JobAppliedList> applicationListDetails = jobApplicationMapper.getJobApplicationListByUserId(user_id);
+    		return ResponseEntity.ok(applicationListDetails);
+    	} catch (Exception e) {
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    	}
+    }
     
     @GetMapping("/applied/{post_id}")
     public ResponseEntity<?> hasApplied(@PathVariable("post_id") Integer post_id, @RequestParam ("email") String email) {
@@ -121,6 +131,15 @@ public class UserApplicationController {
         jobScrapMapper.cancelScrapJob(user_id, post_id);
 
         return ResponseEntity.ok("Job scrap cancel successful");
+    }
+    
+    @DeleteMapping("cancelApplied/{application_id}")
+    public ResponseEntity<?> cancelApplied(@PathVariable("application_id")Integer application_id, @RequestParam("email")String email){
+    	Integer user_id = userMapper.findByEmailInteger(email);
+    	
+    	jobApplicationMapper.cancelApplied(user_id, application_id);
+    	
+    	return ResponseEntity.ok("Job applied cancel Successful");
     }
     
     @PutMapping("/postViewUp/{post_id}")
