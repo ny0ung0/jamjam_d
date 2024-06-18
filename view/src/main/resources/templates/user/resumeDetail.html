@@ -32,10 +32,10 @@
         </div>
         <div class="resume-section" id="userinfoSection">
         	<h3>유저정보</h3>
-        	<p id="name"></p>
-        	<p id="contact"></p>
-        	<p id="birth"></p>
-        	<p id="gender"></p>
+        	이름:<span id="name"></span>
+        	연락처:<span id="contact"></span>
+        	생년월일:<span id="birth"></span>
+        	성별:<span id="gender"></span>
         </div>
         <div class="resume-section" id="desiredJobSection">
             <h3>희망직무</h3>
@@ -139,6 +139,10 @@
                 success: function (data) {
                     if (data) {
                         $('#title').text(data.title);
+                        $('#name').text(data.name);
+                        $('#contact').text(data.contact);
+                        $('#birth').text(formatDate(data.birth_date));
+                        $('#gender').text(data.gender);
                         $('#profilePhoto').attr('src', `/images/${data.photo_newName}`);
                         $('#desiredJob').text(`희망직무: ${data.desired_job}`);
                         $('#skills').text(`보유스킬: ${data.skills}`);
@@ -147,7 +151,7 @@
                         $('#education').html(formatEducation(data.education));
                         $('#preferences').text(`취업우대사항: ${data.preferences}`);
                         $('#coverLetterContainer').html(formatCoverLetters(data.cover_letter_title, data.cover_letter_content));
-                        $('#desiredConditions').text(`희망근무조건: ${data.desired_conditions}`);
+                        $('#desiredConditions').text(`희망근무지: ${data.desired_conditions}`);
                         $('#portfolio').text(`포트폴리오: ${data.portfolio}`);
                     } else {
                         alert('이력서를 찾을 수 없습니다.');
