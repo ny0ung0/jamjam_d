@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>회원정보 수정</title>
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+	crossorigin="anonymous"></script>
+</head>
+<script>
+$(document).ready(function() {
+    	function fetchUserInfo() {
+            $.ajax({
+                url: "http://localhost:8888/userInfo",
+                method: "GET",
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function(data) {
+                    if (data) {
+                        $("#userName").text(data.name);
+                        $("#userEmail").text(data.email);
+                        $("#email").val(data.email);
+                        $("#companyEmail").val(data.email);  // Populate company email field
+                        $("#name").val(data.name);
+                        $("#contact").val(data.contact);
+                        // Check for additional info
+                    }
+                },
+                error: function() {
+                    alert("Failed to fetch user info.");
+                }
+            });
+        }
+
+
+         // JSON 데이터를 로드하고 시/도 선택박스에 추가
+            fetch('/json/korea-administrative-district.json')
+            .then(response => response.json())
+            .then(data => {
+                const citySelect = document.getElementById('city');
+                data.forEach(city => {
+                    for (const cityName in city) {
+                        const option = document.createElement('option');
+                        option.value = cityName;
+                        option.text = cityName;
+                        citySelect.add(option);
+                    }
+                });
+            });
+
+
+            // 시/도 선택이 변경되면 구/군 선택박스를 업데이트
+            document.getElementById('city').addEventListener('change', function() {
+                const selectedCity = this.value;
+                const districtSelect = document.getElementById('district');
+                districtSelect.innerHTML = ''; // 기존 옵션 제거
+
+                fetch('/json/korea-administrative-district.json')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(city => {
+                        if (city[selectedCity]) {
+                            city[selectedCity].forEach(district => {
+                                const option = document.createElement('option');
+                                option.value = district;
+                                option.text = district;
+                                districtSelect.add(option);
+                            });
+                        }
+                    });
+                });
+            });
+            
+            $("#signupForm").submit(function(event) {
+                event.preventDefault();
+
+                var formData = {
+                        email: $("#email").val(),
+                        name: $("#name").val(),
+                        contact: $("#contact").val(),
+                        city: $("#city").val(),
+                        district: $("#district").val(),
+                        address: $("#address").val(),
+                    };
+
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:8888/signup",
+                    data: JSON.stringify(formData),
+                    contentType: "application/json",
+                    success: function(response) {
+                        alert("Signup successful!");
+                        window.location.href = "/nindex"; // 성공 시 리디렉션
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Signup failed: " + xhr.responseText);
+                    }
+                });
+            });
+            
+        
+        fetchUserInfo();
+});
+
+
+
+</script>
+<body>
+<div>
+        <h1>Welcome, <span id="userName">User</span>!</h1>
+        <p>Your email is <span id="userEmail"></span>.</p>
+    </div>
+    <h1>Additional Information</h1>
+    <div id="jobSeekerContainer">
+        <form id="signupForm">
+            <div>
+                <label for="email">Email:</label>
+                <input type="hidden" id="email" name="email" readonly required />
+            </div>
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required />
+            </div>
+            <div>
+            	<label for="contact">Contact:</label>
+            	<input type="text" id="contact" name="contact" required maxlength="11"/>
+            </div>
+            <div>
+                <label for="city">City:</label>
+                <select id="city" name="city" required>
+                <option value="">선택</option>
+                </select>
+            </div>
+            <div>
+                <label for="district">District:</label>
+                <select id="district" name="district" required>
+                <option value="">선택</option>
+                </select>
+            </div>
+            <div>
+                <label for="address">Detailed Address:</label>
+                <input type="text" id="address" name="address" required />
+            </div>
+            <div>
+                <button type="submit">Submit</button>
+        	</div>
+   		</form>
+    </div>
+</body>
+</html>
