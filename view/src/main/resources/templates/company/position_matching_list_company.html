@@ -21,7 +21,7 @@ function pre(){
        postings.forEach(posting =>{
     	   
     	  box.innerHTML += '<div class="application_id"id='+posting.posting_id+'> <span class="title">' +posting.title +'</span>'+
-    	   '<span class="keywords" id='+posting.keywords+'><button class="machingListBtn" onclick="machingList(event)">매칭리스트보기</button></span></div><div class="machingBox" id =machingBox'+posting.posting_id+' ></div>';
+    	   '<span class="keywords" id='+posting.keywords+'><button class="machingListBtn" onclick="machingList(event,'+posting.posting_id+')">매칭리스트보기</button></span></div><div class="machingBox" id =machingBox'+posting.posting_id+' ></div>';
        });
        
        
@@ -30,24 +30,37 @@ function pre(){
     xhttp.send();
 }
 
- function machingList(e){
+ function machingList(e,posting_id){
 	 let keywords = e.target.closest(".keywords").id;
 	 alert(keywords);
-	 
+	 const box = document.getElementById('machingBox' + posting_id);
+	 box.innerHTML='';
+	 let company_id = '[[${session.company_id}]]';
 	 const xhttp = new XMLHttpRequest();
 	    xhttp.onload = function() {
-	       let postings = JSON.parse(this.responseText);
+	       let users = JSON.parse(this.responseText);
 	       
-	       postings.forEach(posting =>{
-	    	   
-	    	  box.innerHTML += '<div class="application_id"id='+posting.posting_id+'> <span class="title">' +posting.title +'</span>'+
-	    	   '<span class="keywords" id='+posting.keywords+'><button class="machingListBtn" onclick="machingList(event)">매칭리스트보기</button></span></div><div class="machingBox" id =machingBox'+posting.posting_id+' ></div>';
+	       users.forEach(user =>{
+	    	   let btn="";
+	    	   if(user.proposalStatus=="0"){
+	    		   btn='<button class="proposalBtn" onclick="proposal(event,'+company_id+','+user.user_id+')">포지션제안</button>';
+	    	   }else if(user.proposalStatus=="1"){
+	    		   btn='제안완료';
+	    	   }
+	    	  box.innerHTML += '<div class="application_id"id='+user.user_id+'> <span class="name">' + user.name + '</span>'+
+	    	   '<span class="UserInfo">'+user.birth_date.slice(0,10)+'/'+user.gender+'/'+user.email+'</span>' +
+	    	   '<span class="proposal" id='+company_id+'>'+btn+'</span></div>';
 	       });
 	       
 	       
 	    };
-	    xhttp.open("GET", "http://localhost:8888/company/machingList?keywords=" + keywords);
+	    xhttp.open("GET", "http://localhost:8888/company/machingList?keywords=" + keywords +"&company_id=" + company_id);
 	    xhttp.send();
+ }
+ 
+ function proposal(e,company_id,user_id){
+	 location.href="/company/position_suggestion?company_id="+company_id+"&user_id="+user_id;
+	 
  }
 </script>
 </body>
