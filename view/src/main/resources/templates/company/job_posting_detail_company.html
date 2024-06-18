@@ -179,7 +179,6 @@ function fetchUserInfo() {
             }
         },
         error: function() {
-            alert("Failed to fetch user info.");
         }
     });
 }
@@ -304,7 +303,9 @@ function preJobposting() {
         document.querySelector("#experience_required").innerHTML = posting.experience_required;
         document.querySelector("#employment_type").innerHTML = posting.employment_type;
         document.querySelector("#number_of_positions").innerHTML = posting.number_of_positions;
-        document.querySelector("#salary_condition").innerHTML = posting.salary_condition;
+       
+        const formattedNumber = Number(posting.salary_condition).toLocaleString('ko-KR');
+        document.querySelector("#salary_condition").innerHTML = formattedNumber + " 만원";
         document.querySelector("#salary_type").innerHTML = posting.salary_type;
         document.querySelector("#education_requirement").innerHTML = posting.education_requirement;
         parts = posting.required_skills.split('//');
@@ -338,8 +339,8 @@ function preJobposting() {
         document.querySelector(".application-deadline-value").innerHTML = formattedDeadline;
 
         document.querySelector("#view_count").innerHTML = posting.view_count;
-        document.querySelector("#created_at").innerHTML = posting.created_at;
-        document.querySelector("#updated_at").innerHTML = posting.updated_at;
+        document.querySelector("#created_at").innerHTML = posting.created_at.slice(0,10);
+        document.querySelector("#updated_at").innerHTML = posting.updated_at.slice(0,10);
         preCompanyInfo();
     };
     xhttp.open("GET", "http://localhost:8888/company/jobposting/" + posting_id);
