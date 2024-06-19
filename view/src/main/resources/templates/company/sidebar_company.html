@@ -39,7 +39,7 @@
         <div th:if="${session.company_id != null}">
             <p th:text="${session.company_id}"></p>
         </div>
-        <a href="/company/company_edit_profile">기업회원수정</a><br>
+        <a href="/company/company_edit_profile">기업회원 정보수정</a><br>
         <a href="/company/job_posting_create">채용공고등록</a><br>
         <a href="/company/job_posting_edit?posting_id=1">채용공고수정</a><br>
         <a href="/company/all">전체채용공고리스트</a><br>
@@ -50,6 +50,7 @@
         <a href="/company/company_introduction_edit?info_id=1">회사소개 수정페이지</a><br>
         <a href="/company/applicants_list?posting_id=1">채용공고별(일단 1번공고) 지원자 리스트</a><br>
         <a href="/company/position_matching_list_company">공고별 매칭 리스트</a><br>
+        <a href="/company/company_homepage">기업메인페이지</a>
     </div>
 </body>
 </html>
