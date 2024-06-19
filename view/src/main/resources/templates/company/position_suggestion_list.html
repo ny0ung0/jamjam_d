@@ -15,22 +15,20 @@ function pre(){
 	let box = document.querySelector("#box");
 	let company_id="[[${session.company_id}]]";
  
-
-	
-//여기서 부터 밑에보기!!!!!!!	
-	
-	
-	
-	
 	
 	const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-       let postings = JSON.parse(this.responseText);
+       let proposals = JSON.parse(this.responseText);
        
-       postings.forEach(posting =>{
+       proposals.forEach(proposal =>{
     	   
-    	  box.innerHTML += '<div class="proposal_id"id='+posting.posting_id+'> <span class="title">' +posting.title +'</span>'+
-    	   '<span class="keywords" id='+posting.keywords+'><button class="machingListBtn" onclick="machingList(event,'+posting.posting_id+')">매칭리스트보기</button></span></div><div class="machingBox" id =machingBox'+posting.posting_id+' ></div>';
+    	  box.innerHTML += '<div class="proposal_id"id='+proposal.proposal_id+'> <span class="user_name">' +proposal.user_name +'</span>'+
+    	  
+    	  
+    	  
+    	  
+    	  //여기서부터 하기!!!!!
+    	   '<span class="proposal_title">' +proposal.proposal_title +'</span><span class="proposal_title" id='+proposal_title+'>proposal_title<button class="machingListBtn" onclick="machingList(event,'+posting.posting_id+')">매칭리스트보기</button></span></div><div class="machingBox" id =machingBox'+posting.posting_id+' ></div>';
        });
        
        

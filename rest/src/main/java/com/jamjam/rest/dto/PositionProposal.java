@@ -22,4 +22,6 @@ public class PositionProposal {
 	private String company_name;
 	private String proposal_title;
 	private String proposal_content;
+	
+	private String user_name;
 }
