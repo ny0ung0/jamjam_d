@@ -52,4 +52,9 @@ public class UserController {
 	public String appliedList() {
 		return "/user/appliedList";
 	}
+	
+	@GetMapping("positionMatch")
+	public String jobSeeker_Match() {
+		return "/user/jobSeeker_positionMatch";
+	}
 }

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>포지션 매칭</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" 
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" 
+            crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .job-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .job-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .job-item h3 {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>포지션 매칭</h1>
+    <ul id="jobList" class="job-list"></ul>
+
+    <script>
+        $(document).ready(function() {
+            fetchUserInfo();
+        });
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = ('0' + (date.getMonth() + 1)).slice(-2);
+            const day = ('0' + date.getDate()).slice(-2);
+            return `${year}-${month}-${day}`;
+        }
+        
+        function fetchUserInfo() {
+            $.ajax({
+                url: "http://localhost:8888/userInfo",
+                method: "GET",
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function(data) {
+                    if (data) {
+                        const userEmail = data.email;
+                        fetchMatchingPostings(userEmail);
+                    }
+                },
+                error: function() {
+                    alert('사용자 정보를 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+
+        function fetchMatchingPostings(email) {
+            $.ajax({
+                url: `http://localhost:8888/user/matchingPostings?email=${email}`,
+                method: "GET",
+                success: function(data) {
+                    const jobList = $("#jobList");
+                    jobList.empty();
+                    data.forEach(function(job) {
+                    	console.log(job.company_name);
+                    	console.log(job.application_deadline);
+                    	console.log(job.new_name);
+                    	let parts = job.required_skills.split('//');
+                    	let partlocation = job.location.split('//');
+                        const jobItem = `
+                            <li class="job-item">
+                                <h3><a href="/company/job_posting_detail_company?posting_id=${job.posting_id}">${job.title}</a></h3>
+                                <p>기업 이름: ${job.company_name}</p>
+                                <p>위치: `+partlocation[0]+` `+partlocation[1]+` `+partlocation[2]+`</p>
+                                <p>직무: `+parts[0]+` - `+parts[1]+`</p>
+                                <p>마감일: ${formatDate(job.application_deadline)}</p>
+                            </li>
+                        `;
+                        jobList.append(jobItem);
+                    });
+                },
+                error: function() {
+                    alert('매칭된 공고를 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

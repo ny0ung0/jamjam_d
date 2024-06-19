@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JobPosting {
 
+	private String new_name;
+	private String company_name;
 	private Integer posting_id;
 	private Integer company_id;
 	private String title;

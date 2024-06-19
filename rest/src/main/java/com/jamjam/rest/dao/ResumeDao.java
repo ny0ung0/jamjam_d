@@ -35,4 +35,7 @@ public interface ResumeDao {
 	
 	@Select("SELECT * FROM resume RIGHT JOIN user ON resume.user_id = user.user_id WHERE resume_id = #{resume_id}")
 	ResumeDB findByResumeId(int resume_id);
+	
+	@Select("SELECT * FROM resume WHERE user_id = #{user_id} ORDER BY updated_at DESC LIMIT 1")
+    Resume getLatestResume(Integer user_id);
 }
