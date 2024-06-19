@@ -66,8 +66,9 @@ public class MachingController {
 	}
 	
 	@GetMapping("/positionProposal/{company_id}")
-	public void findAllProposal(@PathVariable("company_id")Integer company_id) {
-		
+	public List<PositionProposal> findAllProposal(@PathVariable("company_id")Integer company_id) {
+		List<PositionProposal> list =proposlaMapper.findProposalsAndNameByCompanyId(company_id);
+		return list;
 	}
 	
 	@PostMapping("/positionProposal")
