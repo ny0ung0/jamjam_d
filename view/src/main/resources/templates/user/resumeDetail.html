@@ -31,11 +31,11 @@
             <img id="profilePhoto" src="" alt="Profile Photo" />
         </div>
         <div class="resume-section" id="userinfoSection">
-        	<h3>유저정보</h3>
-        	이름:<span id="name"></span>
-        	연락처:<span id="contact"></span>
-        	생년월일:<span id="birth"></span>
-        	성별:<span id="gender"></span>
+            <h3>유저정보</h3>
+            이름:<span id="name"></span>
+            연락처:<span id="contact"></span>
+            나이:<span id="age"></span>
+            성별:<span id="gender"></span>
         </div>
         <div class="resume-section" id="desiredJobSection">
             <h3>희망직무</h3>
@@ -75,7 +75,7 @@
         </div>
     </div>
     <button id="editButton">수정하기</button>
-	<div id="applicant"></div>
+    <div id="applicant"></div>
     <script>
         $(document).ready(function () {
             const urlParams = new URLSearchParams(window.location.search);
@@ -97,6 +97,25 @@
             const month = ('0' + (date.getMonth() + 1)).slice(-2);
             const day = ('0' + date.getDate()).slice(-2);
             return `${year}-${month}-${day}`;
+        }
+
+        function calculateAge(birthDateString) {
+            const birthDate = new Date(birthDateString);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDifference = today.getMonth() - birthDate.getMonth();
+            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        function formatContact(contact) {
+            return contact.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+        }
+
+        function formatGender(gender) {
+            return gender === 'M' ? '남' : '여';
         }
 
         function formatLicenses(licenses) {
@@ -140,9 +159,9 @@
                     if (data) {
                         $('#title').text(data.title);
                         $('#name').text(data.name);
-                        $('#contact').text(data.contact);
-                        $('#birth').text(formatDate(data.birth_date));
-                        $('#gender').text(data.gender);
+                        $('#contact').text(formatContact(data.contact));
+                        $('#age').text(calculateAge(data.birth_date));
+                        $('#gender').text(formatGender(data.gender));
                         $('#profilePhoto').attr('src', `/images/${data.photo_newName}`);
                         $('#desiredJob').text(`희망직무: ${data.desired_job}`);
                         $('#skills').text(`보유스킬: ${data.skills}`);
@@ -162,81 +181,73 @@
                 }
             });
         }
-        
-        
-        
-        //기업 관련
+
+        // 기업 관련
         function preApplicantCheck(){
-        	 const urlParams = new URLSearchParams(window.location.search);
-             const resume_id = urlParams.get('resume_id');
-             if(urlParams.get('application_id')!=null){
-	             const application_id = urlParams.get('application_id');
-	             
-	             
-	             $.ajax({
-	                 url: "http://localhost:8888/company/jobapplication/" + application_id,
-	                 method: "GET",
-	                 success: function (data) {
-	                	 console.log("성공 들어옴"+data);
-	                	 if (data) {
-	                     	if(data.resume_viewed==0){
-	                     	 $('#applicant').html('<button id="passButton" onclick="pass()">합격</button><button id="nonPassButton" onclick="nonPass()">불합격</button>');
-	                     		
-	                     	}else if(data.resume_viewed==1){
-	                     		$('#applicant').html('합격');
-	                     	}else if(data.resume_viewed==2){
-	                     		$('#applicant').html('불합격');
-	                     	}
-	                	 }
-	                 },
-	                 error: function () {
-	                     alert('지원이력을 가져오는데 오류가 발생했습니다.');
-	                 }
-	             });
-             }
-        }
-        
-        function pass(){
-       	 const urlParams = new URLSearchParams(window.location.search);
+            const urlParams = new URLSearchParams(window.location.search);
             const resume_id = urlParams.get('resume_id');
             if(urlParams.get('application_id')!=null){
-	             const application_id = urlParams.get('application_id');
-	             
-	             
-	             $.ajax({
-	                 url: "http://localhost:8888/company/jobapplication/pass/" + application_id,
-	                 method: "put",
-	                 success: function (data) {
-	                	 console.log("pass 들어옴");
-	                	 preApplicantCheck();
-	                 },
-	                 error: function () {
-	                     alert('지원이력을 가져오는데 오류가 발생했습니다.');
-	                 }
-	             });
+                const application_id = urlParams.get('application_id');
+                $.ajax({
+                    url: "http://localhost:8888/company/jobapplication/" + application_id,
+                    method: "GET",
+                    success: function (data) {
+                        console.log("성공 들어옴"+data);
+                        if (data) {
+                            if(data.resume_viewed==0){
+                                $('#applicant').html('<button id="passButton" onclick="pass()">합격</button><button id="nonPassButton" onclick="nonPass()">불합격</button>');
+                            } else if(data.resume_viewed==1){
+                                $('#applicant').html('합격');
+                            } else if(data.resume_viewed==2){
+                                $('#applicant').html('불합격');
+                            }
+                        }
+                    },
+                    error: function () {
+                        alert('지원이력을 가져오는데 오류가 발생했습니다.');
+                    }
+                });
             }
-       }
+        }
+
+        function pass(){
+            const urlParams = new URLSearchParams(window.location.search);
+            const resume_id = urlParams.get('resume_id');
+            if(urlParams.get('application_id')!=null){
+                const application_id = urlParams.get('application_id');
+                $.ajax({
+                    url: "http://localhost:8888/company/jobapplication/pass/" + application_id,
+                    method: "put",
+                    success: function (data) {
+                        console.log("pass 들어옴");
+                        preApplicantCheck();
+                    },
+                    error: function () {
+                        alert('지원이력을 가져오는데 오류가 발생했습니다.');
+                    }
+                });
+            }
+        }
+
         function nonPass(){
-          	 const urlParams = new URLSearchParams(window.location.search);
-               const resume_id = urlParams.get('resume_id');
-               if(urlParams.get('application_id')!=null){
-   	             const application_id = urlParams.get('application_id');
-   	             
-   	             
-   	             $.ajax({
-   	                 url: "http://localhost:8888/company/jobapplication/nonPass/" + application_id,
-   	                 method: "put",
-   	                 success: function (data) {
-   	                	 console.log("nonPass 들어옴");
-   	                	 preApplicantCheck();
-   	                 },
-   	                 error: function () {
-   	                     alert('지원이력을 가져오는데 오류가 발생했습니다.');
-   	                 }
-   	             });
-               }
-          }
-        
+            const urlParams = new URLSearchParams(window.location.search);
+            const resume_id = urlParams.get('resume_id');
+            if(urlParams.get('application_id')!=null){
+                const application_id = urlParams.get('application_id');
+                $.ajax({
+                    url: "http://localhost:8888/company/jobapplication/nonPass/" + application_id,
+                    method: "put",
+                    success: function (data) {
+                        console.log("nonPass 들어옴");
+                        preApplicantCheck();
+                    },
+                    error: function () {
+                        alert('지원이력을 가져오는데 오류가 발생했습니다.');
+                    }
+                });
+            }
+        }
+
         preApplicantCheck();
     </script>
 </body>
