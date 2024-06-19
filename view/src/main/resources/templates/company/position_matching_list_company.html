@@ -48,7 +48,7 @@ function pre(){
 	    		   btn='제안완료';
 	    	   }
 	    	  box.innerHTML += '<div class="application_id"id='+user.user_id+'> <span class="name">' + user.name + '</span>'+
-	    	   '<span class="UserInfo">'+user.birth_date.slice(0,10)+'/'+user.gender+'/'+user.email+'</span>' +
+	    	   '<span class="UserInfo"> 생년월일:'+user.birth_date.slice(0,10)+' 성별:'+user.gender+' 이메일:'+user.email+'</span>' +
 	    	   '<span class="proposal" id='+company_id+'>'+btn+'</span></div>';
 	       });
 	       

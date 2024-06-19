@@ -16,7 +16,7 @@ public interface CompanyInfoDao {
 	public int insertCompanyInfo(CompanyInfo companyInfo);
 	
 	@Select("select * from companyinfo where company_id = #{company_id}")
-	public CompanyInfo getCompanyInfo(Integer company_id);
+	public CompanyInfo getCompanyInfoByCompanyId(Integer company_id);
 	
 	
 	@Select("select * from companyinfo where info_id = #{info_id}")

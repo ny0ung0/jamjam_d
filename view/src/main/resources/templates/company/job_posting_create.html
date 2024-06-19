@@ -6,103 +6,128 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1>채용 공고 등록</h1>
+	<h1>채용 공고 등록</h1>
 
-<form id="postingFrm">
-	<input type="hidden" name="company_id" th:value="${session.company_id}">
-	공고제목 : <input type="text" name="title" > <br>
-	모집업종 :  <select id="sector1" name="sector1" onchange="sector1SelectChanged()"></select>
-	<select id="sector2" name="sector2"></select>
-	<br>
-	모집직무 : <select id="job_role1" name="job_role1" onchange="job_role1SelectChanged()">
+	<form id="postingFrm">
+		<input type="hidden" name="company_id"
+			th:value="${session.company_id}"> 공고제목 : <input type="text"
+			name="title"> <br> 모집업종 : <select id="sector1"
+			name="sector1" onchange="sector1SelectChanged()"></select> <select
+			id="sector2" name="sector2"></select> <br> 모집직무 : <select
+			id="job_role1" name="job_role1" onchange="job_role1SelectChanged()">
+
+		</select> <select id="job_role2" name="job_role2"
+			onchange="job_role2SelectChanged()"></select><br> 직무내용 :
+		<textarea name="job_description"></textarea>
+		<br> 경력사항 : <input type="text" name="experience_required"><br>
+		고용형태 : <select id="employment_type" name="employment_type"></select><br>
+		모집인원 : <input type="number" name="number_of_positions"><br>
+		임금조건 : <input type="text" name="salary_condition"><br>
+		임금형태 : <input type="text" name="salary_type"><br> 학력조건 :
+		<select id="education_requirement" name="education_requirement"></select><br>
+		필요스킬 : <select id="required_skill1" name="required_skill1"
+			onchange="required_skill1SelectChanged()"></select> <select
+			id="required_skill2" name="required_skill2"
+			onchange="required_skill2SelectChanged()"></select><br> 근무지역 : <select
+			id="address1" name="address1" onchange="address1SelectChanged()"></select>
+		<select id="address2" name="address2"></select> <input type="text"
+			name="detailAddress"><br> 근무시간 : <input type="text"
+			name="working_hours"><br> 기타복리후생 : <input type="text"
+			name="benefits"><br> 키워드 : <span id="keyword1"></span> <br>
+		<span id="keyword2"></span><br> 담당자 이름 : <input type="text"
+			name="contact_person_name"><br> 담당자 이메일 : <input
+			type="text" name="contact_person_email"><br> 담당자 연락처 : <input
+			type="text" name="contact_person_phone"><br> 마감일자 : <input
+			type="date" name="application_deadline"><br>
+		<button onclick="reg(event)">등록</button>
+	</form>
+	<div id="result_post"></div>
+
+
+
+	<script src="/js/json.js"></script>
+	<script>
+		pre0();
+		pre1();
+		pre2();
+		pre3();
+		pre4();
+		pre5();
+		pre6();
+
+		function pre0() {
+			let company_id = "[[${session.company_id}]]"
+			const xhttp = new XMLHttpRequest();
+			xhttp.onload = function() {
 				
-	</select> <select id="job_role2" name="job_role2" onchange="job_role2SelectChanged()"></select><br>
-	직무내용 : <textarea name="job_description" ></textarea> <br>
-	경력사항 : <input type="text" name="experience_required"><br>
-	고용형태 :  <select id="employment_type" name="employment_type"></select><br>
-	모집인원 : <input type="number" name="number_of_positions"><br>
-	임금조건 : <input type="text" name="salary_condition"><br>
-	임금형태 : <input type="text" name="salary_type"><br>
-	학력조건 : <select id="education_requirement" name="education_requirement"></select><br>
-	필요스킬 : <select id="required_skill1" name="required_skill1" onchange="required_skill1SelectChanged()"></select>
-	<select id="required_skill2" name="required_skill2" onchange="required_skill2SelectChanged()"></select><br>
-	근무지역 : <select id="address1" name="address1" onchange="address1SelectChanged()"></select>
-	<select id="address2" name="address2"></select>
-	<input type="text" name="detailAddress"><br>
-	근무시간 : <input type="text" name="working_hours"><br>
-	기타복리후생 : <input type="text" name="benefits"><br>
-	키워드 :  <span id="keyword1"></span> <br>
-	<span id="keyword2"></span><br>
-	담당자 이름 : <input type="text" name="contact_person_name"><br>
-	담당자 이메일 : <input type="text" name="contact_person_email"><br>
-	담당자 연락처 : <input type="text" name="contact_person_phone"><br>
-	마감일자 : <input type="date" name="application_deadline"><br>
-<button onclick="reg(event)">등록</button>
-</form>
-<div id = "result_post"></div>
+				if(this.responseText ==null||this.responseText ==""){
+					alert("기업소개가 없습니다.먼저 기업소개를 등록해주세요");
+					location.href="/company/company_introduction_create";
+				}
+			};
+			xhttp.open("get", "http://localhost:8888/company/companyInfo/"+ company_id,true);
+			// xhttp.setRequestHeader("Content-type", "application/json");
+			xhttp.send();
 
+		}
 
+		//직무2를 선택하면 키워드가 저장되는 메서드
+		function job_role2SelectChanged() {
+			let job_role2 = document.querySelector("#job_role2").value;
+			//alert(job_role1);
+			document.getElementById("keyword1").innerHTML = job_role2;
 
-<script src="/js/json.js"></script>
-<script>
+		}
+		//스킬2를 선택하면 키워드가 저장되는 메서드
+		function required_skill2SelectChanged() {
+			let required_skill2 = document.querySelector("#required_skill2").value;
+			//alert(job_role1);
+			document.getElementById("keyword2").innerHTML = required_skill2;
 
-pre1();
-pre2();
-pre3();
-pre4();
-pre5();
-pre6();
-//직무2를 선택하면 키워드가 저장되는 메서드
-function job_role2SelectChanged(){
-	let job_role2 = document.querySelector("#job_role2").value;
-	//alert(job_role1);
-	 document.getElementById("keyword1").innerHTML =job_role2;
-	 
-}
-//스킬2를 선택하면 키워드가 저장되는 메서드
-function required_skill2SelectChanged(){
-	let required_skill2 = document.querySelector("#required_skill2").value;
-	//alert(job_role1);
-	 document.getElementById("keyword2").innerHTML =required_skill2;
-	 
-}
+		}
 
-
-function reg(e) {
-    e.preventDefault();
-    let frm = document.querySelector("#postingFrm");
-    let data = {
-        "company_id": frm.company_id.value,
-        "title": frm.title.value,
-        "industry": frm.sector1.value + "//" + frm.sector2.value,
-        "job_role": frm.job_role1.value + "//" + frm.job_role2.value,
-        "job_description": frm.job_description.value,
-        "experience_required": frm.experience_required.value ,
-        "employment_type": frm.employment_type.value,
-        "number_of_positions": frm.number_of_positions.value,
-        "salary_condition": frm.salary_condition.value,
-        "salary_type": frm.salary_type.value,
-        "education_requirement": frm.education_requirement.value,
-        "required_skills": frm.required_skill1.value + "//" + frm.required_skill2.value,
-        "location": frm.address1.value +"//"+frm.address2.value +"//"+frm.detailAddress.value ,
-        "working_hours": frm.working_hours.value,
-        "benefits": frm.benefits.value,
-        "keywords": frm.job_role2.value + "//" + frm.required_skill2.value,
-        "contact_person_name": frm.contact_person_name.value,
-        "contact_person_email": frm.contact_person_email.value,
-        "contact_person_phone": frm.contact_person_phone.value,
-        "application_deadline": frm.application_deadline.value,
-    };
-    let sendData = JSON.stringify(data);
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function() {
-        document.getElementById("result_post").innerHTML = this.responseText;
-    };
-    xhttp.open("post", "http://localhost:8888/company/jobposting");
-    xhttp.setRequestHeader("Content-type", "application/json");
-    xhttp.send(sendData);
-}
-
-</script>
+		function reg(e) {
+			
+			e.preventDefault();
+			if(confirm("채용공고를 등록하시겠습니까??")){
+				
+			let frm = document.querySelector("#postingFrm");
+			let data = {
+				"company_id" : frm.company_id.value,
+				"title" : frm.title.value,
+				"industry" : frm.sector1.value + "//" + frm.sector2.value,
+				"job_role" : frm.job_role1.value + "//" + frm.job_role2.value,
+				"job_description" : frm.job_description.value,
+				"experience_required" : frm.experience_required.value,
+				"employment_type" : frm.employment_type.value,
+				"number_of_positions" : frm.number_of_positions.value,
+				"salary_condition" : frm.salary_condition.value,
+				"salary_type" : frm.salary_type.value,
+				"education_requirement" : frm.education_requirement.value,
+				"required_skills" : frm.required_skill1.value + "//"
+						+ frm.required_skill2.value,
+				"location" : frm.address1.value + "//" + frm.address2.value
+						+ "//" + frm.detailAddress.value,
+				"working_hours" : frm.working_hours.value,
+				"benefits" : frm.benefits.value,
+				"keywords" : frm.job_role2.value + "//"
+						+ frm.required_skill2.value,
+				"contact_person_name" : frm.contact_person_name.value,
+				"contact_person_email" : frm.contact_person_email.value,
+				"contact_person_phone" : frm.contact_person_phone.value,
+				"application_deadline" : frm.application_deadline.value,
+			};
+			let sendData = JSON.stringify(data);
+			const xhttp = new XMLHttpRequest();
+			xhttp.onload = function() {
+				//document.getElementById("result_post").innerHTML = this.responseText;
+				location.href="/company/company_job_postings_list";
+			};
+			xhttp.open("post", "http://localhost:8888/company/jobposting");
+			xhttp.setRequestHeader("Content-type", "application/json");
+			xhttp.send(sendData);
+			}
+		}
+	</script>
 </body>
 </html>

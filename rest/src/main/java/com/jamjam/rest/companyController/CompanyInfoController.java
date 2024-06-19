@@ -49,10 +49,10 @@ public class CompanyInfoController {
 		
 	}
 	
-	@GetMapping("/companyInfo/{user_id}")
-	public CompanyInfo getCompanyInfo(@PathVariable("user_id") Integer user_id) {
+	@GetMapping("/companyInfo/{company_id}")
+	public CompanyInfo getCompanyInfo(@PathVariable("company_id") Integer company_id) {
 		System.out.println("회사소개get 들어옴");
-		CompanyInfo result =companyInfoService.getCompanyInfo(user_id);
+		CompanyInfo result =companyInfoService.getCompanyInfoByCompanyId(company_id);
 		System.out.println(result); 
 		
 		return result;
