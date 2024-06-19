@@ -9,7 +9,7 @@
     crossorigin="anonymous"></script>
     <script>
     $(document).ready(function() {
-    	function fetchUserInfo() {
+        function fetchUserInfo() {
             $.ajax({
                 url: "http://localhost:8888/userInfo",
                 method: "GET",
@@ -26,13 +26,11 @@
                         $("#company_id").val(data.user_id);
                         // Check for additional info
                         if (data.hasAdditionalInfo) {
-                        	if(data.role == "ROLE_USER"){
-                        		window.location.href ="/nindex";
-                        	}else{
-                        		
-                        		window.location.href ="/leindex?company_id="+data.user_id;
-                        	}
-                            
+                            if(data.role == "ROLE_USER"){
+                                window.location.href ="/nindex";
+                            }else{
+                                window.location.href ="/leindex?company_id="+data.user_id;
+                            }
                         }
                     }
                 },
@@ -42,9 +40,7 @@
             });
         }
 
-
-         // JSON 데이터를 로드하고 시/도 선택박스에 추가
-            fetch('/json/korea-administrative-district.json')
+        fetch('/json/korea-administrative-district.json')
             .then(response => response.json())
             .then(data => {
                 const citySelect = document.getElementById('city');
@@ -58,14 +54,12 @@
                 });
             });
 
+        document.getElementById('city').addEventListener('change', function() {
+            const selectedCity = this.value;
+            const districtSelect = document.getElementById('district');
+            districtSelect.innerHTML = ''; // 기존 옵션 제거
 
-            // 시/도 선택이 변경되면 구/군 선택박스를 업데이트
-            document.getElementById('city').addEventListener('change', function() {
-                const selectedCity = this.value;
-                const districtSelect = document.getElementById('district');
-                districtSelect.innerHTML = ''; // 기존 옵션 제거
-
-                fetch('/json/korea-administrative-district.json')
+            fetch('/json/korea-administrative-district.json')
                 .then(response => response.json())
                 .then(data => {
                     data.forEach(city => {
@@ -79,145 +73,152 @@
                         }
                     });
                 });
-            });
-            
-            $("#signupForm").submit(function(event) {
-                event.preventDefault();
+        });
 
-                var formData = {
-                        email: $("#email").val(),
-                        name: $("#name").val(),
-                        contact: $("#contact").val(),
-                        city: $("#city").val(),
-                        district: $("#district").val(),
-                        address: $("#address").val(),
-                        birth_date: $("#birthDate").val(),
-                        gender: $("#gender").val()
-                    };
+        $("#signupForm").submit(function(event) {
+            event.preventDefault();
 
-                $.ajax({
-                    type: "PUT",
-                    url: "http://localhost:8888/signup",
-                    data: JSON.stringify(formData),
-                    contentType: "application/json",
-                    success: function(response) {
-                        alert("Signup successful!");
-                        window.location.href = "/nindex"; // 성공 시 리디렉션
-                    },
-                    error: function(xhr, status, error) {
-                        alert("Signup failed: " + xhr.responseText);
-                    }
-                });
-            });
-            
-            $("#jobSeekerTab").click(function() {
-                $("#jobSeekerContainer").show();
-                $("#companyContainer").hide();
-            });
+            var formData = {
+                email: $("#email").val(),
+                name: $("#name").val(),
+                contact: $("#contact").val(),
+                city: $("#city").val(),
+                district: $("#district").val(),
+                address: $("#address").val(),
+                birth_date: $("#birthDate").val(),
+                gender: $("#gender").val()
+            };
 
-            $("#companyTab").click(function() {
-                $("#jobSeekerContainer").hide();
-                $("#companyContainer").show();
+            $.ajax({
+                type: "PUT",
+                url: "http://localhost:8888/signup",
+                data: JSON.stringify(formData),
+                contentType: "application/json",
+                success: function(response) {
+                    alert("Signup successful!");
+                    window.location.href = "/nindex"; // 성공 시 리디렉션
+                },
+                error: function(xhr, status, error) {
+                    alert("Signup failed: " + xhr.responseText);
+                }
             });
-        
+        });
+
+        $("#jobSeekerTab").click(function() {
+            $("#jobSeekerContainer").show();
+            $("#companyContainer").hide();
+        });
+
+        $("#companyTab").click(function() {
+            $("#jobSeekerContainer").hide();
+            $("#companyContainer").show();
+        });
+
         fetchUserInfo();
         pre1();
         pre2();
-        
-      
-        
-        
+
         function pre1(){
-        	//업종 관련
-        	let sector1 =document.getElementById("sector1");
-        	sector1.innerHTML ='<option value="" class="always">선택</option>';
-        	document.getElementById("sector2").innerHTML ='<option value="" class="always">선택</option>';
-           const xhttp = new XMLHttpRequest();
-           xhttp.onload = function() {
-        	  
-           	let results =JSON.parse(this.responseText);
-           	//alert(results);
-           	results.forEach(result => {
-           		//아직 미완성 
-           		//alert(result);
-           		let code =result.코드;
-           		let name = result.업종명;
-           		sector1.innerHTML += '<option value =' +code+'>'+name+'</option>';
-           	})
-              
-           };
-           xhttp.open("get", "http://localhost:8888/json/sector_category", true);
-          // xhttp.setRequestHeader("Content-type", "application/json");
-           xhttp.send();
+            //업종 관련
+            let sector1 = document.getElementById("sector1");
+            sector1.innerHTML = '<option value="" class="always">선택</option>';
+            document.getElementById("sector2").innerHTML = '<option value="" class="always">선택</option>';
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+                let results = JSON.parse(this.responseText);
+                results.forEach(result => {
+                    let code = result.코드;
+                    let name = result.업종명;
+                    sector1.innerHTML += '<option value =' + code + '>' + name + '</option>';
+                });
+            };
+            xhttp.open("get", "http://localhost:8888/json/sector_category", true);
+            xhttp.send();
         }
+        
         function pre2(){
-        	let address1 =document.getElementById("address1");
-        	address1.innerHTML ='<option value="" class="always">선택</option>';
-        	document.getElementById("address2").innerHTML ='<option value="" class="always">선택</option>';
-           const xhttp = new XMLHttpRequest();
-           xhttp.onload = function() {
-        	  
-           	let result =JSON.parse(this.responseText);
-            Object.keys(result).forEach(key => {
-                address1.innerHTML += '<option value="' + key + '">' + key + '</option>';
-            });
-              
-           };
-           xhttp.open("get", "http://localhost:8888/json/address1", true);
-          // xhttp.setRequestHeader("Content-type", "application/json");
-           xhttp.send();
+            let address1 = document.getElementById("address1");
+            address1.innerHTML = '<option value="" class="always">선택</option>';
+            document.getElementById("address2").innerHTML = '<option value="" class="always">선택</option>';
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+                let result = JSON.parse(this.responseText);
+                Object.keys(result).forEach(key => {
+                    address1.innerHTML += '<option value="' + key + '">' + key + '</option>';
+                });
+            };
+            xhttp.open("get", "http://localhost:8888/json/address1", true);
+            xhttp.send();
         }
-        
-      
-        
-        
-        
-        
-           
-            
+
+        // 사업자 번호 확인 후 버튼 상태 업데이트
+        function checkRegistration_number(){
+            var data = {
+                "b_no": [$("#registration_number").val()] // 사업자번호 "xxxxxxx" 로 조회 시,
+            };
+
+            $.ajax({
+                url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=pj1%2B669xKchgAcU3BhHK0bxmPPyBX9A%2FSmvsKpvuzhwIroogcKjl4B5qUfW3XYojSy0TgPWr6jrBOREJkxghlA%3D%3D",  // serviceKey 값을 YOUR_SERVICE_KEY에 입력
+                type: "POST",
+                data: JSON.stringify(data), // json 을 string으로 변환하여 전송
+                dataType: "JSON",
+                contentType: "application/json",
+                accept: "application/json",
+                success: function(result) {
+                    console.log(result.data[0]['tax_type']);
+                    let taxType = result.data[0]['tax_type'];
+                    $("#resultNumber").text(taxType);
+
+                    if (taxType === "국세청에 등록되지 않은 사업자등록번호입니다.") {
+                        $("#companySignupButton").prop("disabled", true);
+                    } else {
+                        $("#companySignupButton").prop("disabled", false);
+                    }
+                },
+                error: function(result) {
+                    console.log(result.responseText); //responseText의 에러메세지 확인
+                }
+            });
+        }
+
+        window.checkRegistration_number = checkRegistration_number;  // 함수를 전역으로 선언
+
     });
     
-  //업종1을 선택하면 업종2를 바꿔주는 메서드
+    //업종1을 선택하면 업종2를 바꿔주는 메서드
     function sector1SelectChanged() {
-    	let sector1 = document.querySelector("#sector1").value;
-    	//alert(sector1);
-    	 document.getElementById("sector2").innerHTML ='<option value="" class="always">선택</option>';
-       
-       const xhttp = new XMLHttpRequest();
-       xhttp.onload = function() {
-       	let sector2 =JSON.parse(this.responseText);
-       	
-       	sector2.forEach(sector => {
-       		 document.getElementById("sector2").innerHTML += '<option value =' +sector+'>'+sector+'</option>';
-       	})
-          
-       };
-       xhttp.open("get", "http://localhost:8888/json/sector/" + sector1, true);
-      // xhttp.setRequestHeader("Content-type", "application/json");
-       xhttp.send();
+        let sector1 = document.querySelector("#sector1").value;
+        document.getElementById("sector2").innerHTML = '<option value="" class="always">선택</option>';
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            let sector2 = JSON.parse(this.responseText);
+            sector2.forEach(sector => {
+                document.getElementById("sector2").innerHTML += '<option value =' + sector + '>' + sector + '</option>';
+            });
+        };
+        xhttp.open("get", "http://localhost:8888/json/sector/" + sector1, true);
+        xhttp.send();
     }
-  //주소1을 선택하면 주소2내용을 바꿔주는 메서드
+
+    //주소1을 선택하면 주소2내용을 바꿔주는 메서드
     function address1SelectChanged() {
-    	let address1 = document.querySelector("#address1").value;
-    	//alert(sector1);
-    	 document.getElementById("address2").innerHTML ='<option value="" class="always">선택</option>';
-       
-       const xhttp = new XMLHttpRequest();
-       xhttp.onload = function() {
-       	let address2 =JSON.parse(this.responseText);
-       	
-       	address2.forEach(address => {
-       		 document.getElementById("address2").innerHTML += '<option value =' +address+'>'+address+'</option>';
-       	})
-          
-       };
-       xhttp.open("get", "http://localhost:8888/json/address2/" + address1, true);
-      // xhttp.setRequestHeader("Content-type", "application/json");
-       xhttp.send();
+        let address1 = document.querySelector("#address1").value;
+        document.getElementById("address2").innerHTML = '<option value="" class="always">선택</option>';
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            let address2 = JSON.parse(this.responseText);
+            address2.forEach(address => {
+                document.getElementById("address2").innerHTML += '<option value =' + address + '>' + address + '</option>';
+            });
+        };
+        xhttp.open("get", "http://localhost:8888/json/address2/" + address1, true);
+        xhttp.send();
     }
+
     function reg(e) {
         e.preventDefault();
-        console.log("reg들어옴")
         let frm = document.querySelector("#companyFrm");
         let data = {
             "email": frm.email.value,
@@ -232,16 +233,21 @@
         let sendData = JSON.stringify(data);
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
-        	alert(this.responseText);
-        	let result = this.responseText;
-        	if(result.includes ("successful")){
-        		window.location.href ="/leindex?company_id="+frm.company_id.value; // 성공 시 리디렉션
-        	}
+            alert(this.responseText);
+            let result = this.responseText;
+            if(result.includes ("successful")){
+                window.location.href ="/leindex?company_id="+frm.company_id.value; // 성공 시 리디렉션
+            }
         };
         xhttp.open("post", "http://localhost:8888/signup/company");
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.send(sendData);
     }
+
+    window.reg = reg;  // 함수를 전역으로 선언
+    window.sector1SelectChanged = sector1SelectChanged;  // 함수를 전역으로 선언
+    window.address1SelectChanged = address1SelectChanged;  // 함수를 전역으로 선언
+
     </script>
 </head>
 <body>
@@ -250,7 +256,7 @@
         <p>Your email is <span id="userEmail"></span>.</p>
     </div>
     <h1>Additional Information</h1>
-	<div>
+    <div>
         <button id="jobSeekerTab">Job Seeker Registration</button>
         <button id="companyTab">Company Registration</button>
     </div>
@@ -265,19 +271,19 @@
                 <input type="text" id="name" name="name" required />
             </div>
             <div>
-            	<label for="contact">Contact:</label>
-            	<input type="text" id="contact" name="contact" required maxlength="11"/>
+                <label for="contact">Contact:</label>
+                <input type="text" id="contact" name="contact" required maxlength="11"/>
             </div>
             <div>
                 <label for="city">City:</label>
                 <select id="city" name="city" required>
-                <option value="">선택</option>
+                    <option value="">선택</option>
                 </select>
             </div>
             <div>
                 <label for="district">District:</label>
                 <select id="district" name="district" required>
-                <option value="">선택</option>
+                    <option value="">선택</option>
                 </select>
             </div>
             <div>
@@ -291,34 +297,34 @@
             <div>
                 <label for="gender">Gender:</label>
                 <select id="gender" name="gender" required>
-                	<option value="">선택</option>
+                    <option value="">선택</option>
                     <option value="M">Male</option>
                     <option value="F">Female</option>
                 </select>
             </div>
             <div>
                 <button type="submit">Submit</button>
-        	</div>
-   		</form>
+            </div>
+        </form>
     </div>
     <div id="companyContainer" style="display:none;">
         <form id="companyFrm">
-        <input type="text" id="company_id" name="company_id">
-            이메일 : <input type="text" name="email" id="companyEmail"><br> 
+            <input type="text" id="company_id" name="company_id" hidden>
+            이메일 : <input type="text" name="email" id="companyEmail" readonly><br> 
             업종 :<select id="sector1" name="sector1" onchange="sector1SelectChanged()"></select>
-	<select id="sector2" name="sector2"></select><br>
-            사업자등록번호 : <input type="text" name="registration_number"><br>
+            <select id="sector2" name="sector2"></select><br>
+            사업자등록번호 : <input type="text" id ="registration_number" name="registration_number"><input type="button" onclick="checkRegistration_number()" value="사업자등록번호확인"><br>
+            <div id="resultNumber"></div><br>
             회사명 : <input type="text" name="company_name"><br>
             대표자명 : <input type="text" name="representative_name"><br>
             회사주소 :<select id="address1" name="address1" onchange="address1SelectChanged()"></select>
-	<select id="address2" name="address2"></select>
-	<input type="text" name="detailAddress"><br>
+            <select id="address2" name="address2"></select>
+            <input type="text" name="detailAddress"><br>
             전화번호 : <input type="text" name="tel"><br>
-            <input type="text" name="role" value="ROLE_COMPANY"/>
-            <button onclick="reg(event)">회원가입</button>
+            <input type="text" name="role" value="ROLE_COMPANY" hidden>
+            <button id="companySignupButton" onclick="reg(event)" disabled>회원가입</button>
         </form>
     </div>
     <div id="result_post"></div>
-    
 </body>
 </html>

@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jamjam.rest.dao.JobapplicationDao;
+import com.jamjam.rest.dao.JobpostingDao;
 import com.jamjam.rest.dao.ResumeDao;
 import com.jamjam.rest.dao.UserDao;
 import com.jamjam.rest.dto.JobApplication;
+import com.jamjam.rest.dto.JobPosting;
 import com.jamjam.rest.dto.User;
+import com.jamjam.rest.service.MailService;
 
 @RestController
 @RequestMapping("/company")
@@ -26,6 +29,13 @@ public class JobapplicationController {
 	UserDao userMapper;	
 	@Autowired
 	ResumeDao resumeMapper;
+	@Autowired
+	MailService mailService;
+	@Autowired
+	JobpostingDao jobpostingMapper;
+	
+
+	
 	
 	@GetMapping("/jobapplication/posting_id/{posting_id}")
 	public List<User> getJobapplicationByCompany_id(@PathVariable("posting_id")Integer posting_id) {
@@ -56,11 +66,77 @@ public class JobapplicationController {
 	@PutMapping("/jobapplication/pass/{application_id}")
 	public void updatePass(@PathVariable("application_id")Integer application_id) {
 		//System.out.println("pass들어옴");
+		JobApplication application= jobapplicationMapper.getJobApplicationByApplicationId(application_id);
+		Integer user_id=application.getUser_id();
+		User user =userMapper.findByUserId(user_id);
+		String mail = user.getEmail();
+		Integer posting_id = application.getPosting_id();
+		JobPosting jobposting = jobpostingMapper.getJobPosting(posting_id);
+		String postingTitle = jobposting.getTitle();
+		String title = "<새로운 알림> 채용공고:["+postingTitle + "], 채용결과가 발표되었습니다.";
+		String content ="<!DOCTYPE html>"
+	            + "<html>"
+	            + "<head>"
+	            + "<style>"
+	            + "  .header { background-color: #f2f2f2; padding: 10px; text-align: center; }"
+	            + "  .content { font-family: Arial, sans-serif; margin: 20px; }"
+	            + "  .button { background-color: #4CAF50; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; margin: 10px 0; border-radius: 4px; }"
+	            + "  .footer { background-color: #f2f2f2; padding: 10px; text-align: center; font-size: 12px; }"
+	            + "</style>"
+	            + "</head>"
+	            + "<body>"
+	            + "  <div class=\"header\">"
+	            + "    <h1>새로운 알림이 도착했습니다.</h1>"
+	            + "  </div>"
+	            + "  <div class=\"content\">"
+	            + "    <p>채용공고 : ["+postingTitle+"]에</p>"
+	            + "    <p>서류 합격하셨습니다. 축하드립니다.</p>"
+	            + "    <a href=\"http://localhost:9999/nindex\" class=\"button\">Get Started</a>"
+	            + "  </div>"
+	            + "  <div class=\"footer\">"
+	            + "    <p>&copy; 2024 Our Service, Inc. All rights reserved.</p>"
+	            + "  </div>"
+	            + "</body>"
+	            + "</html>";
+		mailService.sendHTMLEmail(mail, title, content);
 		jobapplicationMapper.updatePass(application_id);
 	}
 	@PutMapping("/jobapplication/nonPass/{application_id}")
 	public void updateNonPass(@PathVariable("application_id")Integer application_id) {
-		//System.out.println("pass들어옴");
+		//System.out.println("nonpass들어옴");
+		JobApplication application= jobapplicationMapper.getJobApplicationByApplicationId(application_id);
+		Integer user_id=application.getUser_id();
+		User user =userMapper.findByUserId(user_id);
+		String mail = user.getEmail();
+		Integer posting_id = application.getPosting_id();
+		JobPosting jobposting = jobpostingMapper.getJobPosting(posting_id);
+		String postingTitle = jobposting.getTitle();
+		String title = "<새로운 알림> 채용공고:["+postingTitle + "], 채용결과가 발표되었습니다.";
+		String content ="<!DOCTYPE html>"
+	            + "<html>"
+	            + "<head>"
+	            + "<style>"
+	            + "  .header { background-color: #f2f2f2; padding: 10px; text-align: center; }"
+	            + "  .content { font-family: Arial, sans-serif; margin: 20px; }"
+	            + "  .button { background-color: #4CAF50; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; margin: 10px 0; border-radius: 4px; }"
+	            + "  .footer { background-color: #f2f2f2; padding: 10px; text-align: center; font-size: 12px; }"
+	            + "</style>"
+	            + "</head>"
+	            + "<body>"
+	            + "  <div class=\"header\">"
+	            + "    <h1>새로운 알림이 도착했습니다.</h1>"
+	            + "  </div>"
+	            + "  <div class=\"content\">"
+	            + "    <p>채용공고 : ["+postingTitle+"]에</p>"
+	            + "    <p>서류 불합격입니다.더 좋은 기회가 있을 거에요</p>"
+	            + "    <a href=\"http://localhost:9999/nindex\" class=\"button\">Get Started</a>"
+	            + "  </div>"
+	            + "  <div class=\"footer\">"
+	            + "    <p>&copy; 2024 Our Service, Inc. All rights reserved.</p>"
+	            + "  </div>"
+	            + "</body>"
+	            + "</html>";
+		mailService.sendHTMLEmail(mail, title, content);
 		jobapplicationMapper.updateNonPass(application_id);
 	}
 }

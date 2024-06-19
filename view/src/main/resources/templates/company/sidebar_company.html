@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        /* 사이드바 스타일 */
+        #sidebar {
+            width: 200px;
+            height: 100vh; /* Viewport height to make it full height */
+            background-color: #f4f4f4;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        #sidebar h2 {
+            text-align: center;
+        }
+        #sidebar a {
+            display: block;
+            color: #333;
+            padding: 10px 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        #sidebar a:hover {
+            background-color: #ddd;
+        }
+        #sidebar p {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar" th:fragment="sidebarFragment">
+        <div th:if="${session.company_id != null}">
+            <p th:text="${session.company_id}"></p>
+        </div>
+        <a href="/company/company_edit_profile">기업회원수정</a><br>
+        <a href="/company/job_posting_create">채용공고등록</a><br>
+        <a href="/company/job_posting_edit?posting_id=1">채용공고수정</a><br>
+        <a href="/company/all">전체채용공고리스트</a><br>
+        <a href="/company/company_job_postings_list">자신이 작성한 공고 리스트</a><br>
+        
+        <a href="/company/company_introduction_create">회사소개 등록</a><br>
+        <a href="/company/company_introduction_detail?company_id=6">회사소개 상세페이지</a><br>
+        <a href="/company/company_introduction_edit?info_id=1">회사소개 수정페이지</a><br>
+        <a href="/company/applicants_list?posting_id=1">채용공고별(일단 1번공고) 지원자 리스트</a><br>
+        <a href="/company/position_matching_list_company">공고별 매칭 리스트</a><br>
+    </div>
+</body>
+</html>

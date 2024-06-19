@@ -31,7 +31,7 @@ public class CompanyController {
 	}
 
 	@RequestMapping("/job_posting_detail_company")
-	public void job_posting_detail_company(@RequestParam("posting_id") Integer posting_id,Model model) {
+	public void job_posting_detail_company(@RequestParam(value ="posting_id",required =false) Integer posting_id,Model model) {
 		model.addAttribute("posting_id", posting_id);
 	}
 	@RequestMapping("/all")
@@ -44,7 +44,7 @@ public class CompanyController {
 		
 	}
 	@RequestMapping("/company_introduction_detail")
-	public void company_introduction_detail(@RequestParam("info_id")Integer info_id,Model model) {
+	public void company_introduction_detail(@RequestParam(value ="info_id",required =false)Integer info_id,Model model) {
 		model.addAttribute("info_id",info_id);
 	}
 	@RequestMapping("/company_introduction_edit")

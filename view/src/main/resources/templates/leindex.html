@@ -1,30 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+    <style>
+        /* 메인 콘텐츠 스타일 */
+        #content {
+            margin-left: 220px; /* 사이드바 너비 + 여백 */
+            padding: 20px;
+        }
+        /* 사이드바 위치 조정 */
+        #sidebar-wrapper {
+            float: left;
+            width: 200px;
+        }
+    </style>
 </head>
 <body>
-<h2>이준형</h2>
-<div th:if="${session.loginCompany ne null}">
-<p th:text="${session.loginCompany.company_id}"></p>
-</div>
-<a href="/reg_company_form">기업회원가입폼</a>
-<a href="/company/company_edit_profile">기업회원수정</a>
-<a href="/company/log">임시로그인</a><br>
-<a href="/company/job_posting_create">채용공고등록</a>
-<a href="/company/job_posting_edit?posting_id=1">채용공고수정</a>
-<a href="/company/all">전체채용공고리스트</a>
-<a href="/company/company_job_postings_list">자신이 작성한 공고 리스트</a>
-<a href="/company/job_posting_detail_company?posting_id=1">채용공고상세페이지</a><br>
-<a href="/company/company_introduction_create">회사소개 등록</a>
-<a href="/company/company_introduction_detail?info_id=1">회사소개 상세페이지</a>
-<a href="/company/company_introduction_edit?info_id=1">회사소개 수정페이지</a><br>
-<br>
-<a href="/company/applicants_list?posting_id=1"> 채용공고별(일단 1번공고) 지원자 리스트</a>
-<br>
-<a href="/company/position_matching_list_company">공고별 매칭 리스트</a>
-
-
+    <div id="sidebar-wrapper">
+        <div th:replace="company/sidebar_company :: sidebarFragment"></div>
+    </div>
+    <div id="content">
+        <header>
+            <h1>Main Content</h1>
+        </header>
+        <main>
+            <p>This is the main content of the page.</p>
+        </main>
+    </div>
 </body>
 </html>

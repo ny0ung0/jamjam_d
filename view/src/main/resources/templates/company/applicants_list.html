@@ -41,7 +41,8 @@ function pre(){
  function resumeDetail(e){
 	 let resume_id = e.target.closest(".resumeDetail").id;
 	 let application_id=e.target.closest(".application_id").id;
-	 location.href="/user/resumeDetail?resume_id="+resume_id+"&application_id="+application_id;
+	 let company_id = "[[${session.company_id}]]";
+	 location.href="/user/resumeDetail?resume_id="+resume_id+"&application_id="+application_id+"&company_id="+company_id;
  }
 </script>
 </body>

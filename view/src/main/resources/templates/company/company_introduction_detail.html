@@ -49,7 +49,7 @@
 </head>
 <body>
 <h1>기업소개</h1>
-
+<p id="company_id" style="display : none;"></p>
 <div id="companyInfoContainer" class="company-info">
     <div class="logoBox">
         <img src="" id="logo" alt="Company Logo">
@@ -147,7 +147,7 @@ geocoder.addressSearch(adress, function(result, status) {
 <script>
 $(document).ready(function() {
     fetchCompanyInfo();
-    fetchCompany();
+    
 });
 
 
@@ -157,8 +157,10 @@ $(document).ready(function() {
 
 
 function fetchCompany() {
-    let company_id = "[[${session.company_id}]]"; // Thymeleaf syntax to get company_id from session
-	
+    let company_id = $("#company_id").text(); // Thymeleaf syntax to get company_id from session
+   
+    if(!(company_id==null|| company_id=="")){
+		
     $.ajax({
         url: "http://localhost:8888/company/" + company_id,
         method: "GET",
@@ -169,20 +171,36 @@ function fetchCompany() {
             console.log("Error fetching company info");
         }
     });
+	}else if(!(info_id==null|| info_id=="")){
+		
+	    $.ajax({
+	        url: "http://localhost:8888/company/" + company_id,
+	        method: "GET",
+	        success: function(data) {
+	            displayCompany(data);
+	        },
+	        error: function() {
+	            console.log("Error fetching company info");
+	        }
+	    });
+	}
 }
 function displayCompany(company) {
     
     $("#company_name").text(company.company_name);
     $("#company_type").text(company.company_type);
     $("#representative_name").text(company.representative_name);
+    let parts = company.address.split("//");
+    $("#address").text(parts[0]+" "+parts[1]+" "+parts[2]);
     addressMap(company.address,company.company_name);
 }
 
 
 
 function fetchCompanyInfo() {
+	let company_id = "[[${session.company_id}]]";
     let info_id = "[[${info_id}]]"; // Thymeleaf syntax to get company_id from session
-
+    if(!(info_id==null|| info_id=="")){
     $.ajax({
         url: "http://localhost:8888/company/companyInfo/info_id/" + info_id,
         method: "GET",
@@ -193,6 +211,18 @@ function fetchCompanyInfo() {
             console.log("Error fetching company info");
         }
     });
+    }else if(!(company_id==null|| company_id=="")){
+        $.ajax({
+            url: "http://localhost:8888/company/companyInfo/" + company_id,
+            method: "GET",
+            success: function(data) {
+                displayCompanyInfo(data);
+            },
+            error: function() {
+                console.log("Error fetching company info");
+            }
+        });
+    }
 }
 
 function displayCompanyInfo(companyInfo) {
@@ -204,7 +234,10 @@ function displayCompanyInfo(companyInfo) {
     $("#ideal_candidate").text(companyInfo.ideal_candidate);
     $("#main_contact").text(companyInfo.main_contact);
     $("#main_email").text(companyInfo.main_email);
+    $("#company_id").text(companyInfo.company_id);
+    fetchCompany();
 }
+
 </script>
 
 </body>
