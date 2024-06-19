@@ -57,4 +57,9 @@ public class UserController {
 	public String jobSeeker_Match() {
 		return "/user/jobSeeker_positionMatch";
 	}
+	
+	@GetMapping("positionProposal")
+	public String positionProposalList() {
+		return "/user/positionProposal";
+	}
 }

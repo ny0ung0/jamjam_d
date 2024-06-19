@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>포지션 제의 받은 목록</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" 
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" 
+            crossorigin="anonymous"></script>
+    <style>
+        /* Modal 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>포지션 제의 리스트</h2>
+    <ul id="proposalList" class="proposal-list"></ul>
+
+    <!-- The Modal -->
+    <div id="proposalModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modalProposalTitle"></h3>
+            <p>기업 이름: <span id="modalCompanyName"></span></p>
+            <p>제안 내용: <span id="modalProposalContent"></span></p>
+            <button id="acceptButton">수락</button>
+            <button id="rejectButton">거절</button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            fetchUserInfo();
+        });
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = ('0' + (date.getMonth() + 1)).slice(-2);
+            const day = ('0' + date.getDate()).slice(-2);
+            return `${year}-${month}-${day}`;
+        }
+
+        function fetchUserInfo() {
+            $.ajax({
+                url: "http://localhost:8888/userInfo",
+                method: "GET",
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function(data) {
+                    if (data) {
+                        const userEmail = data.email;
+                        fetchProposalList(userEmail);
+                    }
+                },
+                error: function() {
+                    alert('사용자 정보를 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+
+        function fetchProposalList(email) {
+            $.ajax({
+                url: `http://localhost:8888/user/positionProposal?email=${email}`,
+                method: "GET",
+                success: function(data) {
+                    const proposalList = $("#proposalList");
+                    proposalList.empty();
+                    data.forEach(function(proposal) {
+                        const proposalItem = `
+                            <li class="proposal-item">
+                                <h3>${proposal.proposal_title}</h3>
+                                <p>기업 이름: ${proposal.company_name}</p>
+                                <p>발송일: ${formatDate(proposal.created_at)}</p>
+                                <button onclick="showProposalDetails(${proposal.proposal_id}, '${proposal.company_name}', '${proposal.proposal_title}', '${proposal.proposal_content}')">상세 확인</button>
+                            </li>
+                        `;
+                        proposalList.append(proposalItem);
+                    });
+                },
+                error: function() {
+                    alert('포지션 제안을 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+
+        function showProposalDetails(proposal_id, company_name, proposal_title, proposal_content) {
+            $('#modalProposalTitle').text(proposal_title);
+            $('#modalCompanyName').text(company_name);
+            $('#modalProposalContent').text(proposal_content);
+
+            $('#acceptButton').off('click').on('click', function() {
+                updateProposalStatus(proposal_id, '수락');
+            });
+
+            $('#rejectButton').off('click').on('click', function() {
+                updateProposalStatus(proposal_id, '거절');
+            });
+
+            $('#proposalModal').css('display', 'block');
+        }
+
+        function updateProposalStatus(proposal_id, status) {
+            $.ajax({
+                url: `http://localhost:8888/user/positionProposal`,
+                method: "PUT",
+                contentType: 'application/json',
+                data: JSON.stringify({ proposal_id: proposal_id, status: status }),
+                success: function() {
+                    alert(`제안이 ${status}되었습니다.`);
+                    $('#proposalModal').css('display', 'none');
+                    fetchUserInfo();
+                },
+                error: function() {
+                    alert('제안 상태 업데이트 중 오류가 발생했습니다.');
+                }
+            });
+        }
+
+        // 모달 닫기
+        $(document).on('click', '.close', function() {
+            $('#proposalModal').css('display', 'none');
+        });
+
+        $(window).on('click', function(event) {
+            if (event.target.id === 'proposalModal') {
+                $('#proposalModal').css('display', 'none');
+            }
+        });
+    </script>
+</body>
+</html>
