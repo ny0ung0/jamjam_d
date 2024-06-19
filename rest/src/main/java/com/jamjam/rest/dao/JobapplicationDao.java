@@ -15,7 +15,7 @@ import com.jamjam.rest.dto.JobAppliedList;
 @Mapper
 public interface JobapplicationDao {
 	
-	@Insert("INSERT INTO jobapplication (user_id, posting_id) VALUES (#{user_id}, #{posting_id})")
+	@Insert("INSERT INTO jobapplication (user_id, posting_id, resume_id) VALUES (#{user_id}, #{posting_id}, #{resume_id})")
 	void applyJob(JobApplication jobApplication);
 
 	

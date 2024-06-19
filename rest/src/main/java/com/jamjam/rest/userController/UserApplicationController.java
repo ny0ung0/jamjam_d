@@ -44,6 +44,9 @@ public class UserApplicationController {
     @Autowired
     private JobapplicationDao jobApplicationMapper;
 	
+    
+   
+    
 	@GetMapping("/jobPosts")
     public List<JobPosting> jobPostList(){
     	List<JobPosting> postList = jobpostMapper.getPostingAll();
@@ -53,13 +56,13 @@ public class UserApplicationController {
     }
     
     @PostMapping("/applyJob/{post_id}")
-    public ResponseEntity<?> applyJob(@PathVariable("post_id")Integer post_id, @RequestParam ("email") String email) {
+    public ResponseEntity<?> applyJob(@PathVariable("post_id")Integer post_id, @RequestParam ("email") String email, @RequestParam("resume_id") Integer resume_id) {
         Integer user_id = userMapper.findByEmailInteger(email);
         
         JobApplication jobApplication = new JobApplication();
         jobApplication.setUser_id(user_id);
         jobApplication.setPosting_id(post_id);
-        
+        jobApplication.setResume_id(resume_id);
         jobApplicationMapper.applyJob(jobApplication);
 
         return ResponseEntity.ok("Job application successful");
