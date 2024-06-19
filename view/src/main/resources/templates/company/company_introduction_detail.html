@@ -49,14 +49,15 @@
 </head>
 <body>
 <h1>기업소개</h1>
-<p id="company_id" style="display : none;"></p>
+<p id="company_id" style="display: none;">[[${session.company_id}]]</p>
 <div id="companyInfoContainer" class="company-info">
     <div class="logoBox">
         <img src="" id="logo" alt="Company Logo">
     </div>
      <div class="field">
         <label>회사 이름:</label>
-        <span id="company_name"></span>
+        <p>회사명 : <a id="company_name" href=""></a>
+<span id="company_id" style="display: none;"></span></p>
     </div>
     <div class="field">
         <label>업종 :</label>
@@ -99,121 +100,112 @@
         <span id="address"></span>
     </div>
 </div>
+
+<button id="updateBtn" onclick="update()" >회원정보수정</button>
+
 <div id="map" style="width:400px;height:250px;"></div>
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=906820dc89cc6e06ebf1f3063fe49049&libraries=services"></script>
 <script>
-function addressMap(adress,company_name){
+function addressMap(address, company_name) {
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+        mapOption = {
+            center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+            level: 3 // 지도의 확대 레벨
+        };  
 
-var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-    mapOption = {
-        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-        level: 3 // 지도의 확대 레벨
-    };  
+    // 지도를 생성합니다    
+    var map = new kakao.maps.Map(mapContainer, mapOption); 
 
-// 지도를 생성합니다    
-var map = new kakao.maps.Map(mapContainer, mapOption); 
+    // 주소-좌표 변환 객체를 생성합니다
+    var geocoder = new kakao.maps.services.Geocoder();
 
-// 주소-좌표 변환 객체를 생성합니다
-var geocoder = new kakao.maps.services.Geocoder();
+    // 주소로 좌표를 검색합니다
+    geocoder.addressSearch(address, function(result, status) {
+        // 정상적으로 검색이 완료됐으면 
+        if (status === kakao.maps.services.Status.OK) {
+            var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-// 주소로 좌표를 검색합니다
-geocoder.addressSearch(adress, function(result, status) {
+            // 결과값으로 받은 위치를 마커로 표시합니다
+            var marker = new kakao.maps.Marker({
+                map: map,
+                position: coords
+            });
 
-    // 정상적으로 검색이 완료됐으면 
-     if (status === kakao.maps.services.Status.OK) {
+            // 인포윈도우로 장소에 대한 설명을 표시합니다
+            var infowindow = new kakao.maps.InfoWindow({
+                content: '<div style="width:150px;text-align:center;padding:6px 0;">' + company_name + '</div>'
+            });
+            infowindow.open(map, marker);
 
-        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-        // 결과값으로 받은 위치를 마커로 표시합니다
-        var marker = new kakao.maps.Marker({
-            map: map,
-            position: coords
-        });
-
-        // 인포윈도우로 장소에 대한 설명을 표시합니다
-        var infowindow = new kakao.maps.InfoWindow({
-            content: '<div style="width:150px;text-align:center;padding:6px 0;">'+company_name+'</div>'
-        });
-        infowindow.open(map, marker);
-
-        // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-        map.setCenter(coords);
-    } 
-}); 
+            // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+            map.setCenter(coords);
+        } 
+    }); 
 }
-</script>
 
-<script>
 $(document).ready(function() {
     fetchCompanyInfo();
-    
 });
-
-
-
-
-
-
 
 function fetchCompany() {
     let company_id = $("#company_id").text(); // Thymeleaf syntax to get company_id from session
    
-    if(!(company_id==null|| company_id=="")){
-		
-    $.ajax({
-        url: "http://localhost:8888/company/" + company_id,
-        method: "GET",
-        success: function(data) {
-            displayCompany(data);
-        },
-        error: function() {
-            console.log("Error fetching company info");
-        }
-    });
-	}else if(!(info_id==null|| info_id=="")){
-		
-	    $.ajax({
-	        url: "http://localhost:8888/company/" + company_id,
-	        method: "GET",
-	        success: function(data) {
-	            displayCompany(data);
-	        },
-	        error: function() {
-	            console.log("Error fetching company info");
-	        }
-	    });
-	}
+    if (company_id) {
+        $.ajax({
+            url: "http://localhost:8888/company/" + company_id,
+            method: "GET",
+            success: function(data) {
+                displayCompany(data);
+            },
+            error: function() {
+                console.log("Error fetching company info");
+            }
+        });
+    }
 }
+
 function displayCompany(company) {
-    
     $("#company_name").text(company.company_name);
     $("#company_type").text(company.company_type);
     $("#representative_name").text(company.representative_name);
     let parts = company.address.split("//");
-    $("#address").text(parts[0]+" "+parts[1]+" "+parts[2]);
-    addressMap(company.address,company.company_name);
+    $("#address").text(parts[0] + " " + parts[1] + " " + parts[2]);
+    addressMap(company.address, company.company_name);
 }
 
-
-
 function fetchCompanyInfo() {
-	let company_id = "[[${session.company_id}]]";
-    let info_id = "[[${info_id}]]"; // Thymeleaf syntax to get company_id from session
-    if(!(info_id==null|| info_id=="")){
-    $.ajax({
-        url: "http://localhost:8888/company/companyInfo/info_id/" + info_id,
-        method: "GET",
-        success: function(data) {
-            displayCompanyInfo(data);
-        },
-        error: function() {
-            console.log("Error fetching company info");
-        }
-    });
-    }else if(!(company_id==null|| company_id=="")){
+    let company_id = "[[${session.company_id}]]";
+    const urlParams = new URLSearchParams(window.location.search);
+    const company_idP = urlParams.get('company_id');
+   
+    let info_id = "[[${info_id}]]"; // Thymeleaf syntax to get info_id from session
+
+    if (info_id) {
+        $.ajax({
+            url: "http://localhost:8888/company/companyInfo/info_id/" + info_id,
+            method: "GET",
+            success: function(data) {
+                displayCompanyInfo(data);
+            },
+            error: function() {
+                console.log("Error fetching company info");
+            }
+        });
+    } else if (company_id) {
         $.ajax({
             url: "http://localhost:8888/company/companyInfo/" + company_id,
+            method: "GET",
+            success: function(data) {
+                displayCompanyInfo(data);
+            },
+            error: function() {
+                console.log("Error fetching company info");
+            }
+        });
+    } else if (company_idP) {
+        $.ajax({
+            url: "http://localhost:8888/company/companyInfo/" + company_idP,
             method: "GET",
             success: function(data) {
                 displayCompanyInfo(data);
@@ -236,6 +228,18 @@ function displayCompanyInfo(companyInfo) {
     $("#main_email").text(companyInfo.main_email);
     $("#company_id").text(companyInfo.company_id);
     fetchCompany();
+    toggleUpdateButton(companyInfo.company_id);
+}
+
+function toggleUpdateButton(companyId) {
+    let sessionCompanyId = "[[${session.company_id}]]";
+    console.log("Company ID:", companyId); // Debugging
+    console.log("Session Company ID:", sessionCompanyId); // Debugging
+    if (companyId == sessionCompanyId) {
+        $("#updateBtn").show();
+    } else {
+        $("#updateBtn").hide();
+    }
 }
 
 </script>

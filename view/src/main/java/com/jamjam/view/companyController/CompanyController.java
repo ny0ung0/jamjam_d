@@ -66,4 +66,9 @@ public class CompanyController {
 		model.addAttribute("company_id", company_id);
 		model.addAttribute("user_id", user_id);
 	}
+	
+	@RequestMapping("company_homepage")
+	public void company_homepage() {
+		
+	}
 }
