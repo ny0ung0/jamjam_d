@@ -20,6 +20,7 @@ import com.jamjam.rest.dao.CompanyDao;
 import com.jamjam.rest.dao.UserDao;
 import com.jamjam.rest.dto.Company;
 import com.jamjam.rest.dto.User;
+import com.jamjam.rest.service.MailService;
 
 @RestController
 public class MainController {
@@ -28,6 +29,33 @@ public class MainController {
 	UserDao userMapper;
 	@Autowired
 	CompanyDao companyMapper;
+	@Autowired
+	MailService mailService;
+	
+	String emailContent = "<!DOCTYPE html>"
+            + "<html>"
+            + "<head>"
+            + "<style>"
+            + "  .header { background-color: #f2f2f2; padding: 10px; text-align: center; }"
+            + "  .content { font-family: Arial, sans-serif; margin: 20px; }"
+            + "  .button { background-color: #4CAF50; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; margin: 10px 0; border-radius: 4px; }"
+            + "  .footer { background-color: #f2f2f2; padding: 10px; text-align: center; font-size: 12px; }"
+            + "</style>"
+            + "</head>"
+            + "<body>"
+            + "  <div class=\"header\">"
+            + "    <h1>Welcome to Our Service</h1>"
+            + "  </div>"
+            + "  <div class=\"content\">"
+            + "    <p>Hello,</p>"
+            + "    <p>Thank you for joining our service. We are excited to have you on board.</p>"
+            + "    <a href=\"http://localhost:9999/nindex\" class=\"button\">Get Started</a>"
+            + "  </div>"
+            + "  <div class=\"footer\">"
+            + "    <p>&copy; 2024 Our Service, Inc. All rights reserved.</p>"
+            + "  </div>"
+            + "</body>"
+            + "</html>";
 	
 	 @GetMapping("/userInfo")
 	    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal OAuth2User principal) {
@@ -61,6 +89,7 @@ public class MainController {
 
     @PutMapping("/signup")
     public ResponseEntity<?> processSignup(@RequestBody Map<String, Object> requestData) {
+    	
     	try {
             User user = new User();
             user.setEmail((String) requestData.get("email"));
@@ -84,6 +113,7 @@ public class MainController {
             System.out.println(user.getEmail());
             User userid = userMapper.findByEmail(user.getEmail());
             System.out.println(userid);
+            mailService.sendHTMLEmail(user.getEmail(), "jamjam에서 알려드립니다", emailContent);
             return ResponseEntity.ok().body("Signup successful");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Signup failed: " + e.getMessage());
@@ -129,6 +159,7 @@ public class MainController {
     	System.out.println("기업회원가입 컨틀롤러 들어옴...");
     	try {
     		companyMapper.insertCompany(company);
+    		mailService.sendHTMLEmail(company.getEmail(), "jamjam에서 알려드립니다", emailContent);
         	return ResponseEntity.ok().body("Signup successful");
     	}catch(Exception e) {
     		return  ResponseEntity.status(500).body("Signup failed: " + e.getMessage());

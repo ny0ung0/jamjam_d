@@ -23,14 +23,12 @@
                         $("#email").val(data.email);
                         $("#companyEmail").val(data.email);  // Populate company email field
                         $("#name").val(data.name);
+                        $("#company_id").val(data.user_id);
                         // Check for additional info
                         if (data.hasAdditionalInfo) {
-                        	console.log(data.role);
                         	if(data.role == "ROLE_USER"){
-                        		
                         		window.location.href ="/nindex";
                         	}else{
-                        		console.log(data.user_id);
                         		
                         		window.location.href ="/leindex?company_id="+data.user_id;
                         	}
@@ -237,7 +235,7 @@
         	alert(this.responseText);
         	let result = this.responseText;
         	if(result.includes ("successful")){
-        	window.location.href = "/leindex"; // 성공 시 리디렉션
+        		window.location.href ="/leindex?company_id="+frm.company_id.value; // 성공 시 리디렉션
         	}
         };
         xhttp.open("post", "http://localhost:8888/signup/company");
@@ -305,6 +303,7 @@
     </div>
     <div id="companyContainer" style="display:none;">
         <form id="companyFrm">
+        <input type="text" id="company_id" name="company_id">
             이메일 : <input type="text" name="email" id="companyEmail"><br> 
             업종 :<select id="sector1" name="sector1" onchange="sector1SelectChanged()"></select>
 	<select id="sector2" name="sector2"></select><br>
