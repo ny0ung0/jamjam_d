@@ -252,7 +252,7 @@ function fetchUserInfo() {
 }
 
 function checkCompanySession() {
-    if (companyId !== 'null') {
+    if (companyId != null) {
         const editButtonHtml = `<button onclick="editJobPosting()">수정하기</button>`;
         $('#postingContainer').append(editButtonHtml);
     }
