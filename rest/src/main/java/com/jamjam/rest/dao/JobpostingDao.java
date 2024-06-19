@@ -62,4 +62,8 @@ public interface JobpostingDao {
 	 
 	 @Update("UPDATE jobposting SET view_count = #{view_count} WHERE posting_id = #{posting_id}")
 	 public void updatePostView(@Param("view_count") Integer view_count, @Param("posting_id") Integer posting_id);
+
+	 @Select("SELECT * FROM jobposting RIGHT JOIN user ON jobposting.company_id = user.user_id right JOIN companyinfo on companyinfo.company_id = user.user_id WHERE SUBSTRING_INDEX(location, '//', 1) = #{desired_conditions} AND SUBSTRING_INDEX(required_skills, '//', 1) = #{desired_job}")
+	 public List<JobPosting> getMatchingJobPostings(@Param("desired_conditions") String desired_conditions, @Param("desired_job") String desiredJob);
+	 
 }
