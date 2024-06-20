@@ -43,8 +43,10 @@ public class MachingController {
 		for(ResumeDB resume : resumes){
 			if(resume.getDesired_job().contains(keyword) || resume.getSkills().contains(keyword) ) {
 				Integer userId=resume.getUser_id();
+				User user =userMapper.findByUserId(userId);
+				user.setResume_id(resume.getResume_id());
 				
-				results.add(userMapper.findByUserId(userId));
+				results.add(user);
 			}
 		}
 	}

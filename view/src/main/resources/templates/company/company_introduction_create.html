@@ -6,71 +6,148 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"
 	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
 	crossorigin="anonymous"></script>
+<link th:if="${session.company_id ne null}" rel="stylesheet"
+	type="text/css" href="/css/company.css">
+	<style>
+	
+	 body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+       
+
+       
+
+        .content {
+            /* Sidebar 너비와 동일하게 설정 */
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        h1 {
+            color: #2F4F4F;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input[type="text"], input[type="number"], select, textarea, input[type="file"] {
+            width: calc(100% - 10px); /* 폼 요소 너비 조정 */
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical; /* 수직 리사이즈 가능하도록 설정 */
+        }
+
+        button {
+            background-color: #2F4F4F;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1E3940;
+        }
+	</style>
 </head>
 <body>
-<h1>기업소개 등록</h1>
+	<div th:if="${session.company_id ne null}"
+		th:replace="header :: headerFragment">
+		<!-- The header content will be included here -->
+	</div>
+	<div class="container">
 
-<form name="frm" id="companyInfoFrm" method="POST">
-	<input type="text" name="company_id" th:value="${session.company_id}">
-	회사로고 :<input type="file" name="file"><br>
-	회사소개 :<textarea name="description"></textarea><br>
-	사원수 :<input type="number" name="number_of_employees"><br>
-	근무환경 :<input type="text" name="working_environment"><br>
-	복리후생 :<input type="text" name="benefits"><br>
-	인재상 :<input type="text" name="ideal_candidate"><br>
-	전화번호 :<input type="text" name="main_contact"><br>
-	이메일 :<input type="text" name="main_email"><br>
-	<input type="submit" onclick="reg11(event)" value="등록">
-	
-</form>
-<div id="demo"></div>
-<script>
-pre();
+		<div class="sidebar" th:if="${session.company_id ne null}"
+			th:replace="sidebar :: sidebarFragment">
+			<!-- Sidebar content will be included here -->
+		</div>
+		<div class="content">
+			<h1>기업소개 등록</h1>
 
-function pre(){
-	let company_id = "[[${session.company_id}]]";
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function() {
-       let companyInfo = JSON.parse(this.responseText);
-       if(companyInfo==null||companyInfo+""){
-    	   alert("이미 기업소개를 등록하셨습니다.");
-    	   location.href="/company/company_introduction_detail";
-       }
-    };
-    xhttp.open("get", "http://localhost:8888/company/companyInfo/"+company_id);
-    xhttp.send();
-}
+			<form name="frm" id="companyInfoFrm" method="POST">
+				<input type="text" name="company_id"
+					th:value="${session.company_id}"> 회사로고 :<input type="file"
+					name="file"><br> 회사소개 :
+				<textarea name="description"></textarea>
+				<br> 사원수 :<input type="number" name="number_of_employees"><br>
+				근무환경 :<input type="text" name="working_environment"><br>
+				복리후생 :<input type="text" name="benefits"><br> 인재상 :<input
+					type="text" name="ideal_candidate"><br> 전화번호 :<input
+					type="text" name="main_contact"><br> 이메일 :<input
+					type="text" name="main_email"><br>
+					<button onclick="reg11(event)">등록</button>
+
+			</form>
+			<div id="demo"></div>
 
 
-function reg11(event){
-    event.preventDefault();
-    alert("submit....");
 
-    let frm = document.querySelector("#companyInfoFrm");
-    alert(frm.file);
-    let formData = new FormData(frm);
 
-    $.ajax({
-        type: "post",
-        url: "http://localhost:8888/company/companyInfo",
-        enctype: "multipart/form-data",
-        
-        data: formData,
-        dataType: "text",
-        contentType: false,
-        processData: false,
-        cache: false,
-        success: function(data){
-            console.log(data);
-            $("#demo").html(data);
-        },
-        error: function(){
-            console.log("에러발생" + data);
-        }
-    });
-}
-	
-</script>
+		</div>
+	</div>
+
+	<script>
+		pre();
+
+		function pre() {
+			let company_id = "[[${session.company_id}]]";
+			const xhttp = new XMLHttpRequest();
+			xhttp.onload = function() {
+				let companyInfo = JSON.parse(this.responseText);
+				if (companyInfo == null || companyInfo + "") {
+					alert("이미 기업소개를 등록하셨습니다.");
+					location.href = "/company/company_introduction_detail";
+				}
+			};
+			xhttp.open("get", "http://localhost:8888/company/companyInfo/"
+					+ company_id);
+			xhttp.send();
+		}
+
+		function reg11(event) {
+			event.preventDefault();
+			alert("submit....");
+
+			let frm = document.querySelector("#companyInfoFrm");
+			alert(frm.file);
+			let formData = new FormData(frm);
+
+			$.ajax({
+				type : "post",
+				url : "http://localhost:8888/company/companyInfo",
+				enctype : "multipart/form-data",
+
+				data : formData,
+				dataType : "text",
+				contentType : false,
+				processData : false,
+				cache : false,
+				success : function(data) {
+					console.log(data);
+					$("#demo").html(data);
+				},
+				error : function() {
+					console.log("에러발생" + data);
+				}
+			});
+		}
+	</script>
 
 </body>
 </html>

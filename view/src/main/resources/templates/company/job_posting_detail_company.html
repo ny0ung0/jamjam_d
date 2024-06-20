@@ -117,13 +117,24 @@
         cursor: pointer;
     }
 </style>
+<link th:if="${session.company_id ne null}" rel="stylesheet" type="text/css" href="/css/company.css">   
 </head>
 <body>
-<h1>채용 공고 상세페이지</h1>
-//기업 로고,회사명 넣어야함!!!!!
+    <div th:if="${session.company_id ne null}" th:replace="header :: headerFragment">
+        <!-- The header content will be included here -->
+    </div>
+    <div class="container">
+        
+        <div class="sidebar" th:if="${session.company_id ne null}" th:replace="sidebar :: sidebarFragment">
+            <!-- Sidebar content will be included here -->
+        </div>
+        <div class="content">
+         
+         <h1>채용 공고 상세페이지</h1>
+
 <div id="postingContainer">
 <div class="logoBox">
-    <img src="#" id="logo">
+    <img src="#" id="logo" width ="300px" height="300px">
 </div>
     <div class="job-header">
         <h2><span id="title"></span></h2>
@@ -215,6 +226,12 @@
         <ul id="resumeList" class="resume-list"></ul>
     </div>
 </div>
+         
+         
+         
+        </div>
+    </div>
+
 
 <script th:inline="javascript">
     /*<![CDATA[*/

@@ -26,7 +26,7 @@ public class JobpostingController {
 	
 	@PostMapping("/jobposting")
 	public ResponseEntity<?> insertJobposting(@RequestBody JobPosting jobposting) {
-		
+		jobposting.setJob_description(jobposting.getJob_description().replace("\n", "<br>"));
 		String result = jobpostingService.insertJobposting(jobposting);
 		return ResponseEntity.ok().body(result);
 	}
@@ -39,7 +39,7 @@ public class JobpostingController {
 	}
 	@PutMapping("/jobposting")
 	public ResponseEntity<?> updateJobposting(@RequestBody JobPosting jobposting) {
-		
+		jobposting.setJob_description(jobposting.getJob_description().replace("\n", "<br>"));
 		int result = jobpostingService.updateJobposting(jobposting);
 		if(result ==1) {
 			return ResponseEntity.ok().body("등록성공");

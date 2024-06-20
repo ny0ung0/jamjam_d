@@ -3,12 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link th:if="${session.company_id ne null}" rel="stylesheet" type="text/css" href="/css/company.css">   
 </head>
 <body>
-점수 마감 버튼 있어야함!!!!!!!!!!!!!!!!!!!그러고 공고 지원 생기면 공고지원자수 받을꺼임!!!!!!!!!!!!!!!!!!!!!!
+    <div th:if="${session.company_id ne null}" th:replace="header :: headerFragment">
+        <!-- The header content will be included here -->
+    </div>
+    <div class="container">
+        
+        <div class="sidebar" th:if="${session.company_id ne null}" th:replace="sidebar :: sidebarFragment">
+            <!-- Sidebar content will be included here -->
+        </div>
+        <div class="content">
+         
+         
 <h1>자신이 작성한 공고 리스트</h1>
 <div id = "box"></div>
 <div id="result"></div>
+         
+         
+         
+        </div>
+    </div>
+
 <script >
 pre();
 function pre(){
@@ -29,7 +46,7 @@ function pre(){
     	   '<p class="applicantNumber"></p></span>'+
     	   '<span class="applicant"><button class="applicantBtn" onclick="applicantList(event)">지원자리스트</button></span>'+
     	   '<span class="postingClose">'+deadline_status+'</span>'+
-    	   '<span class="postingDelete"><button class="deleteBtn" onclick="deletePosting(event)">공고삭제</button></span></div>';
+    	   '<span class="postingDelete"><button class="deleteBtn" onclick="deletePosting(event)">공고삭제</button></span></div><hr>';
        });
        
        
