@@ -141,7 +141,178 @@
             padding: 10px 20px;
             cursor: pointer;
         }
+        span{
+        margin-right: 20px;
+        }
+        img{
+        width: 100px;
+        height: 100px;
+        }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function () {
+    fetchUserInfo();
+});
+
+function fetchUserInfo() {
+    $.ajax({
+        url: "http://localhost:8888/userInfo",
+        method: "GET",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: function (data) {
+        	$("#userName").text(data.name);
+        	$("#profileUserName").text(data.name);
+        	$('#contact').text(formatContact(data.contact));
+        	$('#age').text(calculateAge(data.birth_date));
+            $('#gender').text(formatGender(data.gender));
+        	userEmail = data.email;
+        	fetchMatchingPostings(userEmail);
+        	listScrap();
+        	fetchLatestResume(userEmail);
+        },
+        error: function () {
+            alert('사용자 정보를 가져오는 중 오류가 발생했습니다.');
+        }
+    });
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    return `${year}-${month}-${day}`;
+}
+
+function cancelScrapJob(){
+	$.ajax({
+		url: `http://localhost:8888/user/cancelScrapJob/${post_id}?email=${userEmail}`,
+		method: "DELETE",
+		success: function(data){
+			alert("스크랩 취소 되었습니다.");
+			window.location.href="/user/scrapList";
+		}
+	});
+	
+}
+
+
+function listScrap(){
+	$.ajax({
+		url: `http://localhost:8888/user/scrapList?email=${userEmail}`,
+		method: "GET",
+		success: function (data){
+			const tableBody = $('#scrapTable tbody');	
+			tableBody.empty();
+			if(data.length > 0){
+				data.forEach(scrap => {
+					post_id = scrap.posting_id;
+					console.log(scrap.posting_id);
+					console.log(scrap.title);
+					let parts = scrap.keywords.split('//');
+					const row = `<tr>
+						<td>${scrap.company_name}</td>
+						<td><a href="/company/job_posting_detail_company?posting_id=${scrap.posting_id}">${scrap.title}</a><br>`+parts[0]+ parts[1]+`</td>
+						<td>${formatDate(scrap.application_deadline)}</td>
+						<td><button type="button" onclick="cancelScrapJob()">스크랩 취소</button></td>
+					</tr>`;
+					tableBody.append(row);
+				});
+			} else{
+				const row = '<tr><td colspan="2">스크랩한 공고가 없습니다.</td></tr>';
+				tableBody.append(row);
+			}
+			
+		},
+		error: function(){
+			alert('스크랩 리스트 출력 오류 발생');
+		}
+	});
+}
+
+function fetchMatchingPostings(email) {
+    $.ajax({
+        url: `http://localhost:8888/user/matchingPostings?email=${email}`,
+        method: "GET",
+        success: function(data) {
+            const jobList = $("#jobList");
+            jobList.empty();
+            data.forEach(function(job) {
+            	console.log(job.company_name);
+            	console.log(job.application_deadline);
+            	console.log(job.new_name);
+            	let parts = job.required_skills.split('//');
+            	let partlocation = job.location.split('//');
+                const jobItem = `
+                    <li class="job-item">
+                        <h3><a href="/company/job_posting_detail_company?posting_id=${job.posting_id}">${job.title}</a></h3>
+                        <p>기업 이름: ${job.company_name}</p>
+                        <p>위치: `+partlocation[0]+` `+partlocation[1]+` `+partlocation[2]+`</p>
+                        <p>직무: `+parts[0]+` - `+parts[1]+`</p>
+                        <p>마감일: ${formatDate(job.application_deadline)}</p>
+                    </li>
+                `;
+                jobList.append(jobItem);
+            });
+        },
+        error: function() {
+            alert('매칭된 공고를 가져오는 중 오류가 발생했습니다.');
+        }
+    });
+}
+
+function fetchLatestResume(email){
+	$.ajax({
+		url: `http://localhost:8888/user/currentResume?email=${email}`,
+		method: "GET",
+		success: function (data) {
+			console.log(data.photo_newName);
+            if (data) {
+            	$('#profilePhoto').attr('src', `/images/${data.photo_newName}`);
+                //$('#title').text(data.title);
+                
+                //$('#desiredJob').text(`희망직무: ${data.desired_job}`);
+               // $('#skills').text(`보유스킬: ${data.skills}`);
+                //$('#licenses').html(formatLicenses(data.license));
+                //$('#experiences').html(formatExperiences(data.experience));
+               // $('#education').html(formatEducation(data.education));
+               // $('#preferences').text(`취업우대사항: ${data.preferences}`);
+               // $('#coverLetterContainer').html(formatCoverLetters(data.cover_letter_title, data.cover_letter_content));
+               // $('#desiredConditions').text(`희망근무지: ${data.desired_conditions}`);
+               // $('#portfolio').text(`포트폴리오: ${data.portfolio}`);
+            } else {
+                alert('이력서를 찾을 수 없습니다.');
+            }
+        },
+        error: function () {
+            alert('이력서를 가져오는 중 오류가 발생했습니다.');
+        }
+	});
+	}
+
+function calculateAge(birthDateString) {
+    const birthDate = new Date(birthDateString);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
+function formatContact(contact) {
+    return contact.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+}
+
+function formatGender(gender) {
+    return gender === 'M' ? '남' : '여';
+}
+
+</script>
 </head>
 <body>
     <div class="header">
@@ -151,7 +322,7 @@
             <a href="/user/positionMatch">포지션 매칭</a>
         </div>
         <div class="user-info">
-            <span style="margin-right: 20px;">이준형</span>
+        	<span id="userName" style="margin-right: 20px;">User</span>
             <a href="http://localhost:8888/logout">Logout</a>
         </div>
     </div>
@@ -180,10 +351,12 @@
         </div>
         <div class="content">
             <div class="profile-section">
-                <img src="profile.jpg" alt="Profile Picture" width="100">
-                <div>
-                   
-                </div>
+            	<img id="profilePhoto"></img>
+                <span id="profileUserName"></span>
+                만<span id="age"></span>
+                <span id="gender"></span>
+                <span id="contact"> </span>
+                
             </div>
             <div class="navigation">
                 <div><a href="/user/appliedList">지원완료 3</a></div>
@@ -192,51 +365,22 @@
             </div>
             <div class="job-list">
                 <h3>포지션 매칭 공고</h3>
-                <div class="job-item">
-                    <div>
-                        <p>ARTAGE(아티지)</p>
-                        <p>고객관리, 고객지원, 소프트웨어, 외국어</p>
-                    </div>
-                    <button>즉시지원</button>
-                </div>
-                <div class="job-item">
-                    <div>
-                        <p>ARTAGE(아티지)</p>
-                        <p>고객관리, 고객지원, 소프트웨어, 외국어</p>
-                    </div>
-                    <button>즉시지원</button>
-                </div>
-                <div class="job-item">
-                    <div>
-                        <p>ARTAGE(아티지)</p>
-                        <p>고객관리, 고객지원, 소프트웨어, 외국어</p>
-                    </div>
-                    <button>즉시지원</button>
-                </div>
+               <ul id="jobList" class="job-list"></ul>
             </div>
             <div class="job-list">
                 <h3>스크랩한 공고</h3>
-                <div class="job-item">
-                    <div>
-                        <p>ARTAGE(아티지)</p>
-                        <p>고객관리, 고객지원, 소프트웨어, 외국어</p>
-                    </div>
-                    <button>즉시지원</button>
-                </div>
-                <div class="job-item">
-                    <div>
-                        <p>ARTAGE(아티지)</p>
-                        <p>고객관리, 고객지원, 소프트웨어, 외국어</p>
-                    </div>
-                    <button>즉시지원</button>
-                </div>
-                <div class="job-item">
-                    <div>
-                        <p>ARTAGE(아티지)</p>
-                        <p>고객관리, 고객지원, 소프트웨어, 외국어</p>
-                    </div>
-                    <button>즉시지원</button>
-                </div>
+                <table id="scrapTable" border="1">
+        <thead>
+            <tr>
+                <th>기업 이름</th>
+                <th>공고 제목</th>
+                <th>마감일</th>
+                <th>스크랩 취소</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
             </div>
         </div>
     </div>

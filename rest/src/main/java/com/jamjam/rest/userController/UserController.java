@@ -209,7 +209,7 @@ public class UserController {
         String email = email_;
         User user = userMapper.findByEmail(email);
         resumedb.setUser_id(user.getUser_id());
-        if(photo != null) {
+        if(profilePhoto.isEmpty()) {
         	resumedb.setPhoto_newName(photo);
         }else {
         	String originalName = resume.getFileName();

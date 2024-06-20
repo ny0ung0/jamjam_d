@@ -20,6 +20,7 @@ import com.jamjam.rest.dao.UserDao;
 import com.jamjam.rest.dto.JobPosting;
 import com.jamjam.rest.dto.PositionProposal;
 import com.jamjam.rest.dto.Resume;
+import com.jamjam.rest.dto.ResumeDB;
 import com.jamjam.rest.dto.User;
 
 @RequestMapping("/user")
@@ -44,7 +45,7 @@ public class UserPositionMatchController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
-        Resume latestResume = resumeMapper.getLatestResume(user.getUser_id());
+        ResumeDB latestResume = resumeMapper.getLatestResume(user.getUser_id());
         System.out.println(latestResume);
         if (latestResume == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No resume found");
@@ -56,6 +57,17 @@ public class UserPositionMatchController {
         List<JobPosting> matchingPostings = jobpostingMapper.getMatchingJobPostings(desiredLocation, desiredJob);
 
         return ResponseEntity.ok(matchingPostings);
+    }
+	
+	@GetMapping("/currentResume")
+    public ResponseEntity<?> getCurrentResume(@RequestParam("email") String email) {
+        User user = userMapper.findByEmail(email);
+
+        ResumeDB latestResume = resumeMapper.getLatestResume(user.getUser_id());
+        System.out.println(latestResume);
+
+
+        return ResponseEntity.ok(latestResume);
     }
 	
 	@GetMapping("/positionProposal")
