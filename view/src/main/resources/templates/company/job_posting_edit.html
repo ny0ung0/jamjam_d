@@ -4,9 +4,78 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link th:if="${session.company_id ne null}" rel="stylesheet" type="text/css" href="/css/company.css">   
+
+<style>
+	
+	 body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+       
+
+       
+
+        .content {
+            /* Sidebar 너비와 동일하게 설정 */
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        h1 {
+            color: #2F4F4F;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input[type="text"], input[type="number"], select, textarea, input[type="file"] {
+            width: calc(100% - 10px); /* 폼 요소 너비 조정 */
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical; /* 수직 리사이즈 가능하도록 설정 */
+        }
+
+        button {
+            background-color: #2F4F4F;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1E3940;
+        }
+	</style>
 </head>
 <body>
-<h1>채용 공고 수정</h1>
+    <div th:if="${session.company_id ne null}" th:replace="header :: headerFragment">
+        <!-- The header content will be included here -->
+    </div>
+    <div class="container">
+        
+        <div class="sidebar" th:if="${session.company_id ne null}" th:replace="sidebar :: sidebarFragment">
+            <!-- Sidebar content will be included here -->
+        </div>
+        <div class="content">
+         
+         <h1>채용 공고 수정</h1>
 
 <form id="postingFrm">
 	posting_id : <input type="number" name="posting_id" th:value="${posting_id}">
@@ -36,12 +105,18 @@
 	담당자 이메일 : <input type="text" name="contact_person_email"><br>
 	담당자 연락처 : <input type="text" name="contact_person_phone"><br>
 	마감일자 : <input type="date" name="application_deadline"><br>
+	<br><br>
 <button onclick="update(event)">수정</button>
 <button onclick="deleteJobposting()">삭제</button>
 </form>
-<div id = "result_post"></div>
-<div id = "result_delete"></div>
 
+
+         
+         
+         
+         
+        </div>
+    </div>
 
 <script src="/js/json.js"></script>
 <script>

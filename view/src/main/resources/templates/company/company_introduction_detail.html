@@ -47,9 +47,20 @@
     object-fit: cover;
     }
 </style>
+<link th:if="${session.company_id ne null}" rel="stylesheet" type="text/css" href="/css/company.css">   
 </head>
 <body>
-<h1>기업소개</h1>
+    <div th:if="${session.company_id ne null}" th:replace="header :: headerFragment">
+        <!-- The header content will be included here -->
+    </div>
+    <div class="container">
+        
+        <div class="sidebar" th:if="${session.company_id ne null}" th:replace="sidebar :: sidebarFragment">
+            <!-- Sidebar content will be included here -->
+        </div>
+        <div class="content">
+         
+         <h1>기업소개</h1>
 <p id="company_id" style="display: none;">[[${session.company_id}]]</p>
 <div id="companyInfoContainer" class="company-info">
     <div class="logoBox">
@@ -101,10 +112,16 @@
         <span id="address"></span>
     </div>
 </div>
+<button id="updateBtn" style="display: none;" onclick="update()">수정하기</button>
 
-<button id="updateBtn" onclick="update()" >회원정보수정</button>
 
 <div id="map" style="width:400px;height:250px;"></div>
+         
+         
+         
+        </div>
+    </div>
+
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=906820dc89cc6e06ebf1f3063fe49049&libraries=services"></script>
 <script>
@@ -220,7 +237,7 @@ function fetchCompanyInfo() {
 
 function displayCompanyInfo(companyInfo) {
     $("#logo").attr("src", "/images/" + companyInfo.new_name);
-    $("#description").text(companyInfo.description);
+    $("#description").html(companyInfo.description);
     $("#number_of_employees").text(companyInfo.number_of_employees);
     $("#working_environment").text(companyInfo.working_environment);
     $("#benefits").text(companyInfo.benefits);
@@ -241,6 +258,11 @@ function toggleUpdateButton(companyId) {
     } else {
         $("#updateBtn").hide();
     }
+}
+
+function update() {
+
+    window.location.href = "/company/company_introduction_edit";
 }
 
 </script>

@@ -3,12 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link th:if="${session.company_id ne null}" rel="stylesheet" type="text/css" href="/css/company.css">   
 </head>
 <body>
-
-<h1> 지원자 매칭 리스트</h1>
+    <div th:if="${session.company_id ne null}" th:replace="header :: headerFragment">
+        <!-- The header content will be included here -->
+    </div>
+    <div class="container">
+        
+        <div class="sidebar" th:if="${session.company_id ne null}" th:replace="sidebar :: sidebarFragment">
+            <!-- Sidebar content will be included here -->
+        </div>
+        <div class="content">
+         <h1> 지원자 매칭 리스트</h1>
 <div id = "box"></div>
 <div id="result"></div>
+         
+         
+         
+         
+         
+        </div>
+    </div>
+
 <script >
 pre();
 function pre(){
@@ -20,7 +37,7 @@ function pre(){
        
        postings.forEach(posting =>{
     	   
-    	  box.innerHTML += '<div class="application_id"id='+posting.posting_id+'> <span class="title">' +posting.title +'</span>'+
+    	  box.innerHTML += '<div class="application_id" id='+posting.posting_id+'> <span class="title">' +posting.title +'</span>'+
     	   '<span class="keywords" id='+posting.keywords+'><button class="machingListBtn" onclick="machingList(event,'+posting.posting_id+')">매칭리스트보기</button></span></div><div class="machingBox" id =machingBox'+posting.posting_id+' ></div>';
        });
        
@@ -32,7 +49,7 @@ function pre(){
 
  function machingList(e,posting_id){
 	 let keywords = e.target.closest(".keywords").id;
-	 alert(keywords);
+	 //alert(keywords);
 	 const box = document.getElementById('machingBox' + posting_id);
 	 box.innerHTML='';
 	 let company_id = '[[${session.company_id}]]';
@@ -47,15 +64,22 @@ function pre(){
 	    	   }else if(user.proposalStatus=="1"){
 	    		   btn='제안완료';
 	    	   }
+	    	   
 	    	  box.innerHTML += '<div class="application_id"id='+user.user_id+'> <span class="name">' + user.name + '</span>'+
 	    	   '<span class="UserInfo"> 생년월일:'+user.birth_date.slice(0,10)+' 성별:'+user.gender+' 이메일:'+user.email+'</span>' +
-	    	   '<span class="proposal" id='+company_id+'>'+btn+'</span></div>';
+	    	   '<span class="proposal" id='+company_id+'>'+btn+'</span ><span class ="resumeDetail" id='+user.resume_id+'><button class="resumeBtn" onclick="resumeDetail(event)">이력서보기</button></span></div>';
 	       });
 	       
 	       
 	    };
 	    xhttp.open("GET", "http://localhost:8888/company/machingList?keywords=" + keywords +"&company_id=" + company_id);
 	    xhttp.send();
+ }
+ function resumeDetail(e){
+	 let resume_id = e.target.closest(".resumeDetail").id;
+	 let application_id=e.target.closest(".application_id").id;
+	 let company_id = "[[${session.company_id}]]";
+	 location.href="/user/resumeDetail?resume_id="+resume_id;
  }
  
  function proposal(e,company_id,user_id){

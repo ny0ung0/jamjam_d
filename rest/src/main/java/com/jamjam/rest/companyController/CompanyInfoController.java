@@ -27,6 +27,7 @@ public class CompanyInfoController {
 	public ResponseEntity<?> insertCompanyinfo11(@ModelAttribute CompanyInfoDto companyInfoDto) {
 		System.out.println("컨트롤러 들어옴");
 		System.out.println(companyInfoDto);
+		companyInfoDto.setDescription(companyInfoDto.getDescription().replace("\n", "<br>"));
 		String result = companyInfoService.insertCompanyInfo(companyInfoDto);
 		if(result.contains("성공")) {
 			return ResponseEntity.ok().body(result);
@@ -40,6 +41,7 @@ public class CompanyInfoController {
 	public ResponseEntity<?> updateCompanyinfoImage(@ModelAttribute CompanyInfoDto companyInfoDto) {
 		System.out.println("컨트롤러 들어옴");
 		System.out.println(companyInfoDto);
+		companyInfoDto.setDescription(companyInfoDto.getDescription().replace("\n", "<br>"));
 		String result = companyInfoService.updateCompanyInfoImage(companyInfoDto);
 		if(result.contains("성공")) {
 			return ResponseEntity.ok().body(result);
