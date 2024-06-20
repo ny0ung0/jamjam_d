@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Job Posting Detail</title>
@@ -117,15 +117,15 @@
         cursor: pointer;
     }
 </style>
-<link th:if="${session.company_id ne null}" rel="stylesheet" type="text/css" href="/css/company.css">   
+<link th:if="${session.company_id != null}" rel="stylesheet" type="text/css" href="/css/company.css">   
 </head>
 <body>
-    <div th:if="${session.company_id ne null}" th:replace="header :: headerFragment">
+    <div th:if="${session.company_id != null}" th:replace="header :: headerFragment">
         <!-- The header content will be included here -->
     </div>
     <div class="container">
         
-        <div class="sidebar" th:if="${session.company_id ne null}" th:replace="sidebar :: sidebarFragment">
+        <div class="sidebar" th:if="${session.company_id != null}" th:replace="sidebar :: sidebarFragment">
             <!-- Sidebar content will be included here -->
         </div>
         <div class="content">
