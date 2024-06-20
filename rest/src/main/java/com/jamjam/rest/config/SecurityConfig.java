@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .clearAuthentication(true) // 인증 정보 제거
                 .addLogoutHandler((request, response, authentication) -> {
                     // 로그아웃 시 Google 로그아웃 URL로 리디렉션
-                    String googleLogoutUrl = "https://accounts.google.com/Logout";
+                    String googleLogoutUrl = "http://localhost:9999/nindex";
                     response.setStatus(HttpServletResponse.SC_OK);
                     try {
 						response.sendRedirect(googleLogoutUrl);

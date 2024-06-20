@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>스크랩한 공고 리스트</title>
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js" 
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" 
             crossorigin="anonymous"></script>
 </head>
 <body>
+<div id="menu"></div>
+    <div class="container">
+        <div id="sidebar"></div>
+        <div class="content">
     <h1>스크랩한 공고 리스트</h1>
     <table id="scrapTable" border="1">
         <thead>
@@ -21,10 +26,14 @@
         <tbody>
         </tbody>
     </table>
-
+</div>
+</div>
     <script>
     $(document).ready(function () {
         fetchUserInfo();
+        $("#menu").load("/user_menubar.html");
+        $("#sidebar").load("/user_sidebar.html");
+
     });
     
     function fetchUserInfo() {
@@ -35,7 +44,11 @@
                 withCredentials: true
             },
             success: function (data) {
-            	userEmail = data.email;
+            	$("#userName").text(data.name);
+                userEmail = data.email;
+                $("#loggedInSection").show();
+                $("#loggedOutSection").hide();
+
             	listScrap();
             },
             error: function () {

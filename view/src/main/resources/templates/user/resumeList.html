@@ -4,11 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <title>이력서 리스트</title>
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
 </head>
 
 <body>
+<div id="menu"></div>
+    <div class="container">
+        <div id="sidebar"></div>
+        <div class="content">
     <h2>이력서 리스트</h2>
     <div id="resumeListContainer">
         <table id="resumeListTable">
@@ -22,10 +27,14 @@
             </tbody>
         </table>
     </div>
-
+</div>
+</div>
     <script>
         $(document).ready(function () {
             fetchUserInfo();
+            $("#menu").load("/user_menubar.html");
+            $("#sidebar").load("/user_sidebar.html");
+
         });
 
         function formatDate(dateString) {
@@ -48,6 +57,11 @@
                 success: function (data) {
                     if (data && data.email) {
                         listResumes(data.email);
+                        $("#userName").text(data.name);
+                        userEmail = data.email;
+                        $("#loggedInSection").show();
+                        $("#loggedOutSection").hide();
+
                     } else {
                         window.location.href = "/";
                     }

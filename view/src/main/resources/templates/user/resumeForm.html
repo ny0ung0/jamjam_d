@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>resume Form</title>
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
 </head>
 <body>
+<div id="menu"></div>
+    <div class="container">
+        <div id="sidebar"></div>
+        <div class="content">
     <h2>이력서 등록 페이지</h2>
     <div>
         <form name="resume" id="resumeForm">
@@ -73,8 +78,13 @@
             <button type="submit" onclick="submitResume(event)">이력서 작성 완료</button>
         </form>
     </div>
+    </div>
+    </div>
     <script>
         $(document).ready(function () {
+        	$("#menu").load("/user_menubar.html");
+            $("#sidebar").load("/user_sidebar.html");
+
             $.ajax({
                 url: "http://localhost:8888/userInfo",
                 method: "GET",
@@ -83,7 +93,10 @@
                 },
                 success: function (data) {
                     if (data) {
-                        $("#userName").text(data.name);
+                    	$("#userName").text(data.name);
+                        userEmail = data.email;
+                        $("#loggedInSection").show();
+                        $("#loggedOutSection").hide();
                         $("#userEmail").text(data.email);
                         $("#email").val(data.email);
                         $("#name").val(data.name);

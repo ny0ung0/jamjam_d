@@ -1,0 +1,86 @@
+body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e6f7ff;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #3385ff;
+            color: #fff;
+            padding: 20px;
+        }
+        .sidebar h2 {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .sidebar a  {
+            color: #e6f7ff;
+            text-decoration: none;
+            display: block;
+            padding: 10px 0;
+            margin-left: 10px;
+            transition: padding-left 0.3s, background-color 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #1a75ff;
+            padding-left: 20px;
+        }
+        .content {
+            flex-grow: 1;
+            background-color: #ffffff;
+        }
+        .header {
+            background-color: #0066cc;
+            color: #ffffff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .header .menu {
+            display: flex;
+            align-items: center;
+        }
+        .header .menu a {
+            color: #e6f7ff;
+            text-decoration: none;
+            padding: 0 10px;
+        }
+        .header .menu a:hover {
+            text-decoration: underline;
+        }
+        .header .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .header .mypage span {
+            margin-right: 20px;
+            font-size: 16px;
+        }
+        
+        .header .mypage a {
+        	color: #fff;
+        	text-decoration: none;
+        	
+        }
+        .header .logout a {
+            color: #fff;
+            text-decoration: none;
+            padding: 5px 10px;
+            border: 1px solid #fff;
+            border-radius: 5px;
+        }
+        .header .logout a:hover {
+            background-color: #ffffff;
+            color: #0066cc;
+        }

@@ -1,62 +1,205 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>user_main page</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-function fetchUserInfo() {
-    $.ajax({
-        url: "http://localhost:8888/userInfo",
-        method: "GET",
-        xhrFields: {
-            withCredentials: true
-        },
-        success: function(data) {
-            if (data) {
-                $("#userName").text(data.name);
-                $("#userEmail").text(data.email);
-                $("#email").val(data.email);
-                $("#name").val(data.name);
-                $("#loggedInSection").show();
-                $("#loggedOutSection").hide();
-                
-                if(data.role == "ROLE_COMPANY"){
-                	window.location.href ="/leindex";
-            	}else{
-            		console.log("ROLE_USER계정");
-            	}
-            } else {
-                window.location.href = "/";
-            }
-        },
-        error: function() {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>user_main page</title>
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" 
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" 
+            crossorigin="anonymous"></script>
+    <style>
+        .jumbotron {
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
+            background-color: #e9ecef;
+            border-radius: 0.3rem;
         }
-    });
-}
+        .slider {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin: auto;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            width: 500%;
+        }
+        .slides img {
+            width: 20%;
+            border-radius: 10px;
+        }
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+        .slider-nav button {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .slider-nav button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 10px;
+            flex: 1;
+            text-align: center;
+        }
+        .cards-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .footer {
+            background-color: #343a40;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $("#menu").load("/user_menubar.html");
+            $("#sidebar").load("/user_sidebar.html");
+            fetchUserInfo();
+            popularPost();
+            startSlider();
+        });
 
-function login() {
-    // 로그인 버튼을 클릭할 때 사용자 정보를 가져옴
-    window.location.href = "http://localhost:8888/login";
-}
+        function fetchUserInfo() {
+            $.ajax({
+                url: "http://localhost:8888/userInfo",
+                method: "GET",
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data) {
+                    $("#userName").text(data.name);
+                    userEmail = data.email;
+                    $("#loggedInSection").show();
+                    $("#loggedOutSection").hide();
+                },
+                error: function () {
+                    console.log('사용자 정보를 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
 
-$(document).ready(function() {
-    fetchUserInfo();
-});
-</script>
+        function login() {
+            window.location.href = "http://localhost:8888/login";
+        }
+        
+        function popularPost(){
+            $.ajax({
+                url: `http://localhost:8888/user/popularResumeList`,
+                method: "GET",
+                success: function (data){
+                    const popular = $('.cards-container');
+                    if(data.length > 0){
+                        data.forEach(post => {
+                            post_id = post.posting_id;
+                            console.log(post.posting_id);
+                            const row = `<div class="card">
+                                <img src="/images/${post.new_name}" width="110px" height="100px"></img>
+                                <h2>${post.company_name}</h2>
+                                <p>${post.title}</p>
+                                <a href="/company/job_posting_detail_company?posting_id=${post.posting_id}" class="btn-primary">상세보기</a>
+                            </div>`;
+                            popular.append(row);
+                        });
+                    } else {
+                        const row = '<p>불러오기 실패</p>';
+                        popular.append(row);
+                    }
+                }
+            });
+        }
+        
+        function startSlider() {
+            let currentIndex = 0;
+            const slides = document.querySelector('.slides');
+            const slideImages = document.querySelectorAll('.slides img');
+            const totalSlides = slideImages.length;
 
+            function showSlide(index) {
+                if (index >= totalSlides) {
+                    currentIndex = 0;
+                } else if (index < 0) {
+                    currentIndex = totalSlides - 1;
+                } else {
+                    currentIndex = index;
+                }
+                slides.style.transform = 'translateX(' + (-currentIndex * 100 / totalSlides) + '%)';
+            }
+
+            document.querySelector('.prev').addEventListener('click', () => {
+                showSlide(currentIndex - 1);
+            });
+
+            document.querySelector('.next').addEventListener('click', () => {
+                showSlide(currentIndex + 1);
+            });
+
+            setInterval(() => {
+                showSlide(currentIndex + 1);
+            }, 3300);
+        }
+    </script>
 </head>
 <body>
-    <div id="loggedOutSection">
-        <button onclick="login()">로그인</button>
+    <div id="menu"></div>
+    <div class="container">
+        <div id="sidebar"></div>
+        <div class="content">
+            <div class="jumbotron">
+                <div class="slider">
+                    <div class="slides">
+                        <img src="https://file1.jobkorea.co.kr/OnePickSpaceBanner/202406/87_3_PC_pD8jAGG.png?202406191400" alt="Slide 1">
+                        <img src="https://file1.jobkorea.co.kr/OnePickSpaceBanner/202406/90_3_PC_1W8HhGv.png?202406191400" alt="Slide 2">
+                        <img src="https://apple.contentsfeed.com/RealMedia/ads/Creatives/jobkorea/240603_vedacademy_mb/240603_vedacademy_752110_2x.png" alt="Slide 3">
+                        <img src="https://apple.contentsfeed.com/RealMedia/ads/Creatives/jobkorea/240520_mcea_mb/240520_mcea_752_110.png" alt="Slide 4">
+                        <img src="https://apple.contentsfeed.com/RealMedia/ads/Creatives/jobkorea/240520_krafton_mb/240514_jungle_752_110.png" alt="Slide 5">
+                    </div>
+                    <div class="slider-nav">
+                        <button class="prev">&#10094;</button>
+                        <button class="next">&#10095;</button>
+                    </div>
+                </div>
+            </div>
+            <div class="cards-container">
+            </div>
+        </div>
     </div>
-    <div id="loggedInSection" style="display:none;">
-        <h1>
-            Welcome, <span id="userName">User</span>!
-        </h1>
-        <p>Your email is <span id="userEmail"></span>.</p>
-        <a href="http://localhost:8888/logout">Logout</a>
-        
-    <a href="/user/userMyPage">마이페이지</a>
+    <div class="footer">
+        Copyright © Your Website 2023
+    </div>
 </body>
 </html>

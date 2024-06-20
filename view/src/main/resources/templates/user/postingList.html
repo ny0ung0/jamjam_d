@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <title>공고 리스트</title>
+<link rel="stylesheet" type="text/css" href="/css/user.css">
 <script src="https://code.jquery.com/jquery-3.7.1.js"
 	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
 	crossorigin="anonymous"></script>
@@ -12,6 +13,8 @@
 <body>
 	<script>
 	$(document).ready(function () {
+		$("#menu").load("/user_menubar.html");
+        $("#sidebar").load("/user_sidebar.html");
         fetchUserInfo();
     });
 	
@@ -34,6 +37,10 @@
             success: function (data) {
                 if (data && data.email) {
                 	listPost();
+                	$("#userName").text(data.name);
+                    userEmail = data.email;
+                    $("#loggedInSection").show();
+                    $("#loggedOutSection").hide();
                 } else {
                     window.location.href = "/nindex";
                 }
@@ -70,6 +77,10 @@
         });
     }
 	</script>
+	<div id="menu"></div>
+    <div class="container">
+        <div id="sidebar"></div>
+        <div class="content">
 	<div id="postListContainer">
 		<table id="postListTable">
 			<thead>
@@ -81,6 +92,8 @@
 			<tbody>
 			</tbody>
 		</table>
+	</div>
+	</div>
 	</div>
 </body>
 </html>
