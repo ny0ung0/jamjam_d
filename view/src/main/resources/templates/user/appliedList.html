@@ -1,208 +1,213 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>지원한 공고 리스트</title>
-<link rel="stylesheet" type="text/css" href="/css/user.css">
-<script src="https://code.jquery.com/jquery-3.7.1.js"
-    integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-    crossorigin="anonymous"></script>
-</head>
-<style>
-.job-list {
-            margin: 20px;
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+    <meta charset="UTF-8">
+    <title>지원한 공고 리스트</title>
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #3385ff;
+            color: #fff;
+            padding: 20px;
+        }
+        .content {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: 20px;
+        }
+        h2 {
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+        #appliedList {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #appliedTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
         }
         .job-list h3 {
             margin: 0;
-            padding: 10px;
+            padding: 10px 20px;
             background-color: rgba(240, 222, 196, 0.733);
             border-bottom: 1px solid #ccc;
             font-size: 20px;
-        }
-        .job-list .job-item {
-            padding: 10px;
-            border-bottom: 1px solid #ccc;
-            display: flex;
-            flex-direction: column;
-        }
-        .job-list .job-item:last-child {
-            border-bottom: none;
-        }
-        .job-list .job-item h3 {
-            font-size: 18px;
-            margin: 0;
-        }
-        .job-list .job-item p {
-            margin: 5px 0;
-            color: #555;
-        }
-        .job-list .job-item button {
-            background-color: #ff7f00;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            align-self: flex-start;
-        }
-        .job-list .job-item button:hover {
-            background-color: #e66e00;
         }
         .job-list table {
             width: 100%;
             border-collapse: collapse;
         }
         .job-list th, .job-list td {
-            padding: 10px;
+            padding: 15px;
             text-align: left;
         }
         .job-list th {
-            background-color: #f2f2f2;
+            background-color: #e6f7ff;
             border-bottom: 1px solid #ccc;
         }
         .job-list td {
             border-bottom: 1px solid #eee;
         }
+        .job-list tr:hover {
+            background-color: #f1f1f1;
+        }
+        .job-list td a {
+            color: #0073b1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .job-list td a:hover {
+            color: #005580;
+        }
         .job-list td button {
             background-color: #d9534f;
             color: #fff;
             border: none;
-            padding: 5px 10px;
+            padding: 10px 15px;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
         .job-list td button:hover {
             background-color: #c9302c;
         }
-        
-        a{
-        	color:black;
-        	text-decoration: none;
-        }
-        a:hover{
-        	color:blue;
-        	text-decoration: underline;
-        }
-</style>
+    </style>
+</head>
 <body>
-    
     <div id="menu"></div>
     <div class="container">
         <div id="sidebar"></div>
         <div class="content">
-        <div class="job-list">
-        <h3>지원한 공고 리스트</h3>
-    <table id="appliedTable" border="1">
-        <thead>
-            <tr>
-                <th>기업 이름</th>
-                <th>공고 제목</th>
-                <th>마감일</th>
-                <th>지원 취소</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    </div>
-    </div>
+            <div class="job-list">
+                <h2>지원한 공고 리스트</h2>
+                <div id="appliedList">
+                <table id="appliedTable">
+                    <thead>
+                        <tr>
+                            <th>기업 이름</th>
+                            <th>공고 제목</th>
+                            <th>마감일</th>
+                            <th>지원 취소</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
-    $(document).ready(function () {
-    	$("#menu").load("/user_menubar.html");
-        $("#sidebar").load("/user_sidebar.html");
-        fetchUserInfo();
-    });
-    
-    function fetchUserInfo() {
-        $.ajax({
-            url: "http://localhost:8888/userInfo",
-            method: "GET",
-            xhrFields: {
-                withCredentials: true
-            },
-            success: function (data) {
-            	$("#userName").text(data.name);
-                userEmail = data.email;
-                $("#loggedInSection").show();
-                $("#loggedOutSection").hide();
-                listApplied();
-            },
-            error: function () {
-                alert('사용자 정보를 가져오는 중 오류가 발생했습니다.');
-            }
+        $(document).ready(function () {
+        	$("#menu").load("/user_menubar.html", function() {
+                fetchUserInfo();
+            });
+            $("#sidebar").load("/user_sidebar.html");
         });
-    }
-    
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = ('0' + (date.getMonth() + 1)).slice(-2);
-        const day = ('0' + date.getDate()).slice(-2);
-        return `${year}-${month}-${day}`;
-    }
-    
-    function cancelApplied(application_id){
-        $.ajax({
-            url: `http://localhost:8888/user/cancelApplied/${application_id}?email=${userEmail}`,
-            method: "DELETE",
-            success: function(data){
-                alert("공고 지원 취소.");
-                listApplied();
-            },
-            error: function(){
-                alert("지원 취소 중 오류가 발생했습니다.");
-            }
-        });
-    }
-    
-    function checkJobApplicationStatus(application_id, button) {
-        $.ajax({
-            url: `http://localhost:8888/user/applied?application_id=${application_id}&email=${userEmail}`,
-            method: "GET",
-            success: function(data) {
-                if (data.resume_viewed != 0) {
-                	console.log(data.resume_viewed);
-                    button.textContent = "확인 된 공고";
-                    button.disabled = true;
-                }
-            }
-        });
-    }
-    
-    function listApplied(){
-        $.ajax({
-            url: `http://localhost:8888/user/appliedList?email=${userEmail}`,
-            method: "GET",
-            success: function (data){
-                const tableBody = $('#appliedTable tbody');
-                tableBody.empty();
-                if(data.length > 0){
-                    data.forEach(applied => {
-                        const row = `<tr>
-                            <td>${applied.company_name}</td>
-                            <td><a href="/company/job_posting_detail_company?posting_id=${applied.posting_id}">${applied.title}</a></td>
-                            <td>${formatDate(applied.application_deadline)}</td>
-                            <td><button type="button" onclick="cancelApplied(${applied.application_id})">공고지원 취소</button></td>
-                            </tr>`;
-                        tableBody.append(row);
 
-                        const button = tableBody.find('button').last()[0];
-                        checkJobApplicationStatus(applied.application_id, button);
-                    });
-                }else{
-                    const row = '<tr><td colspan="4">지원한 공고가 없습니다.</td></tr>';
-                    tableBody.append(row);
+        function fetchUserInfo() {
+            $.ajax({
+                url: "http://localhost:8888/userInfo",
+                method: "GET",
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data) {
+                    $("#userName").text(data.name);
+                    userEmail = data.email;
+                    $("#loggedInSection").show();
+                    $("#loggedOutSection").hide();
+                    listApplied();
+                },
+                error: function () {
+                    alert('사용자 정보를 가져오는 중 오류가 발생했습니다.');
                 }
-            },
-            error: function(){
-                alert('지원 공고 리스트 출력 오류');
-            }
-        });
-    }
+            });
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = ('0' + (date.getMonth() + 1)).slice(-2);
+            const day = ('0' + date.getDate()).slice(-2);
+            return `${year}-${month}-${day}`;
+        }
+
+        function cancelApplied(application_id){
+            $.ajax({
+                url: `http://localhost:8888/user/cancelApplied/${application_id}?email=${userEmail}`,
+                method: "DELETE",
+                success: function(data){
+                    alert("공고 지원 취소.");
+                    listApplied();
+                },
+                error: function(){
+                    alert("지원 취소 중 오류가 발생했습니다.");
+                }
+            });
+        }
+
+        function checkJobApplicationStatus(application_id, button) {
+            $.ajax({
+                url: `http://localhost:8888/user/applied?application_id=${application_id}&email=${userEmail}`,
+                method: "GET",
+                success: function(data) {
+                    if (data.resume_viewed != 0) {
+                        button.textContent = "확인 된 공고";
+                        button.disabled = true;
+                    }
+                }
+            });
+        }
+
+        function listApplied(){
+            $.ajax({
+                url: `http://localhost:8888/user/appliedList?email=${userEmail}`,
+                method: "GET",
+                success: function (data){
+                    const tableBody = $('#appliedTable tbody');
+                    tableBody.empty();
+                    if(data.length > 0){
+                        data.forEach(applied => {
+                            const row = `<tr>
+                                <td>${applied.company_name}</td>
+                                <td><a href="/company/job_posting_detail_company?posting_id=${applied.posting_id}">${applied.title}</a></td>
+                                <td>${formatDate(applied.application_deadline)}</td>
+                                <td><button type="button" onclick="cancelApplied(${applied.application_id})">공고지원 취소</button></td>
+                            </tr>`;
+                            tableBody.append(row);
+
+                            const button = tableBody.find('button').last()[0];
+                            checkJobApplicationStatus(applied.application_id, button);
+                        });
+                    }else{
+                        const row = '<tr><td colspan="4">지원한 공고가 없습니다.</td></tr>';
+                        tableBody.append(row);
+                    }
+                },
+                error: function(){
+                    alert('지원 공고 리스트 출력 오류');
+                }
+            });
+        }
     </script>
 </body>
 </html>

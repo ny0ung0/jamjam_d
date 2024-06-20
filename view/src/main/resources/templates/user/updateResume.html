@@ -6,91 +6,200 @@
     <link rel="stylesheet" type="text/css" href="/css/user.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #3385ff;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .content {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: 40px;
+        }
+
+        h2 {
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .skill-item,
+        .license-item,
+        .experience-item,
+        .education-item,
+        .cover-letter-item {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .license-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .license-item input[type="text"],
+        .license-item input[type="date"] {
+            flex: 1;
+        }
+
+        .license-item button {
+            background-color: #dc3545;
+        }
+
+        .license-item button:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
+
 <body>
-<div id="menu"></div>
+    <div id="menu"></div>
     <div class="container">
         <div id="sidebar"></div>
         <div class="content">
-    <h2>이력서 수정 페이지</h2>
-    <div>
-        <form name="resume" id="resumeForm">
-            <input type="hidden" id="resume_id" name="resume_id" />
-            <input type="text" id="email" name="email" readonly autocomplete="email"/>
-            제목<input type="text" name="title" id="title" /><br />
-            프로필사진<input type="file" name="profile_photo" id="profile_photo" /><br />
-            <input type="hidden" name="photo" id="photo"/>
+            <h2>이력서 수정 페이지</h2>
             <div>
-                <label for="desired_job">희망직무</label>
-                <select id="desired_job" name="desired_job" onchange="addJob()" required>
-                    <option value="">선택</option>
-                </select>
-                <div id="selectdesired_job"></div>
+                <form name="resume" id="resumeForm">
+                    <input type="hidden" id="resume_id" name="resume_id" />
+                    <input type="hidden" id="email" name="email" readonly autocomplete="email" />
+                    제목<input type="text" name="title" id="title" /><br />
+                    프로필사진<input type="file" name="profile_photo" id="profile_photo" /><br />
+                    <input type="hidden" name="photo" id="photo" />
+                    <div>
+                        <label for="desired_job">희망직무</label>
+                        <select id="desired_job" name="desired_job" onchange="addJob()" required>
+                            <option value="">선택</option>
+                        </select>
+                        <div id="selectdesired_job"></div>
+                    </div>
+                    <div>
+                        <label for="selectSkill">보유스킬</label>
+                        <select id="selectSkill" name="selectSkill" onchange="addSkill()" required>
+                            <option value="">선택</option>
+                        </select>
+                        <div id="selectedSkills"></div>
+                    </div>
+                    <input type="hidden" id="skills" name="skills" /><br />
+                    <div>
+                        보유자격증
+                        <div id="licenses"></div>
+                        <button type="button" onclick="addLicense()">+추가</button>
+                    </div>
+                    <div>
+                        경력사항
+                        <div id="experiences"></div>
+                        <button type="button" onclick="addExperience()">+추가</button>
+                    </div>
+                    <div>
+                        학력사항
+                        <div id="educations"></div>
+                        <button type="button" onclick="addEducation()">+추가</button>
+                    </div>
+                    <div>
+                        취업우대사항
+                        <div id="preferences">
+                            <input type="checkbox" name="preferences" value="보훈대상"> 보훈대상
+                            <input type="checkbox" name="preferences" value="취업보호 대상"> 취업보호 대상
+                            <input type="checkbox" name="preferences" value="고용지원금 대상"> 고용지원금 대상
+                            <input type="checkbox" name="preferences" value="병역"> 병역
+                        </div>
+                    </div>
+                    <div>
+                        자기소개서
+                        <div id="cover_letters"></div>
+                        <button type="button" onclick="addCoverLetter()">+추가</button>
+                    </div>
+                    <div>
+                        <label for="city">희망근무지</label>
+                        <select id="city" name="desired_conditions" required>
+                            <option value="">선택</option>
+                        </select>
+                    </div>
+                    <input type="text" name="portfolio" id="portfolio" placeholder="포트폴리오" /><br />
+                    <button type="submit" onclick="submitResume(event)">이력서 수정 완료</button>
+                </form>
             </div>
-            <div>
-                <label for="selectSkill">보유스킬</label>
-                <select id="selectSkill" name="selectSkill" onchange="addSkill()" required>
-                    <option value="">선택</option>
-                </select>
-                <div id="selectedSkills"></div>
-            </div>
-            <input type="text" id="skills" name="skills" /><br />
-            <div>
-                보유자격증
-                <div id="licenses"></div>
-                <button type="button" onclick="addLicense()">+추가</button>
-            </div>
-            <div>
-                경력사항
-                <div id="experiences"></div>
-                <button type="button" onclick="addExperience()">+추가</button>
-            </div>
-            <div>
-                학력사항
-                <div id="educations"></div>
-                <button type="button" onclick="addEducation()">+추가</button>
-            </div>
-            <div>
-                취업우대사항
-                <div id="preferences">
-                    <input type="checkbox" name="preferences" value="보훈대상"> 보훈대상
-                    <input type="checkbox" name="preferences" value="취업보호 대상"> 취업보호 대상
-                    <input type="checkbox" name="preferences" value="고용지원금 대상"> 고용지원금 대상
-                    <input type="checkbox" name="preferences" value="병역"> 병역
-                </div>
-            </div>
-            <div>
-                자기소개서
-                <div id="cover_letters"></div>
-                <button type="button" onclick="addCoverLetter()">+추가</button>
-            </div>
-            <div>
-                <label for="city">희망근무지</label>
-                <select id="city" name="desired_conditions" required>
-                    <option value="">선택</option>
-                </select>
-            </div>
-            <input type="text" name="portfolio" id="portfolio" placeholder="포트폴리오" /><br />
-            <button type="submit" onclick="submitResume(event)">이력서 수정 완료</button>
-        </form>
-    </div>
-    </div>
+        </div>
     </div>
     <script>
         $(document).ready(function () {
             const urlParams = new URLSearchParams(window.location.search);
             const resumeId = urlParams.get('resume_id');
-            $("#menu").load("/user_menubar.html");
+            $("#menu").load("/user_menubar.html", function() {
+                fetchUserInfo();
+            });
             $("#sidebar").load("/user_sidebar.html");
             if (resumeId) {
-            	fetchUserInfo();
                 fetchResume(resumeId);
             } else {
                 alert('이력서 ID가 필요합니다.');
             }
         });
 
-        
         function fetchUserInfo() {
             $.ajax({
                 url: "http://localhost:8888/userInfo",
@@ -110,12 +219,11 @@
                     }
                 },
                 error: function () {
-                	console.error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
+                    console.error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
                 }
             });
         }
-        
-        
+
         function fetchResume(resumeId) {
             $.ajax({
                 url: `http://localhost:8888/user/resume?resume_id=${resumeId}`,
@@ -128,7 +236,8 @@
                         $('#photo').val(data.photo_newName);
                         $('#skills').val(data.skills);
                         $('#selectedSkills').html(data.skills.split(', ').map(skill => `<span class="skill-item">${skill} <button type="button" onclick="removeSkill(this)">X</button></span>`).join(''));
-						$('#city').val(data.desired_conditions);
+                        $('#city').val(data.desired_conditions);
+
                         // Populate licenses
                         const licensesArray = data.license.split(' | ');
                         licensesArray.forEach(license => {
@@ -181,9 +290,9 @@
                                 입학년월<input type="date" name="entrance_date[]" value="${entrance}" autocomplete="off"/>
                                 졸업년월<input type="date" name="graduation_date[]" value="${graduation}" autocomplete="off"/>
                                 졸업상태<select name="graduation_status[]" autocomplete="off">
-                                    <option value="중퇴">중퇴</option>
-                                    <option value="재학중">재학중</option>
-                                    <option value="졸업">졸업</option>
+                                    <option value="중퇴" ${status === '중퇴' ? 'selected' : ''}>중퇴</option>
+                                    <option value="재학중" ${status === '재학중' ? 'selected' : ''}>재학중</option>
+                                    <option value="졸업" ${status === '졸업' ? 'selected' : ''}>졸업</option>
                                 </select>
                                 <div class="major-gpa" style="display:${['대학졸업(2,3년)', '대학교졸업(4년)', '석사졸업', '박사졸업'].includes(level) ? 'block' : 'none'};">
                                     전공명<input type="text" name="major[]" value="${major || ''}" autocomplete="off"/>
@@ -227,79 +336,79 @@
             });
         }
 
-    
-    fetch('/json/skillList.json')
-        .then(response => response.json())
-        .then(data => {
-            const select = document.getElementById('selectSkill');
-            const keywordSete = new Set();
-            data.forEach(item => {
-                if (!keywordSete.has(item["직무 키워드명"])) {
-                    const option = document.createElement('option');
-                    option.value = item["직무 키워드명"];
-                    option.text = item["직무 키워드명"];
-                    select.add(option);
-                }
-            });
-        });
-    
-    fetch('/json/korea-administrative-district.json')
-    .then(response => response.json())
-    .then(data => {
-        const citySelect = document.getElementById('city');
-        data.forEach(city => {
-            for (const cityName in city) {
-                const option = document.createElement('option');
-                option.value = cityName;
-                option.text = cityName;
-                citySelect.add(option);
-            }
-        });
-    });
-
-    fetch('/json/job_category.json')
-        .then(response => response.json())
-        .then(data => {
-            const select = document.getElementById('desired_job');
-            const keywordSet = new Set();
-            data.forEach(item => {
-                if (!keywordSet.has(item["상위직무"])) {
-                    const option = document.createElement('option');
-                    option.value = item["상위직무"];
-                    option.text = item["상위직무"];
-                    select.add(option);
-                }
-            });
-        });
-        
-    function addJob() {
-        const select = document.getElementById('desired_job');
-        const selectedJob = select.options[select.selectedIndex].value;
-
-        if (selectedJob) {
-            const selectedDiv = document.getElementById('selectdesired_job');
-            selectedDiv.innerHTML = `${selectedJob}`;
-            updateSkills(selectedJob);
-        }
-    }
-
-    function updateSkills(selectedJob) {
-        const select = document.getElementById('selectSkill');
-        select.innerHTML = '<option value="">선택</option>';
         fetch('/json/skillList.json')
             .then(response => response.json())
             .then(data => {
-                const skills = data[0][selectedJob];
-                if (skills) {
-                    skills.forEach(skill => {
+                const select = document.getElementById('selectSkill');
+                const keywordSete = new Set();
+                data.forEach(item => {
+                    if (!keywordSete.has(item["직무 키워드명"])) {
                         const option = document.createElement('option');
-                        option.value = skill;
-                        option.text = skill;
+                        option.value = item["직무 키워드명"];
+                        option.text = item["직무 키워드명"];
                         select.add(option);
-                    });
-                }
+                    }
+                });
             });
-    }
+
+        fetch('/json/korea-administrative-district.json')
+            .then(response => response.json())
+            .then(data => {
+                const citySelect = document.getElementById('city');
+                data.forEach(city => {
+                    for (const cityName in city) {
+                        const option = document.createElement('option');
+                        option.value = cityName;
+                        option.text = cityName;
+                        citySelect.add(option);
+                    }
+                });
+            });
+
+        fetch('/json/job_category.json')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('desired_job');
+                const keywordSet = new Set();
+                data.forEach(item => {
+                    if (!keywordSet.has(item["상위직무"])) {
+                        const option = document.createElement('option');
+                        option.value = item["상위직무"];
+                        option.text = item["상위직무"];
+                        select.add(option);
+                    }
+                });
+            });
+
+        function addJob() {
+            const select = document.getElementById('desired_job');
+            const selectedJob = select.options[select.selectedIndex].value;
+
+            if (selectedJob) {
+                const selectedDiv = document.getElementById('selectdesired_job');
+                selectedDiv.innerHTML = `${selectedJob}`;
+                updateSkills(selectedJob);
+            }
+        }
+
+        function updateSkills(selectedJob) {
+            const select = document.getElementById('selectSkill');
+            select.innerHTML = '<option value="">선택</option>';
+            fetch('/json/skillList.json')
+                .then(response => response.json())
+                .then(data => {
+                    const skills = data[0][selectedJob];
+                    if (skills) {
+                        skills.forEach(skill => {
+                            const option = document.createElement('option');
+                            option.value = skill;
+                            option.text = skill;
+                            select.add(option);
+                        });
+                    }
+                });
+        }
+
         function addSkill() {
             const select = document.getElementById('selectSkill');
             const selectedSkill = select.options[select.selectedIndex].value;

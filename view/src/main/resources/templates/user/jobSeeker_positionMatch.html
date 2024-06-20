@@ -8,18 +8,62 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" 
             crossorigin="anonymous"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #3385ff;
+            color: #fff;
+            padding: 20px;
+        }
+        .content {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: 20px;
+        }
+        h1 {
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
         .job-list {
             list-style-type: none;
             padding: 0;
         }
         .job-item {
-            background-color: #fff;
+            background-color: #ffffff;
             border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+        .job-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .job-item h3 {
-            margin: 0;
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .job-item h3 a {
+            text-decoration: none;
+            color: #0073b1;
+            transition: color 0.3s ease;
+        }
+        .job-item h3 a:hover {
+            color: #005580;
+        }
+        .job-item p {
+            margin: 5px 0;
+            color: #555;
         }
     </style>
 </head>
@@ -28,16 +72,18 @@
     <div class="container">
         <div id="sidebar"></div>
         <div class="content">
-    <h1>포지션 매칭</h1>
-    <ul id="jobList" class="job-list"></ul>
-</div>
-</div>
+            <h1>포지션 매칭</h1>
+            <ul id="jobList" class="job-list"></ul>
+        </div>
+    </div>
     <script>
         $(document).ready(function() {
-            fetchUserInfo();
-            $("#menu").load("/user_menubar.html");
-            $("#sidebar").load("/user_sidebar.html");
-
+        	$("#menu").load("/user_menubar.html", function() {
+                fetchUserInfo();
+            });
+             $("#sidebar").load("/user_sidebar.html");
+             
+             
         });
 
         function formatDate(dateString) {
@@ -57,7 +103,7 @@
                 },
                 success: function(data) {
                     if (data) {
-                    	$("#userName").text(data.name);
+                        $("#userName").text(data.name);
                         userEmail = data.email;
                         $("#loggedInSection").show();
                         $("#loggedOutSection").hide();
@@ -79,17 +125,17 @@
                     const jobList = $("#jobList");
                     jobList.empty();
                     data.forEach(function(job) {
-                    	console.log(job.company_name);
-                    	console.log(job.application_deadline);
-                    	console.log(job.new_name);
-                    	let parts = job.required_skills.split('//');
-                    	let partlocation = job.location.split('//');
+                        console.log(job.company_name);
+                        console.log(job.application_deadline);
+                        console.log(job.new_name);
+                        let parts = job.required_skills.split('//');
+                        let partlocation = job.location.split('//');
                         const jobItem = `
                             <li class="job-item">
                                 <h3><a href="/company/job_posting_detail_company?posting_id=${job.posting_id}">${job.title}</a></h3>
                                 <p>기업 이름: ${job.company_name}</p>
-                                <p>위치: `+partlocation[0]+` `+partlocation[1]+` `+partlocation[2]+`</p>
-                                <p>직무: `+parts[0]+` - `+parts[1]+`</p>
+                                <p>위치: ${partlocation[0]} ${partlocation[1]} ${partlocation[2]}</p>
+                                <p>직무: ${parts[0]} - ${parts[1]}</p>
                                 <p>마감일: ${formatDate(job.application_deadline)}</p>
                             </li>
                         `;

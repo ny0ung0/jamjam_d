@@ -1,99 +1,159 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-<meta charset="UTF-8">
-<title>공고 리스트</title>
-<link rel="stylesheet" type="text/css" href="/css/user.css">
-<script src="https://code.jquery.com/jquery-3.7.1.js"
-	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-	crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <title>공고 리스트</title>
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #3385ff;
+            color: #fff;
+            padding: 20px;
+        }
+        .content {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: 40px;
+        }
+        #postListContainer {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #postListTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        #postListTable th, #postListTable td {
+            padding: 15px;
+            text-align: left;
+        }
+        #postListTable th {
+            background-color: #e6f7ff;
+            border-bottom: 1px solid #ccc;
+        }
+        #postListTable td {
+            border-bottom: 1px solid #eee;
+        }
+        #postListTable tr:hover {
+            background-color: #f1f1f1;
+        }
+        #postListTable td a {
+            color: #0073b1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        #postListTable td a:hover {
+            color: #005580;
+        }
+        h2 {
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
-
 <body>
-	<script>
-	$(document).ready(function () {
-		$("#menu").load("/user_menubar.html");
-        $("#sidebar").load("/user_sidebar.html");
-        fetchUserInfo();
-    });
-	
-	function formatDate(dateString) {
-        const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = ('0' + (date.getMonth() + 1)).slice(-2);
-        const day = ('0' + date.getDate()).slice(-2);
-        return `${year}-${month}-${day}`;
-    }
-	
-	
-	function fetchUserInfo() {
-        $.ajax({
-            url: "http://localhost:8888/userInfo",
-            method: "GET",
-            xhrFields: {
-                withCredentials: true
-            },
-            success: function (data) {
-                if (data && data.email) {
-                	listPost();
-                	$("#userName").text(data.name);
-                    userEmail = data.email;
-                    $("#loggedInSection").show();
-                    $("#loggedOutSection").hide();
-                } else {
-                    window.location.href = "/nindex";
-                }
-            },
-            error: function () {
-                alert('사용자 정보를 가져오는 중 오류가 발생했습니다.');
-            }
-        });
-    }
-	
-	function listPost() {
-        $.ajax({
-            url: `http://localhost:8888/user/jobPosts`,
-            method: "GET",
-            success: function (data) {
-                const tableBody = $('#postListTable tbody');
-                tableBody.empty();
-                if (data.length > 0) {
-                    data.forEach(post => {
-                        const row = `<tr>
-                            <td><a href="/company/job_posting_detail_company?posting_id=${post.posting_id}">${post.title}</a></td>
-                            <td>${formatDate(post.application_deadline)}</td>
-                        </tr>`;
-                        tableBody.append(row);
-                    });
-                } else {
-                    const row = '<tr><td colspan="2">작성된 이력서가 없습니다.</td></tr>';
-                    tableBody.append(row);
-                }
-            },
-            error: function () {
-                alert('이력서 리스트를 가져오는 중 오류가 발생했습니다.');
-            }
-        });
-    }
-	</script>
-	<div id="menu"></div>
+<div id="menu"></div>
     <div class="container">
         <div id="sidebar"></div>
         <div class="content">
-	<div id="postListContainer">
-		<table id="postListTable">
-			<thead>
-				<tr>
-					<th>공고 제목</th>
-					<th>마감 날짜</th>
-				</tr>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
-	</div>
-	</div>
-	</div>
+            <h2>공고 리스트</h2>
+            <div id="postListContainer">
+                <table id="postListTable">
+                    <thead>
+                        <tr>
+                            <th>공고 제목</th>
+                            <th>마감 날짜</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+        	$("#menu").load("/user_menubar.html", function() {
+                fetchUserInfo();
+            });
+            $("#sidebar").load("/user_sidebar.html");
+        });
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = ('0' + (date.getMonth() + 1)).slice(-2);
+            const day = ('0' + date.getDate()).slice(-2);
+            return `${year}-${month}-${day}`;
+        }
+
+        function fetchUserInfo() {
+            $.ajax({
+                url: "http://localhost:8888/userInfo",
+                method: "GET",
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data) {
+                    if (data && data.email) {
+                        listPost();
+                        $("#userName").text(data.name);
+                        userEmail = data.email;
+                        $("#loggedInSection").show();
+                        $("#loggedOutSection").hide();
+                    } else {
+                        window.location.href = "/nindex";
+                    }
+                },
+                error: function () {
+                    alert('사용자 정보를 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+
+        function listPost() {
+            $.ajax({
+                url: `http://localhost:8888/user/jobPosts`,
+                method: "GET",
+                success: function (data) {
+                    const tableBody = $('#postListTable tbody');
+                    tableBody.empty();
+                    if (data.length > 0) {
+                        data.forEach(post => {
+                            const row = `<tr>
+                                <td><a href="/company/job_posting_detail_company?posting_id=${post.posting_id}">${post.title}</a></td>
+                                <td>${formatDate(post.application_deadline)}</td>
+                            </tr>`;
+                            tableBody.append(row);
+                        });
+                    } else {
+                        const row = '<tr><td colspan="2">작성된 공고가 없습니다.</td></tr>';
+                        tableBody.append(row);
+                    }
+                },
+                error: function () {
+                    alert('공고 리스트를 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+    </script>
 </body>
 </html>
+

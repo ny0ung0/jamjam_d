@@ -7,116 +7,118 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" 
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" 
             crossorigin="anonymous"></script>
-</head>
-<style>
-.job-list {
-            margin: 20px;
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .job-list h3 {
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
             margin: 0;
-            padding: 10px;
-            background-color: rgba(240, 222, 196, 0.733);
-            border-bottom: 1px solid #ccc;
-            font-size: 20px;
+            padding: 0;
         }
-        .job-list .job-item {
-            padding: 10px;
-            border-bottom: 1px solid #ccc;
+        .container {
             display: flex;
-            flex-direction: column;
+            min-height: 100vh;
         }
-        .job-list .job-item:last-child {
-            border-bottom: none;
-        }
-        .job-list .job-item h3 {
-            font-size: 18px;
-            margin: 0;
-        }
-        .job-list .job-item p {
-            margin: 5px 0;
-            color: #555;
-        }
-        .job-list .job-item button {
-            background-color: #ff7f00;
+        .sidebar {
+            width: 200px;
+            background-color: #3385ff;
             color: #fff;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            align-self: flex-start;
+            padding: 20px;
         }
-        .job-list .job-item button:hover {
-            background-color: #e66e00;
+        .content {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: 20px;
         }
+        h2 {
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+        #scrapList{
+        background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #scrapTable{
+        width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        
         .job-list table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
         .job-list th, .job-list td {
-            padding: 10px;
+            padding: 15px;
             text-align: left;
         }
         .job-list th {
-            background-color: #f2f2f2;
+            background-color: #e6f7ff;
             border-bottom: 1px solid #ccc;
         }
         .job-list td {
             border-bottom: 1px solid #eee;
         }
+        .job-list tr:hover {
+            background-color: #f1f1f1;
+        }
+        .job-list td a {
+            color: #0073b1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .job-list td a:hover {
+            color: #005580;
+        }
         .job-list td button {
             background-color: #d9534f;
             color: #fff;
             border: none;
-            padding: 5px 10px;
+            padding: 10px 15px;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
         .job-list td button:hover {
             background-color: #c9302c;
         }
-        
-        a{
-        	color:black;
-        	text-decoration: none;
-        }
-        a:hover{
-        	color:blue;
-        	text-decoration: underline;
-        }
-</style>
+    </style>
+</head>
 <body>
 <div id="menu"></div>
     <div class="container">
         <div id="sidebar"></div>
         <div class="content">
-        <div class="job-list">
-    <h3>스크랩한 공고 리스트</h3>
-    <table id="scrapTable" border="1">
-        <thead>
-            <tr>
-                <th>기업 이름</th>
-                <th>공고 제목</th>
-                <th>마감일</th>
-                <th>스크랩 취소</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+            <div class="job-list">
+                <h2>스크랩한 공고 리스트</h2>
+                <div id="scrapList">
+                <table id="scrapTable">
+                    <thead>
+                        <tr>
+                            <th>기업 이름</th>
+                            <th>공고 제목</th>
+                            <th>마감일</th>
+                            <th>스크랩 취소</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
     </div>
-    </div>
-</div>
     <script>
     $(document).ready(function () {
-        fetchUserInfo();
-        $("#menu").load("/user_menubar.html");
+    	$("#menu").load("/user_menubar.html", function() {
+            fetchUserInfo();
+        });
         $("#sidebar").load("/user_sidebar.html");
-
     });
-    
+
     function fetchUserInfo() {
         $.ajax({
             url: "http://localhost:8888/userInfo",
@@ -125,19 +127,18 @@
                 withCredentials: true
             },
             success: function (data) {
-            	$("#userName").text(data.name);
+                $("#userName").text(data.name);
                 userEmail = data.email;
                 $("#loggedInSection").show();
                 $("#loggedOutSection").hide();
-
-            	listScrap();
+                listScrap();
             },
             error: function () {
                 alert('사용자 정보를 가져오는 중 오류가 발생했습니다.');
             }
         });
     }
-    
+
     function formatDate(dateString) {
         const date = new Date(dateString);
         const year = date.getFullYear();
@@ -145,53 +146,48 @@
         const day = ('0' + date.getDate()).slice(-2);
         return `${year}-${month}-${day}`;
     }
-    
-    function cancelScrapJob(){
-    	$.ajax({
-    		url: `http://localhost:8888/user/cancelScrapJob/${post_id}?email=${userEmail}`,
-    		method: "DELETE",
-    		success: function(data){
-    			alert("스크랩 취소 되었습니다.");
-    			window.location.href="/user/scrapList";
-    		}
-    	});
-    	
+
+    function cancelScrapJob(post_id) {
+        $.ajax({
+            url: `http://localhost:8888/user/cancelScrapJob/${post_id}?email=${userEmail}`,
+            method: "DELETE",
+            success: function(data){
+                alert("스크랩 취소 되었습니다.");
+                listScrap();
+            },
+            error: function() {
+                alert('스크랩 취소 중 오류가 발생했습니다.');
+            }
+        });
     }
-    
-    
-    function listScrap(){
-    	$.ajax({
-    		url: `http://localhost:8888/user/scrapList?email=${userEmail}`,
-    		method: "GET",
-    		success: function (data){
-    			const tableBody = $('#scrapTable tbody');	
-    			tableBody.empty();
-    			if(data.length > 0){
-    				data.forEach(scrap => {
-    					post_id = scrap.posting_id;
-    					console.log(scrap.posting_id);
-    					console.log(scrap.title);
-    					let parts = scrap.keywords.split('//');
-    					const row = `<tr>
-    						<td>${scrap.company_name}</td>
-    						<td><a href="/company/job_posting_detail_company?posting_id=${scrap.posting_id}">${scrap.title}</a><br>`+parts[0]+ parts[1]+`</td>
-    						<td>${formatDate(scrap.application_deadline)}</td>
-    						<td><button type="button" onclick="cancelScrapJob()">스크랩 취소</button></td>
-    					</tr>`;
-    					tableBody.append(row);
-    				});
-    			} else{
-    				const row = '<tr><td colspan="2">스크랩한 공고가 없습니다.</td></tr>';
-    				tableBody.append(row);
-    			}
-    			
-    		},
-    		error: function(){
-    			alert('스크랩 리스트 출력 오류 발생');
-    		}
-    	});
+
+    function listScrap() {
+        $.ajax({
+            url: `http://localhost:8888/user/scrapList?email=${userEmail}`,
+            method: "GET",
+            success: function (data) {
+                const tableBody = $('#scrapTable tbody');
+                tableBody.empty();
+                if(data.length > 0){
+                    data.forEach(scrap => {
+                        const row = `<tr>
+                            <td>${scrap.company_name}</td>
+                            <td><a href="/company/job_posting_detail_company?posting_id=${scrap.posting_id}">${scrap.title}</a></td>
+                            <td>${formatDate(scrap.application_deadline)}</td>
+                            <td><button type="button" onclick="cancelScrapJob(${scrap.posting_id})">스크랩 취소</button></td>
+                        </tr>`;
+                        tableBody.append(row);
+                    });
+                } else {
+                    const row = '<tr><td colspan="4">스크랩한 공고가 없습니다.</td></tr>';
+                    tableBody.append(row);
+                }
+            },
+            error: function() {
+                alert('스크랩 리스트 출력 오류 발생');
+            }
+        });
     }
-    
     </script>
 </body>
 </html>
