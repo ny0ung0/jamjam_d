@@ -8,20 +8,12 @@
     <link th:if="${session.company_id ne null}"rel="stylesheet" type="text/css" href="/css/company.css">   
 </head>
 <body>
-    <div class="header">
-        <h1>취뽀 JamJam</h1>
-        <div class="menu">
-            <a href="/user/postList">채용 공고</a>
-            <a href="/user/positionMatch">포지션 매칭</a>
-        </div>
-        <div class="user-info">
-            <span style="margin-right: 20px;">이준형</span>
-            <a href="http://localhost:8888/logout">Logout</a>
-        </div>
+    <div th:replace="header :: headerFragment">
+        <!-- The header content will be included here -->
     </div>
     <div class="container">
         
-        <div class="sidebar" th:replace="company/sidebar_company :: sidebarFragment">
+        <div class="sidebar" th:replace="sidebar :: sidebarFragment">
             <!-- Sidebar content will be included here -->
         </div>
         <div class="content">

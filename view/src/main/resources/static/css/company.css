@@ -2,14 +2,15 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f0f0;
+    background-color: #f0f0f0; /* Lighter background for contrast */
+    color: #2F4F4F;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #003366;
+    background-color: #3F6F6F; /* Brighter color */
     color: white;
     padding: 10px 20px;
 }
@@ -31,11 +32,11 @@ body {
 }
 
 .sidebar {
-    background-color: #2f4f6f;
+    background-color: #4F8F8F; /* Brighter color */
     color: white;
     padding: 20px;
     width: 230px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
 }
 
 .sidebar a {
@@ -49,6 +50,7 @@ body {
     flex-grow: 1;
     background-color: white;
     padding: 20px;
+    color: #2F4F4F;
 }
 
 .profile-section h2 {
@@ -62,7 +64,7 @@ body {
 }
 
 .navigation div a {
-    color: #003366;
+    color: #3F6F6F; /* Brighter color */
     text-decoration: none;
     font-weight: bold;
 }
@@ -72,21 +74,21 @@ body {
 }
 
 h3 {
-    border-bottom: 2px solid #003366;
+    border-bottom: 2px solid #3F6F6F; /* Brighter color */
     padding-bottom: 10px;
 }
 
 #box, #matching-box, #proposal-box {
-    border: 1px solid #ddd;
+    border: 1px solid #7FAFAF; /* Brighter color */
     padding: 10px;
-    background-color: #f9f9f9;
+    background-color: #f9f9f9; /* Lighter background */
 }
 
 .job-item, .matching-item, .proposal-item {
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #7FAFAF; /* Brighter color */
 }
 
 .job-item:last-child, .matching-item:last-child, .proposal-item:last-child {
@@ -94,7 +96,7 @@ h3 {
 }
 
 button {
-    background-color: #003366;
+    background-color: #3F6F6F; /* Brighter color */
     color: white;
     border: none;
     padding: 5px 10px;
@@ -102,11 +104,12 @@ button {
 }
 
 button:hover {
-    background-color: #002244;
+    background-color: #5F9F9F; /* Brighter hover color */
 }
 
 .postingTitle a, .title, .user-name {
     font-weight: bold;
+    color: #2F4F4F;
 }
 
 .application_deadline, .postingClose, .postingDelete, .UserInfo, .proposal {
@@ -115,7 +118,8 @@ button:hover {
 
 .proposal-content {
     margin-top: 10px;
-    background-color: #f1f1f1;
+    background-color: #f1f1f1; /* Lighter background */
     padding: 10px;
     border-radius: 5px;
+    color: #2F4F4F;
 }

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+</head>
+<body>
+	 <div class="header" th:fragment="headerFragment">
+        <h1>취뽀 JamJam</h1>
+        <div class="menu">
+           <a href="/company/company_job_postings_list">공고</a>
+            <a href="/company/position_matching_list_company">매칭</a>
+            <a href="/company/position_suggestion_list">포지션 제안자</a>
+        </div>
+        <div class="user-info">
+            <span style="margin-right: 20px;" id="name"></span>
+            <a href="http://localhost:8888/logout">Logout</a>
+        </div>
+         <script>
+    pre();
+    function pre(){
+    	let  id= "[[${session.company_id}]]";
+    	//alert(id);
+    	const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+        	let user =JSON.parse(this.responseText);
+        	
+        	document.querySelector("#name").innerText= user.company_name ;
+        };
+        xhttp.open("get", "http://localhost:8888/company/"+id);
+        xhttp.send();
+    }
+    
+    </script>
+    </div>
+    
+   
+</body>
+</html>
