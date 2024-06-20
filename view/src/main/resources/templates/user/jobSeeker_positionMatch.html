@@ -3,19 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>포지션 매칭</title>
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js" 
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" 
             crossorigin="anonymous"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            color: #333;
-        }
         .job-list {
             list-style-type: none;
             padding: 0;
@@ -32,12 +24,20 @@
     </style>
 </head>
 <body>
+<div id="menu"></div>
+    <div class="container">
+        <div id="sidebar"></div>
+        <div class="content">
     <h1>포지션 매칭</h1>
     <ul id="jobList" class="job-list"></ul>
-
+</div>
+</div>
     <script>
         $(document).ready(function() {
             fetchUserInfo();
+            $("#menu").load("/user_menubar.html");
+            $("#sidebar").load("/user_sidebar.html");
+
         });
 
         function formatDate(dateString) {
@@ -57,7 +57,11 @@
                 },
                 success: function(data) {
                     if (data) {
-                        const userEmail = data.email;
+                    	$("#userName").text(data.name);
+                        userEmail = data.email;
+                        $("#loggedInSection").show();
+                        $("#loggedOutSection").hide();
+
                         fetchMatchingPostings(userEmail);
                     }
                 },

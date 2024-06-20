@@ -4,109 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>my page</title>
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-        }
-        .container {
-            display: flex;
-        }
-        .sidebar {
-            width: 180px;
-            background-color: #005376;
-            color: #fff;
-            padding: 20px;
-            height: 100vh;
-        }
-        .sidebar h2 {
-            color: #fff;
-        }
-        .sidebar a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            padding: 10px 0;
-        }
-        .sidebar a:hover {
-            background-color: #002244;
-        }
-        .content {
-            flex-grow: 1;
-            background-color: #fff;
-        }
-        .header {
-            background-color: #003366;
-            color: #fff;
-            padding: 10px 20px;
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header h1 {
-            margin: 0;
-        }
-        .header a{
-        	color: #fff;
-            text-decoration: none;
-            display: block;
-            padding: 10px 0;
-        }
-        .header .menu {
-            display: flex;
-            align-items: center;
-        }
-        .header .menu a {
-            color: #fff;
-            text-decoration: none;
-            padding: 0 10px;
-        }
-        .header .menu a:hover {
-            text-decoration: underline;
-        }
-        .header .user-info {
-            display: flex;
-            align-items: center;
-        }
-        .header .user-info img {
-            border-radius: 50%;
-            margin-right: 10px;
-        }
         .profile-section {
             display: flex;
             align-items: center;
             padding: 20px;
+            background-color: #f0f8ff;
             border-bottom: 1px solid #ccc;
         }
         .profile-section img {
             border-radius: 50%;
             margin-right: 20px;
+            width: 100px;
+            height: 100px;
+            border: 2px solid #3385ff;
         }
-        .profile-section div {
-            flex-grow: 1;
+        .profile-section .info {
+            display: flex;
+            flex-direction: column;
         }
-        .profile-section div h2 {
-            margin: 0;
-            font-size: 24px;
-        }
-        .profile-section div p {
+        .profile-section span {
+            font-size: 18px;
             margin: 5px 0;
         }
         .navigation {
             display: flex;
-            justify-content: space-between;
-            background-color: #f1f1f1;
+            justify-content: space-around;
+            background-color: #f2f2f2;
             padding: 10px;
         }
         .navigation div {
             text-align: center;
             flex-grow: 1;
-        }
-        .navigation div:not(:last-child) {
-            border-right: 1px solid #ccc;
         }
         .navigation div a {
             text-decoration: none;
@@ -115,272 +45,281 @@
         }
         .job-list {
             margin: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
         .job-list h3 {
             margin: 0;
-            background-color: #f1f1f1;
             padding: 10px;
+            background-color: rgba(240, 222, 196, 0.733);
             border-bottom: 1px solid #ccc;
+            font-size: 20px;
         }
         .job-list .job-item {
-            display: flex;
-            justify-content: space-between;
             padding: 10px;
             border-bottom: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
         }
         .job-list .job-item:last-child {
             border-bottom: none;
         }
-        .job-list .job-item div {
-            flex-grow: 1;
+        .job-list .job-item h3 {
+            font-size: 18px;
+            margin: 0;
+        }
+        .job-list .job-item p {
+            margin: 5px 0;
+            color: #555;
         }
         .job-list .job-item button {
             background-color: #ff7f00;
             color: #fff;
             border: none;
-            padding: 10px 20px;
+            padding: 10px;
             cursor: pointer;
+            border-radius: 5px;
+            align-self: flex-start;
         }
-        span{
-        margin-right: 20px;
+        .job-list .job-item button:hover {
+            background-color: #e66e00;
         }
-        img{
-        width: 100px;
-        height: 100px;
+        .job-list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .job-list th, .job-list td {
+            padding: 10px;
+            text-align: left;
+        }
+        .job-list th {
+            background-color: #f2f2f2;
+            border-bottom: 1px solid #ccc;
+        }
+        .job-list td {
+            border-bottom: 1px solid #eee;
+        }
+        .job-list td button {
+            background-color: #d9534f;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .job-list td button:hover {
+            background-color: #c9302c;
+        }
+        
+        a{
+        	color:black;
+        	text-decoration: none;
+        }
+        a:hover{
+        	color:blue;
+        	text-decoration: underline;
         }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-$(document).ready(function () {
-    fetchUserInfo();
-});
+    <script>
+        $(document).ready(function () {
+        	$("#menu").load("/user_menubar.html");
+            $("#sidebar").load("/user_sidebar.html");
+            fetchUserInfo();
+        });
 
-function fetchUserInfo() {
-    $.ajax({
-        url: "http://localhost:8888/userInfo",
-        method: "GET",
-        xhrFields: {
-            withCredentials: true
-        },
-        success: function (data) {
-        	$("#userName").text(data.name);
-        	$("#profileUserName").text(data.name);
-        	$('#contact').text(formatContact(data.contact));
-        	$('#age').text(calculateAge(data.birth_date));
-            $('#gender').text(formatGender(data.gender));
-        	userEmail = data.email;
-        	fetchMatchingPostings(userEmail);
-        	listScrap();
-        	fetchLatestResume(userEmail);
-        },
-        error: function () {
-            alert('사용자 정보를 가져오는 중 오류가 발생했습니다.');
-        }
-    });
-}
-
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const day = ('0' + date.getDate()).slice(-2);
-    return `${year}-${month}-${day}`;
-}
-
-function cancelScrapJob(){
-	$.ajax({
-		url: `http://localhost:8888/user/cancelScrapJob/${post_id}?email=${userEmail}`,
-		method: "DELETE",
-		success: function(data){
-			alert("스크랩 취소 되었습니다.");
-			window.location.href="/user/scrapList";
-		}
-	});
-	
-}
-
-
-function listScrap(){
-	$.ajax({
-		url: `http://localhost:8888/user/scrapList?email=${userEmail}`,
-		method: "GET",
-		success: function (data){
-			const tableBody = $('#scrapTable tbody');	
-			tableBody.empty();
-			if(data.length > 0){
-				data.forEach(scrap => {
-					post_id = scrap.posting_id;
-					console.log(scrap.posting_id);
-					console.log(scrap.title);
-					let parts = scrap.keywords.split('//');
-					const row = `<tr>
-						<td>${scrap.company_name}</td>
-						<td><a href="/company/job_posting_detail_company?posting_id=${scrap.posting_id}">${scrap.title}</a><br>`+parts[0]+ parts[1]+`</td>
-						<td>${formatDate(scrap.application_deadline)}</td>
-						<td><button type="button" onclick="cancelScrapJob()">스크랩 취소</button></td>
-					</tr>`;
-					tableBody.append(row);
-				});
-			} else{
-				const row = '<tr><td colspan="2">스크랩한 공고가 없습니다.</td></tr>';
-				tableBody.append(row);
-			}
-			
-		},
-		error: function(){
-			alert('스크랩 리스트 출력 오류 발생');
-		}
-	});
-}
-
-function fetchMatchingPostings(email) {
-    $.ajax({
-        url: `http://localhost:8888/user/matchingPostings?email=${email}`,
-        method: "GET",
-        success: function(data) {
-            const jobList = $("#jobList");
-            jobList.empty();
-            data.forEach(function(job) {
-            	console.log(job.company_name);
-            	console.log(job.application_deadline);
-            	console.log(job.new_name);
-            	let parts = job.required_skills.split('//');
-            	let partlocation = job.location.split('//');
-                const jobItem = `
-                    <li class="job-item">
-                        <h3><a href="/company/job_posting_detail_company?posting_id=${job.posting_id}">${job.title}</a></h3>
-                        <p>기업 이름: ${job.company_name}</p>
-                        <p>위치: `+partlocation[0]+` `+partlocation[1]+` `+partlocation[2]+`</p>
-                        <p>직무: `+parts[0]+` - `+parts[1]+`</p>
-                        <p>마감일: ${formatDate(job.application_deadline)}</p>
-                    </li>
-                `;
-                jobList.append(jobItem);
+        function fetchUserInfo() {
+            $.ajax({
+                url: "http://localhost:8888/userInfo",
+                method: "GET",
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data) {
+                	$("#userName").text(data.name);
+                    $("#profileUserName").text(data.name);
+                    $('#contact').text(formatContact(data.contact));
+                    $('#age').text(calculateAge(data.birth_date));
+                    $('#gender').text(formatGender(data.gender));
+                    userEmail = data.email;
+                    fetchMatchingPostings(userEmail);
+                    listScrap();
+                    fetchLatestResume(userEmail);
+                    $("#loggedInSection").show();
+                    $("#loggedOutSection").hide();
+                },
+                error: function () {
+                    console.log('사용자 정보를 가져오는 중 오류가 발생했습니다.');
+                }
             });
-        },
-        error: function() {
-            alert('매칭된 공고를 가져오는 중 오류가 발생했습니다.');
         }
-    });
-}
 
-function fetchLatestResume(email){
-	$.ajax({
-		url: `http://localhost:8888/user/currentResume?email=${email}`,
-		method: "GET",
-		success: function (data) {
-			console.log(data.photo_newName);
-            if (data) {
-            	$('#profilePhoto').attr('src', `/images/${data.photo_newName}`);
-                //$('#title').text(data.title);
-                
-                //$('#desiredJob').text(`희망직무: ${data.desired_job}`);
-               // $('#skills').text(`보유스킬: ${data.skills}`);
-                //$('#licenses').html(formatLicenses(data.license));
-                //$('#experiences').html(formatExperiences(data.experience));
-               // $('#education').html(formatEducation(data.education));
-               // $('#preferences').text(`취업우대사항: ${data.preferences}`);
-               // $('#coverLetterContainer').html(formatCoverLetters(data.cover_letter_title, data.cover_letter_content));
-               // $('#desiredConditions').text(`희망근무지: ${data.desired_conditions}`);
-               // $('#portfolio').text(`포트폴리오: ${data.portfolio}`);
-            } else {
-                alert('이력서를 찾을 수 없습니다.');
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = ('0' + (date.getMonth() + 1)).slice(-2);
+            const day = ('0' + date.getDate()).slice(-2);
+            return `${year}-${month}-${day}`;
+        }
+
+        function cancelScrapJob(post_id){
+            $.ajax({
+                url: `http://localhost:8888/user/cancelScrapJob/${post_id}?email=${userEmail}`,
+                method: "DELETE",
+                success: function(data){
+                    alert("스크랩 취소 되었습니다.");
+                    window.location.href="/user/scrapList";
+                }
+            });
+        }
+
+        function listScrap(){
+            $.ajax({
+                url: `http://localhost:8888/user/scrapList?email=${userEmail}`,
+                method: "GET",
+                success: function (data){
+                    const tableBody = $('#scrapTable tbody');    
+                    tableBody.empty();
+                    if(data.length > 0){
+                        data.forEach(scrap => {
+                            post_id = scrap.posting_id;
+                            console.log(scrap.posting_id);
+                            console.log(scrap.title);
+                            let parts = scrap.keywords.split('//');
+                            const row = `<tr>
+                                <td>${scrap.company_name}</td>
+                                <td><a href="/company/job_posting_detail_company?posting_id=${scrap.posting_id}">${scrap.title}</a><br>`+parts[0]+ parts[1]+`</td>
+                                <td>${formatDate(scrap.application_deadline)}</td>
+                                <td><button type="button" onclick="cancelScrapJob(${scrap.posting_id})">스크랩 취소</button></td>
+                            </tr>`;
+                            tableBody.append(row);
+                        });
+                    } else{
+                        const row = '<tr><td colspan="4">스크랩한 공고가 없습니다.</td></tr>';
+                        tableBody.append(row);
+                    }
+                },
+                error: function(){
+                    alert('스크랩 리스트 출력 오류 발생');
+                }
+            });
+        }
+
+        function fetchMatchingPostings(email) {
+            $.ajax({
+                url: `http://localhost:8888/user/matchingPostings?email=${email}`,
+                method: "GET",
+                success: function(data) {
+                    const jobList = $('#positionMatch tbody');
+                    jobList.empty();
+                    data.forEach(job => {
+                        let parts = job.required_skills.split('//');
+                        let partlocation = job.location.split('//');
+                        const jobItem = `<tr>
+                            <td>${job.company_name}</td>
+                            <td><a href="/company/job_posting_detail_company?posting_id=${job.posting_id}">${job.title}</a></td>
+                            <td>`+parts[0]+` - `+parts[1]+`</td>
+                            <td>`+partlocation[0]+` `+partlocation[1]+` `+partlocation[2]+`</td>
+                            <td>${formatDate(job.application_deadline)}</td>
+                        </tr>`;
+                        jobList.append(jobItem);
+                    });
+                },
+                error: function() {
+                    alert('매칭된 공고를 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+
+        function fetchLatestResume(email){
+            $.ajax({
+                url: `http://localhost:8888/user/currentResume?email=${email}`,
+                method: "GET",
+                success: function (data) {
+                    console.log(data.photo_newName);
+                    if (data) {
+                        $('#profilePhoto').attr('src', `/images/${data.photo_newName}`);
+                    } else {
+                        alert('이력서를 찾을 수 없습니다.');
+                    }
+                },
+                error: function () {
+                    alert('이력서를 가져오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+
+        function calculateAge(birthDateString) {
+            const birthDate = new Date(birthDateString);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDifference = today.getMonth() - birthDate.getMonth();
+            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
             }
-        },
-        error: function () {
-            alert('이력서를 가져오는 중 오류가 발생했습니다.');
+            return age;
         }
-	});
-	}
 
-function calculateAge(birthDateString) {
-    const birthDate = new Date(birthDateString);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDifference = today.getMonth() - birthDate.getMonth();
-    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-    }
-    return age;
-}
+        function formatContact(contact) {
+            return contact.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+        }
 
-function formatContact(contact) {
-    return contact.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
-}
-
-function formatGender(gender) {
-    return gender === 'M' ? '남' : '여';
-}
-
-</script>
+        function formatGender(gender) {
+            return gender === 'M' ? '남' : '여';
+        }
+    </script>
 </head>
 <body>
-    <div class="header">
-        <h1>취뽀 JamJam</h1>
-        <div class="menu">
-            <a href="/user/postList">채용 공고</a>
-            <a href="/user/positionMatch">포지션 매칭</a>
-        </div>
-        <div class="user-info">
-        	<span id="userName" style="margin-right: 20px;">User</span>
-            <a href="http://localhost:8888/logout">Logout</a>
-        </div>
-    </div>
+	<div th:if="${session.company_id eq null}" id="menu"></div>
+
     <div class="container">
-        <div class="sidebar">
-            <h2>메뉴</h2>
-            <a href="/nindex">개인회원 홈</a>
-            <a href="/user/resumeList">이력서 관리</a>
-            <div style="margin-left: 10px;">
-                <a href="/user/resume">이력서 등록</a>
-                <a href="/user/resumeList">이력서 현황</a>
-            </div>
-            <a href="/user/appliedList">입사지원·제안 관리</a>
-            <div style="margin-left: 10px;">
-                <a href="/user/appliedList">입사지원 현황</a>
-                <a href="/user/positionProposal">받은 포지션 제안</a>
-            </div>
-            <a href="/user/scrapList">관심 공고</a>
-            <div style="margin-left: 10px;">
-                <a href="/user/scrapList">스크랩 공고</a>
-            </div>
-            <a href="/user/updateUserInfo">회원정보 관리</a>
-            <div style="margin-left: 10px;">
-                <a href="/user/updateUserInfo">회원정보 수정</a>
-            </div>
-        </div>
+		<div th:if="${session.company_id eq null}" id="sidebar"></div>
         <div class="content">
             <div class="profile-section">
-            	<img id="profilePhoto"></img>
-                <span id="profileUserName"></span>
-                만<span id="age"></span>
-                <span id="gender"></span>
-                <span id="contact"> </span>
-                
+                <img id="profilePhoto">
+                <div class="info">
+                    <strong><span id="profileUserName"></span></strong>
+                    <span>만 <span id="age"></span>세</span>
+                    <span id="gender"></span>
+                    <span id="contact"></span>
+                </div>
             </div>
             <div class="navigation">
-                <div><a href="/user/appliedList">지원완료 3</a></div>
-                <div><a href="/user/resumeList">이력서 열람 2</a></div>
-                <div><a href="/user/positionProposal">포지션 제안 1</a></div>
+                <div><a href="/user/appliedList">지원완료</a></div>
+                <div><a href="/user/resumeList">이력서 열람</a></div>
+                <div><a href="/user/positionProposal">포지션 제안</a></div>
             </div>
             <div class="job-list">
                 <h3>포지션 매칭 공고</h3>
-               <ul id="jobList" class="job-list"></ul>
+                <table id="positionMatch" border="1">
+                    <thead>
+                        <tr>
+                            <th>기업이름</th>
+                            <th>공고제목</th>
+                            <th>직무</th>
+                            <th>위치</th>
+                            <th>마감일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
             <div class="job-list">
                 <h3>스크랩한 공고</h3>
                 <table id="scrapTable" border="1">
-        <thead>
-            <tr>
-                <th>기업 이름</th>
-                <th>공고 제목</th>
-                <th>마감일</th>
-                <th>스크랩 취소</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+                    <thead>
+                        <tr>
+                            <th>기업 이름</th>
+                            <th>공고 제목</th>
+                            <th>마감일</th>
+                            <th>스크랩 취소</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

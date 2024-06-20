@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>이력서 보기</title>
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
     <style>
@@ -22,6 +23,10 @@
 </head>
 
 <body>
+<div id="menu"></div>
+    <div class="container">
+        <div id="sidebar"></div>
+        <div class="content">
     <div id="resumeContainer">
         <div class="resume-section" id="titleSection">
             <h2 id="title"></h2>
@@ -76,12 +81,18 @@
     </div>
     <button id="editButton">수정하기</button>
     <div id="applicant"></div>
+    </div>
+    </div>
     <script>
         $(document).ready(function () {
             const urlParams = new URLSearchParams(window.location.search);
             const resumeId = urlParams.get('resume_id');
+            $("#menu").load("/user_menubar.html");
+            $("#sidebar").load("/user_sidebar.html");
             if (resumeId) {
                 viewResume(resumeId);
+                
+
             } else {
                 alert('이력서 ID가 필요합니다.');
             }
@@ -157,6 +168,11 @@
                 method: "GET",
                 success: function (data) {
                     if (data) {
+                    	$("#userName").text(data.name);
+                        userEmail = data.email;
+                        $("#loggedInSection").show();
+                        $("#loggedOutSection").hide();
+
                         $('#title').text(data.title);
                         $('#name').text(data.name);
                         $('#contact').text(formatContact(data.contact));

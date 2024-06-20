@@ -66,4 +66,7 @@ public interface JobpostingDao {
 	 @Select("SELECT * FROM jobposting RIGHT JOIN user ON jobposting.company_id = user.user_id right JOIN companyinfo on companyinfo.company_id = user.user_id WHERE SUBSTRING_INDEX(location, '//', 1) = #{desired_conditions} AND SUBSTRING_INDEX(required_skills, '//', 1) = #{desired_job}")
 	 public List<JobPosting> getMatchingJobPostings(@Param("desired_conditions") String desired_conditions, @Param("desired_job") String desiredJob);
 	 
+	 @Select("SELECT * FROM jobposting LEFT JOIN user ON jobposting.company_id = user.user_id LEFT JOIN companyinfo ON jobposting.company_id = companyinfo.company_id ORDER BY view_count DESC")
+	 public List<JobPosting> getpopoularPostAll();	 
+	 
 }

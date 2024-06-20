@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Insert title here</title>
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js"
     integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
     crossorigin="anonymous"></script>
     <script>
     $(document).ready(function() {
+    	$("#menu").load("/user_menubar.html");
+        $("#sidebar").load("/user_sidebar.html");
         function fetchUserInfo() {
             $.ajax({
                 url: "http://localhost:8888/userInfo",
@@ -18,7 +21,10 @@
                 },
                 success: function(data) {
                     if (data) {
-                        $("#userName").text(data.name);
+                    	$("#userName").text(data.name);
+                        userEmail = data.email;
+                        $("#loggedInSection").show();
+                        $("#loggedOutSection").hide();
                         $("#userEmail").text(data.email);
                         $("#email").val(data.email);
                         $("#companyEmail").val(data.email);  // Populate company email field
@@ -251,6 +257,10 @@
     </script>
 </head>
 <body>
+<div id="menu"></div>
+    <div class="container">
+        <div id="sidebar"></div>
+        <div class="content">
     <div>
         <h1>Welcome, <span id="userName">User</span>!</h1>
         <p>Your email is <span id="userEmail"></span>.</p>
@@ -326,5 +336,7 @@
         </form>
     </div>
     <div id="result_post"></div>
+    </div>
+    </div>
 </body>
 </html>

@@ -20,6 +20,7 @@ import com.jamjam.rest.dao.JobpostingDao;
 import com.jamjam.rest.dao.JobpostingScrapDao;
 import com.jamjam.rest.dao.ResumeDao;
 import com.jamjam.rest.dao.UserDao;
+import com.jamjam.rest.dto.JobPosting;
 import com.jamjam.rest.dto.Resume;
 import com.jamjam.rest.dto.ResumeDB;
 import com.jamjam.rest.dto.User;
@@ -246,6 +247,12 @@ public class UserController {
     public ResumeDB viewResume(@RequestParam("resume_id") int resumeId) {
         ResumeDB resume = resumeMapper.findByResumeId(resumeId);
         return resume;
+    }
+    
+    @GetMapping("/popularResumeList")
+    public List<JobPosting> popularPost() {
+    	List<JobPosting> popularPost = jobpostMapper.getpopoularPostAll();
+    	return popularPost;
     }
     
 }

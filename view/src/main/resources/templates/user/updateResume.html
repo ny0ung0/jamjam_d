@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>이력서 수정</title>
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
 </head>
 <body>
+<div id="menu"></div>
+    <div class="container">
+        <div id="sidebar"></div>
+        <div class="content">
     <h2>이력서 수정 페이지</h2>
     <div>
         <form name="resume" id="resumeForm">
@@ -69,10 +74,14 @@
             <button type="submit" onclick="submitResume(event)">이력서 수정 완료</button>
         </form>
     </div>
+    </div>
+    </div>
     <script>
         $(document).ready(function () {
             const urlParams = new URLSearchParams(window.location.search);
             const resumeId = urlParams.get('resume_id');
+            $("#menu").load("/user_menubar.html");
+            $("#sidebar").load("/user_sidebar.html");
             if (resumeId) {
             	fetchUserInfo();
                 fetchResume(resumeId);
@@ -92,6 +101,11 @@
                 success: function (data) {
                     if (data) {
                         $("#email").val(data.email);
+                        $("#userName").text(data.name);
+                        userEmail = data.email;
+                        $("#loggedInSection").show();
+                        $("#loggedOutSection").hide();
+
                         console.log("User info fetched successfully:", data);
                     }
                 },

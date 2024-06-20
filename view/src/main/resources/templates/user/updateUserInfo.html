@@ -3,12 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <title>회원정보 수정</title>
+<link rel="stylesheet" type="text/css" href="/css/user.css">
 <script src="https://code.jquery.com/jquery-3.7.1.js"
 	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
 	crossorigin="anonymous"></script>
 </head>
 <script>
 $(document).ready(function() {
+	$("#menu").load("/user_menubar.html");
+    $("#sidebar").load("/user_sidebar.html");
+
     function fetchUserInfo() {
         $.ajax({
             url: "http://localhost:8888/userInfo",
@@ -18,7 +22,11 @@ $(document).ready(function() {
             },
             success: function(data) {
                 if (data) {
-                    $("#userName").text(data.name);
+                	$("#userName").text(data.name);
+                    userEmail = data.email;
+                    $("#loggedInSection").show();
+                    $("#loggedOutSection").hide();
+
                     $("#userEmail").text(data.email);
                     $("#email").val(data.email);
                     $("#name").val(data.name);
@@ -116,6 +124,10 @@ $(document).ready(function() {
 });
 </script>
 <body>
+<div id="menu"></div>
+    <div class="container">
+        <div id="sidebar"></div>
+        <div class="content">
 <div>
 <h2>회원정보 수정</h2>
     <h3>환영합니다, <span id="userName">User</span>님!</h3>
@@ -154,6 +166,8 @@ $(document).ready(function() {
             <button type="submit">Submit</button>
         </div>
     </form>
+</div>
+</div>
 </div>
 </body>
 </html>
