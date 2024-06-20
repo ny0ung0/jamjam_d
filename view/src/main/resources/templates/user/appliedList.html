@@ -8,13 +8,93 @@
     integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
     crossorigin="anonymous"></script>
 </head>
+<style>
+.job-list {
+            margin: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .job-list h3 {
+            margin: 0;
+            padding: 10px;
+            background-color: rgba(240, 222, 196, 0.733);
+            border-bottom: 1px solid #ccc;
+            font-size: 20px;
+        }
+        .job-list .job-item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+        }
+        .job-list .job-item:last-child {
+            border-bottom: none;
+        }
+        .job-list .job-item h3 {
+            font-size: 18px;
+            margin: 0;
+        }
+        .job-list .job-item p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .job-list .job-item button {
+            background-color: #ff7f00;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            align-self: flex-start;
+        }
+        .job-list .job-item button:hover {
+            background-color: #e66e00;
+        }
+        .job-list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .job-list th, .job-list td {
+            padding: 10px;
+            text-align: left;
+        }
+        .job-list th {
+            background-color: #f2f2f2;
+            border-bottom: 1px solid #ccc;
+        }
+        .job-list td {
+            border-bottom: 1px solid #eee;
+        }
+        .job-list td button {
+            background-color: #d9534f;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .job-list td button:hover {
+            background-color: #c9302c;
+        }
+        
+        a{
+        	color:black;
+        	text-decoration: none;
+        }
+        a:hover{
+        	color:blue;
+        	text-decoration: underline;
+        }
+</style>
 <body>
     
     <div id="menu"></div>
     <div class="container">
         <div id="sidebar"></div>
         <div class="content">
-        <h1>지원한 공고 리스트</h1>
+        <div class="job-list">
+        <h3>지원한 공고 리스트</h3>
     <table id="appliedTable" border="1">
         <thead>
             <tr>
@@ -29,7 +109,7 @@
     </table>
     </div>
     </div>
-    
+    </div>
     <script>
     $(document).ready(function () {
     	$("#menu").load("/user_menubar.html");
