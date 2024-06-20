@@ -9,7 +9,6 @@
 </head>
 <body>
 <h1>기업소개 수정</h1>
-파일 처리 어떻게 할껀지 부터 시작!!!!!!!
 <form name="frm" id="companyInfoFrm" method="POST">
 	공고번호:<input type="text" name="info_id" id ="info_id" th:value="${info_id}">
 	회사로고 :<input type="file" name="file"><br>
@@ -33,11 +32,11 @@ preCompanyInfo();
 
 function preCompanyInfo(){	
 	let frm = document.querySelector("#companyInfoFrm");
-	let id = "[[${info_id}]]";
+	let company_id = "[[${session.company_id}]]";
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
        let companyInfo = JSON.parse(this.responseText);
-       
+       frm.info_id.value = companyInfo.info_id;
        frm.description.value = companyInfo.description;
        frm.number_of_employees.value = companyInfo.number_of_employees;
        frm.working_environment.value = companyInfo.working_environment;
@@ -46,7 +45,7 @@ function preCompanyInfo(){
        frm.main_contact.value = companyInfo.main_contact;
        frm.main_email.value = companyInfo.main_email;
     };
-    xhttp.open("get", "http://localhost:8888/company/companyInfo/info_id/"+id);
+    xhttp.open("get", "http://localhost:8888/company/companyInfo/"+company_id);
     xhttp.send();
 }
 function updateCompanyInfo(event){

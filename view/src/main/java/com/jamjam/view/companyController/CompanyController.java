@@ -48,7 +48,7 @@ public class CompanyController {
 		model.addAttribute("info_id",info_id);
 	}
 	@RequestMapping("/company_introduction_edit")
-	public void company_introduction_edit(@RequestParam("info_id")Integer info_id,Model model) {
+	public void company_introduction_edit(@RequestParam(value ="info_id",required =false)Integer info_id,Model model) {
 		model.addAttribute("info_id",info_id);
 	}
 	
@@ -69,6 +69,11 @@ public class CompanyController {
 	
 	@RequestMapping("company_homepage")
 	public void company_homepage() {
+		
+	}
+	
+	@RequestMapping("position_suggestion_list")
+	public void position_suggestion_list() {
 		
 	}
 }

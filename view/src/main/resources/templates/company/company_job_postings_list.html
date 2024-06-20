@@ -27,6 +27,7 @@ function pre(){
     	   box.innerHTML += '<div id='+posting.posting_id+'> <span class="application_deadline">' + posting.application_deadline.slice(0, 10) + '</span>'+
     	   '<span class="postingTitle"><p><a href="/company/job_posting_detail_company?posting_id='+posting.posting_id+'">'+posting.title+'</a></p>'+
     	   '<p class="applicantNumber"></p></span>'+
+    	   '<span class="applicant"><button class="applicantBtn" onclick="applicantList(event)">지원자리스트</button></span>'+
     	   '<span class="postingClose">'+deadline_status+'</span>'+
     	   '<span class="postingDelete"><button class="deleteBtn" onclick="deletePosting(event)">공고삭제</button></span></div>';
        });
@@ -36,6 +37,12 @@ function pre(){
     xhttp.open("GET", "http://localhost:8888/company/jobposting?company_id=" + company_id);
     xhttp.send();
 }
+
+function applicantList(e){
+	let id = e.target.closest('div').id;
+	location.href = "/company/applicants_list?posting_id="+id;
+}
+
 function deletePosting(e){
 	let id = e.target.closest('div').id;
 

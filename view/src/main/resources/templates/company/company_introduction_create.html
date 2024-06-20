@@ -25,6 +25,23 @@
 </form>
 <div id="demo"></div>
 <script>
+pre();
+
+function pre(){
+	let company_id = "[[${session.company_id}]]";
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+       let companyInfo = JSON.parse(this.responseText);
+       if(companyInfo==null||companyInfo+""){
+    	   alert("이미 기업소개를 등록하셨습니다.");
+    	   location.href="/company/company_introduction_detail";
+       }
+    };
+    xhttp.open("get", "http://localhost:8888/company/companyInfo/"+company_id);
+    xhttp.send();
+}
+
+
 function reg11(event){
     event.preventDefault();
     alert("submit....");

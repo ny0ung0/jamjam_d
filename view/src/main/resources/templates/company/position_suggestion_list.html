@@ -15,60 +15,32 @@ function pre(){
 	let box = document.querySelector("#box");
 	let company_id="[[${session.company_id}]]";
  
-	
+	//alert(company_id);
 	const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
        let proposals = JSON.parse(this.responseText);
        
        proposals.forEach(proposal =>{
     	   
-    	  box.innerHTML += '<div class="proposal_id"id='+proposal.proposal_id+'> <span class="user_name">' +proposal.user_name +'</span>'+
-    	  
-    	  
-    	  
-    	  
-    	  //여기서부터 하기!!!!!
-    	   '<span class="proposal_title">' +proposal.proposal_title +'</span><span class="proposal_title" id='+proposal_title+'>proposal_title<button class="machingListBtn" onclick="machingList(event,'+posting.posting_id+')">매칭리스트보기</button></span></div><div class="machingBox" id =machingBox'+posting.posting_id+' ></div>';
+    	  box.innerHTML += '<div class="proposal_id" id='+proposal.proposal_id+'> <span class="user_name">' +proposal.user_name +'</span>'+
+    	   '<span class="proposal_title">' +proposal.proposal_title +
+    	   '</span><span class="status">' +proposal.status +
+    	   '</span><span><button class="contentBtn" onclick="content(event,'+proposal.proposal_id+')">제안내용보기</button></span></div><div class="proposal_content" id ="proposal_content'+proposal.proposal_id+'" style="display : none;">'+proposal.proposal_content+'</div>';
        });
        
        
     };
-    xhttp.open("GET", "http://localhost:8888/company/positionProposal?company_id=" + company_id);
+    xhttp.open("GET", "http://localhost:8888/company/positionProposal/" + company_id);
     xhttp.send();
 }
 
- function machingList(e,posting_id){
-	 let keywords = e.target.closest(".keywords").id;
-	 alert(keywords);
-	 const box = document.getElementById('machingBox' + posting_id);
-	 box.innerHTML='';
-	 let company_id = '[[${session.company_id}]]';
-	 const xhttp = new XMLHttpRequest();
-	    xhttp.onload = function() {
-	       let users = JSON.parse(this.responseText);
-	       
-	       users.forEach(user =>{
-	    	   let btn="";
-	    	   if(user.proposalStatus=="0"){
-	    		   btn='<button class="proposalBtn" onclick="proposal(event,'+company_id+','+user.user_id+')">포지션제안</button>';
-	    	   }else if(user.proposalStatus=="1"){
-	    		   btn='제안완료';
-	    	   }
-	    	  box.innerHTML += '<div class="application_id"id='+user.user_id+'> <span class="name">' + user.name + '</span>'+
-	    	   '<span class="UserInfo"> 생년월일:'+user.birth_date.slice(0,10)+' 성별:'+user.gender+' 이메일:'+user.email+'</span>' +
-	    	   '<span class="proposal" id='+company_id+'>'+btn+'</span></div>';
-	       });
-	       
-	       
-	    };
-	    xhttp.open("GET", "http://localhost:8888/company/machingList?keywords=" + keywords +"&company_id=" + company_id);
-	    xhttp.send();
+ function content(e,proposal_id){
+	// alert("버튼 함수 들어옴");
+	 const content = document.querySelector(`#proposal_content${proposal_id}`);
+	    content.style.display = content.style.display === "none" ? "block" : "none";
  }
  
- function proposal(e,company_id,user_id){
-	 location.href="/company/position_suggestion?company_id="+company_id+"&user_id="+user_id;
-	 
- }
+ 
 </script>
 </body>
 </html>
