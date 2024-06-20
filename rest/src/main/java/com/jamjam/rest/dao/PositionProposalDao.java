@@ -26,6 +26,6 @@ public interface PositionProposalDao {
 	@Update("UPDATE positionproposal SET status = #{status} WHERE proposal_id = #{proposal_id}")
 	public void updatePositionproposalStatue(@Param("status") String status, @Param("proposal_id") Integer proposal_id);
 	
-	@Select("select p.* u.name as username from positionproposal p left join user u on p.user_id = u.user_id where p.company_id=#{company_id} ")
+	@Select("select p.*, u.name as user_name from positionproposal p left join user u on p.user_id = u.user_id where p.company_id=#{company_id} ")
 	public List<PositionProposal> findProposalsAndNameByCompanyId(Integer company_id);
 }
