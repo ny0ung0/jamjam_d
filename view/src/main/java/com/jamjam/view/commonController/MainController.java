@@ -11,7 +11,7 @@ public class MainController {
 
 	@RequestMapping("/")
 	public String root() {
-		return "index";
+		return "/nindex";
 	}
 	@RequestMapping("leindex")
 	public void lee(HttpSession session,@RequestParam("company_id")Integer company_id) {
