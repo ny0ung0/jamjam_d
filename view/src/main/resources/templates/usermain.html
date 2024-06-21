@@ -1,342 +1,506 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Insert title here</title>
     <link rel="stylesheet" type="text/css" href="/css/user.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"
-    integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-    crossorigin="anonymous"></script>
-    <script>
-    $(document).ready(function() {
-    	$("#menu").load("/user_menubar.html");
-        $("#sidebar").load("/user_sidebar.html");
-        function fetchUserInfo() {
-            $.ajax({
-                url: "http://localhost:8888/userInfo",
-                method: "GET",
-                xhrFields: {
-                    withCredentials: true
-                },
-                success: function(data) {
-                    if (data) {
-                    	$("#userName").text(data.name);
-                        userEmail = data.email;
-                        $("#loggedInSection").show();
-                        $("#loggedOutSection").hide();
-                        $("#userEmail").text(data.email);
-                        $("#email").val(data.email);
-                        $("#companyEmail").val(data.email);  // Populate company email field
-                        $("#name").val(data.name);
-                        $("#company_id").val(data.user_id);
-                        // Check for additional info
-                        if (data.hasAdditionalInfo) {
-                            if(data.role == "ROLE_USER"){
-                                window.location.href ="/nindex";
-                            }else{
-                                window.location.href ="/leindex?company_id="+data.user_id;
-                            }
-                        }
-                    }
-                },
-                error: function() {
-                    alert("Failed to fetch user info.");
-                }
-            });
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
         }
 
-        fetch('/json/korea-administrative-district.json')
-            .then(response => response.json())
-            .then(data => {
-                const citySelect = document.getElementById('city');
-                data.forEach(city => {
-                    for (const cityName in city) {
-                        const option = document.createElement('option');
-                        option.value = cityName;
-                        option.text = cityName;
-                        citySelect.add(option);
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #3385ff;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .content {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: 40px;
+        }
+
+        h1,
+        h2 {
+            color: #0066cc;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .skill-item,
+        .license-item,
+        .experience-item,
+        .education-item,
+        .cover-letter-item {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .license-item,
+        .experience-item,
+        .education-item,
+        .cover-letter-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .license-item input[type="text"],
+        .license-item input[type="date"],
+        .experience-item input[type="text"],
+        .experience-item input[type="date"],
+        .education-item input[type="text"],
+        .education-item input[type="date"],
+        .cover-letter-item input[type="text"] {
+            flex: 1;
+        }
+
+        .license-item button,
+        .experience-item button,
+        .education-item button,
+        .cover-letter-item button {
+            background-color: #dc3545;
+        }
+
+        .license-item button:hover,
+        .experience-item button:hover,
+        .education-item button:hover,
+        .cover-letter-item button:hover {
+            background-color: #c82333;
+        }
+
+        #jobSeekerTab,
+        #companyTab {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+        }
+
+        #jobSeekerTab:hover,
+        #companyTab:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="menu"></div>
+    <div class="container">
+        <div id="sidebar"></div>
+        <div class="content">
+            <div>
+                <h1>Welcome, <span id="userName">User</span>!</h1>
+                <p>Your email is <span id="userEmail"></span>.</p>
+            </div>
+            <h1>Additional Information</h1>
+            <div>
+                <button id="jobSeekerTab">Job Seeker Registration</button>
+                <button id="companyTab">Company Registration</button>
+            </div>
+            <div id="jobSeekerContainer" style="display:none;">
+                <form id="signupForm">
+                    <div>
+                        <label for="email">Email:</label>
+                        <input type="text" id="email" name="email" readonly required />
+                    </div>
+                    <div>
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required />
+                    </div>
+                    <div>
+                        <label for="contact">Contact:</label>
+                        <input type="text" id="contact" name="contact" required maxlength="11" />
+                    </div>
+                    <div>
+                        <label for="city">City:</label>
+                        <select id="city" name="city" required>
+                            <option value="">선택</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="district">District:</label>
+                        <select id="district" name="district" required>
+                            <option value="">선택</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="address">Detailed Address:</label>
+                        <input type="text" id="address" name="address" required />
+                    </div>
+                    <div>
+                        <label for="birthDate">Birth Date:</label>
+                        <input type="date" id="birthDate" name="birth_date" required />
+                    </div>
+                    <div>
+                        <label for="gender">Gender:</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">선택</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <div id="companyContainer" style="display:none;">
+                <form id="companyFrm">
+                    <input type="text" id="company_id" name="company_id" hidden>
+                    <div>
+                        <label for="companyEmail">Email:</label>
+                        <input type="text" name="email" id="companyEmail" readonly />
+                    </div>
+                    <div>
+                        <label for="sector1">업종:</label>
+                        <select id="sector1" name="sector1" onchange="sector1SelectChanged()"></select>
+                        <select id="sector2" name="sector2"></select>
+                    </div>
+                    <div>
+                        <label for="registration_number">사업자등록번호:</label>
+                        <input type="text" id="registration_number" name="registration_number">
+                        <input type="button" onclick="checkRegistration_number()" value="사업자등록번호확인">
+                    </div>
+                    <div id="resultNumber"></div>
+                    <div>
+                        <label for="company_name">회사명:</label>
+                        <input type="text" name="company_name">
+                    </div>
+                    <div>
+                        <label for="representative_name">대표자명:</label>
+                        <input type="text" name="representative_name">
+                    </div>
+                    <div>
+                        <label for="address1">회사주소:</label>
+                        <select id="address1" name="address1" onchange="address1SelectChanged()"></select>
+                        <select id="address2" name="address2"></select>
+                        <input type="text" name="detailAddress">
+                    </div>
+                    <div>
+                        <label for="tel">전화번호:</label>
+                        <input type="text" name="tel">
+                    </div>
+                    <input type="text" name="role" value="ROLE_COMPANY" hidden>
+                    <button id="companySignupButton" onclick="reg(event)" disabled>회원가입</button>
+                </form>
+            </div>
+            <div id="result_post"></div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#menu").load("/user_menubar.html");
+            $("#sidebar").load("/user_sidebar.html");
+            function fetchUserInfo() {
+                $.ajax({
+                    url: "http://localhost:8888/userInfo",
+                    method: "GET",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    success: function (data) {
+                        if (data) {
+                            $("#userName").text(data.name);
+                            userEmail = data.email;
+                            $("#loggedInSection").show();
+                            $("#loggedOutSection").hide();
+                            $("#userEmail").text(data.email);
+                            $("#email").val(data.email);
+                            $("#companyEmail").val(data.email);  // Populate company email field
+                            $("#name").val(data.name);
+                            $("#company_id").val(data.user_id);
+                            // Check for additional info
+                            if (data.hasAdditionalInfo) {
+                                if (data.role == "ROLE_USER") {
+                                    window.location.href = "/nindex";
+                                } else {
+                                    window.location.href = "/leindex?company_id=" + data.user_id;
+                                }
+                            }
+                        }
+                    },
+                    error: function () {
+                        alert("Failed to fetch user info.");
                     }
                 });
-            });
-
-        document.getElementById('city').addEventListener('change', function() {
-            const selectedCity = this.value;
-            const districtSelect = document.getElementById('district');
-            districtSelect.innerHTML = ''; // 기존 옵션 제거
+            }
 
             fetch('/json/korea-administrative-district.json')
                 .then(response => response.json())
                 .then(data => {
+                    const citySelect = document.getElementById('city');
                     data.forEach(city => {
-                        if (city[selectedCity]) {
-                            city[selectedCity].forEach(district => {
-                                const option = document.createElement('option');
-                                option.value = district;
-                                option.text = district;
-                                districtSelect.add(option);
-                            });
+                        for (const cityName in city) {
+                            const option = document.createElement('option');
+                            option.value = cityName;
+                            option.text = cityName;
+                            citySelect.add(option);
                         }
                     });
                 });
-        });
 
-        $("#signupForm").submit(function(event) {
-            event.preventDefault();
+            document.getElementById('city').addEventListener('change', function () {
+                const selectedCity = this.value;
+                const districtSelect = document.getElementById('district');
+                districtSelect.innerHTML = ''; // 기존 옵션 제거
 
-            var formData = {
-                email: $("#email").val(),
-                name: $("#name").val(),
-                contact: $("#contact").val(),
-                city: $("#city").val(),
-                district: $("#district").val(),
-                address: $("#address").val(),
-                birth_date: $("#birthDate").val(),
-                gender: $("#gender").val()
-            };
-
-            $.ajax({
-                type: "PUT",
-                url: "http://localhost:8888/signup",
-                data: JSON.stringify(formData),
-                contentType: "application/json",
-                success: function(response) {
-                    alert("Signup successful!");
-                    window.location.href = "/nindex"; // 성공 시 리디렉션
-                },
-                error: function(xhr, status, error) {
-                    alert("Signup failed: " + xhr.responseText);
-                }
+                fetch('/json/korea-administrative-district.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(city => {
+                            if (city[selectedCity]) {
+                                city[selectedCity].forEach(district => {
+                                    const option = document.createElement('option');
+                                    option.value = district;
+                                    option.text = district;
+                                    districtSelect.add(option);
+                                });
+                            }
+                        });
+                    });
             });
-        });
 
-        $("#jobSeekerTab").click(function() {
-            $("#jobSeekerContainer").show();
-            $("#companyContainer").hide();
-        });
+            $("#signupForm").submit(function (event) {
+                event.preventDefault();
 
-        $("#companyTab").click(function() {
-            $("#jobSeekerContainer").hide();
-            $("#companyContainer").show();
-        });
+                var formData = {
+                    email: $("#email").val(),
+                    name: $("#name").val(),
+                    contact: $("#contact").val(),
+                    city: $("#city").val(),
+                    district: $("#district").val(),
+                    address: $("#address").val(),
+                    birth_date: $("#birthDate").val(),
+                    gender: $("#gender").val()
+                };
 
-        fetchUserInfo();
-        pre1();
-        pre2();
-
-        function pre1(){
-            //업종 관련
-            let sector1 = document.getElementById("sector1");
-            sector1.innerHTML = '<option value="" class="always">선택</option>';
-            document.getElementById("sector2").innerHTML = '<option value="" class="always">선택</option>';
-            const xhttp = new XMLHttpRequest();
-            xhttp.onload = function() {
-                let results = JSON.parse(this.responseText);
-                results.forEach(result => {
-                    let code = result.코드;
-                    let name = result.업종명;
-                    sector1.innerHTML += '<option value =' + code + '>' + name + '</option>';
-                });
-            };
-            xhttp.open("get", "http://localhost:8888/json/sector_category", true);
-            xhttp.send();
-        }
-        
-        function pre2(){
-            let address1 = document.getElementById("address1");
-            address1.innerHTML = '<option value="" class="always">선택</option>';
-            document.getElementById("address2").innerHTML = '<option value="" class="always">선택</option>';
-            const xhttp = new XMLHttpRequest();
-            xhttp.onload = function() {
-                let result = JSON.parse(this.responseText);
-                Object.keys(result).forEach(key => {
-                    address1.innerHTML += '<option value="' + key + '">' + key + '</option>';
-                });
-            };
-            xhttp.open("get", "http://localhost:8888/json/address1", true);
-            xhttp.send();
-        }
-
-        // 사업자 번호 확인 후 버튼 상태 업데이트
-        function checkRegistration_number(){
-            var data = {
-                "b_no": [$("#registration_number").val()] // 사업자번호 "xxxxxxx" 로 조회 시,
-            };
-
-            $.ajax({
-                url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=pj1%2B669xKchgAcU3BhHK0bxmPPyBX9A%2FSmvsKpvuzhwIroogcKjl4B5qUfW3XYojSy0TgPWr6jrBOREJkxghlA%3D%3D",  // serviceKey 값을 YOUR_SERVICE_KEY에 입력
-                type: "POST",
-                data: JSON.stringify(data), // json 을 string으로 변환하여 전송
-                dataType: "JSON",
-                contentType: "application/json",
-                accept: "application/json",
-                success: function(result) {
-                    console.log(result.data[0]['tax_type']);
-                    let taxType = result.data[0]['tax_type'];
-                    $("#resultNumber").text(taxType);
-
-                    if (taxType === "국세청에 등록되지 않은 사업자등록번호입니다.") {
-                        $("#companySignupButton").prop("disabled", true);
-                    } else {
-                        $("#companySignupButton").prop("disabled", false);
+                $.ajax({
+                    type: "PUT",
+                    url: "http://localhost:8888/signup",
+                    data: JSON.stringify(formData),
+                    contentType: "application/json",
+                    success: function (response) {
+                        alert("Signup successful!");
+                        window.location.href = "/nindex"; // 성공 시 리디렉션
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Signup failed: " + xhr.responseText);
                     }
-                },
-                error: function(result) {
-                    console.log(result.responseText); //responseText의 에러메세지 확인
-                }
+                });
             });
+
+            $("#jobSeekerTab").click(function () {
+                $("#jobSeekerContainer").show();
+                $("#companyContainer").hide();
+            });
+
+            $("#companyTab").click(function () {
+                $("#jobSeekerContainer").hide();
+                $("#companyContainer").show();
+            });
+
+            fetchUserInfo();
+            pre1();
+            pre2();
+
+            function pre1() {
+                //업종 관련
+                let sector1 = document.getElementById("sector1");
+                sector1.innerHTML = '<option value="" class="always">선택</option>';
+                document.getElementById("sector2").innerHTML = '<option value="" class="always">선택</option>';
+                const xhttp = new XMLHttpRequest();
+                xhttp.onload = function () {
+                    let results = JSON.parse(this.responseText);
+                    results.forEach(result => {
+                        let code = result.코드;
+                        let name = result.업종명;
+                        sector1.innerHTML += '<option value =' + code + '>' + name + '</option>';
+                    });
+                };
+                xhttp.open("get", "http://localhost:8888/json/sector_category", true);
+                xhttp.send();
+            }
+
+            function pre2() {
+                let address1 = document.getElementById("address1");
+                address1.innerHTML = '<option value="" class="always">선택</option>';
+                document.getElementById("address2").innerHTML = '<option value="" class="always">선택</option>';
+                const xhttp = new XMLHttpRequest();
+                xhttp.onload = function () {
+                    let result = JSON.parse(this.responseText);
+                    Object.keys(result).forEach(key => {
+                        address1.innerHTML += '<option value="' + key + '">' + key + '</option>';
+                    });
+                };
+                xhttp.open("get", "http://localhost:8888/json/address1", true);
+                xhttp.send();
+            }
+
+            // 사업자 번호 확인 후 버튼 상태 업데이트
+            function checkRegistration_number() {
+                var data = {
+                    "b_no": [$("#registration_number").val()] // 사업자번호 "xxxxxxx" 로 조회 시,
+                };
+
+                $.ajax({
+                    url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=pj1%2B669xKchgAcU3BhHK0bxmPPyBX9A%2FSmvsKpvuzhwIroogcKjl4B5qUfW3XYojSy0TgPWr6jrBOREJkxghlA%3D%3D",  // serviceKey 값을 YOUR_SERVICE_KEY에 입력
+                    type: "POST",
+                    data: JSON.stringify(data), // json 을 string으로 변환하여 전송
+                    dataType: "JSON",
+                    contentType: "application/json",
+                    accept: "application/json",
+                    success: function (result) {
+                        console.log(result.data[0]['tax_type']);
+                        let taxType = result.data[0]['tax_type'];
+                        $("#resultNumber").text(taxType);
+
+                        if (taxType === "국세청에 등록되지 않은 사업자등록번호입니다.") {
+                            $("#companySignupButton").prop("disabled", true);
+                        } else {
+                            $("#companySignupButton").prop("disabled", false);
+                        }
+                    },
+                    error: function (result) {
+                        console.log(result.responseText); //responseText의 에러메세지 확인
+                    }
+                });
+            }
+
+            window.checkRegistration_number = checkRegistration_number;  // 함수를 전역으로 선언
+
+        });
+
+        //업종1을 선택하면 업종2를 바꿔주는 메서드
+        function sector1SelectChanged() {
+            let sector1 = document.querySelector("#sector1").value;
+            document.getElementById("sector2").innerHTML = '<option value="" class="always">선택</option>';
+
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                let sector2 = JSON.parse(this.responseText);
+                sector2.forEach(sector => {
+                    document.getElementById("sector2").innerHTML += '<option value =' + sector + '>' + sector + '</option>';
+                });
+            };
+            xhttp.open("get", "http://localhost:8888/json/sector/" + sector1, true);
+            xhttp.send();
         }
 
-        window.checkRegistration_number = checkRegistration_number;  // 함수를 전역으로 선언
+        //주소1을 선택하면 주소2내용을 바꿔주는 메서드
+        function address1SelectChanged() {
+            let address1 = document.querySelector("#address1").value;
+            document.getElementById("address2").innerHTML = '<option value="" class="always">선택</option>';
 
-    });
-    
-    //업종1을 선택하면 업종2를 바꿔주는 메서드
-    function sector1SelectChanged() {
-        let sector1 = document.querySelector("#sector1").value;
-        document.getElementById("sector2").innerHTML = '<option value="" class="always">선택</option>';
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                let address2 = JSON.parse(this.responseText);
+                address2.forEach(address => {
+                    document.getElementById("address2").innerHTML += '<option value =' + address + '>' + address + '</option>';
+                });
+            };
+            xhttp.open("get", "http://localhost:8888/json/address2/" + address1, true);
+            xhttp.send();
+        }
 
-        const xhttp = new XMLHttpRequest();
-        xhttp.onload = function() {
-            let sector2 = JSON.parse(this.responseText);
-            sector2.forEach(sector => {
-                document.getElementById("sector2").innerHTML += '<option value =' + sector + '>' + sector + '</option>';
-            });
-        };
-        xhttp.open("get", "http://localhost:8888/json/sector/" + sector1, true);
-        xhttp.send();
-    }
+        function reg(e) {
+            e.preventDefault();
+            let frm = document.querySelector("#companyFrm");
+            let data = {
+                "email": frm.email.value,
+                "company_name": frm.company_name.value,
+                "registration_number": frm.registration_number.value,
+                "company_type": frm.sector1.value + "//" + frm.sector2.value,
+                "representative_name": frm.representative_name.value,
+                "address": frm.address1.value + "//" + frm.address2.value + "//" + frm.detailAddress.value,
+                "tel": frm.tel.value,
+                "role": frm.role.value
+            };
+            let sendData = JSON.stringify(data);
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                alert(this.responseText);
+                let result = this.responseText;
+                if (result.includes("successful")) {
+                    window.location.href = "/company/company_homepage?company_id=" + frm.company_id.value; // 성공 시 리디렉션
+                }
+            };
+            xhttp.open("post", "http://localhost:8888/signup/company");
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(sendData);
+        }
 
-    //주소1을 선택하면 주소2내용을 바꿔주는 메서드
-    function address1SelectChanged() {
-        let address1 = document.querySelector("#address1").value;
-        document.getElementById("address2").innerHTML = '<option value="" class="always">선택</option>';
-
-        const xhttp = new XMLHttpRequest();
-        xhttp.onload = function() {
-            let address2 = JSON.parse(this.responseText);
-            address2.forEach(address => {
-                document.getElementById("address2").innerHTML += '<option value =' + address + '>' + address + '</option>';
-            });
-        };
-        xhttp.open("get", "http://localhost:8888/json/address2/" + address1, true);
-        xhttp.send();
-    }
-
-    function reg(e) {
-        e.preventDefault();
-        let frm = document.querySelector("#companyFrm");
-        let data = {
-            "email": frm.email.value,
-            "company_name": frm.company_name.value,
-            "registration_number": frm.registration_number.value,
-            "company_type": frm.sector1.value + "//" + frm.sector2.value,
-            "representative_name": frm.representative_name.value,
-            "address": frm.address1.value + "//" + frm.address2.value + "//"+frm.detailAddress.value,
-            "tel": frm.tel.value,
-            "role": frm.role.value
-        };
-        let sendData = JSON.stringify(data);
-        const xhttp = new XMLHttpRequest();
-        xhttp.onload = function() {
-            alert(this.responseText);
-            let result = this.responseText;
-            if(result.includes ("successful")){
-                window.location.href ="/leindex?company_id="+frm.company_id.value; // 성공 시 리디렉션
-            }
-        };
-        xhttp.open("post", "http://localhost:8888/signup/company");
-        xhttp.setRequestHeader("Content-type", "application/json");
-        xhttp.send(sendData);
-    }
-
-    window.reg = reg;  // 함수를 전역으로 선언
-    window.sector1SelectChanged = sector1SelectChanged;  // 함수를 전역으로 선언
-    window.address1SelectChanged = address1SelectChanged;  // 함수를 전역으로 선언
-
+        window.reg = reg;  // 함수를 전역으로 선언
+        window.sector1SelectChanged = sector1SelectChanged;  // 함수를 전역으로 선언
+        window.address1SelectChanged = address1SelectChanged;  // 함수를 전역으로 선언
     </script>
 </head>
-<body>
-<div id="menu"></div>
-    <div class="container">
-        <div id="sidebar"></div>
-        <div class="content">
-    <div>
-        <h1>Welcome, <span id="userName">User</span>!</h1>
-        <p>Your email is <span id="userEmail"></span>.</p>
-    </div>
-    <h1>Additional Information</h1>
-    <div>
-        <button id="jobSeekerTab">Job Seeker Registration</button>
-        <button id="companyTab">Company Registration</button>
-    </div>
-    <div id="jobSeekerContainer" style="display:none;">
-        <form id="signupForm">
-            <div>
-                <label for="email">Email:</label>
-                <input type="text" id="email" name="email" readonly required />
-            </div>
-            <div>
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required />
-            </div>
-            <div>
-                <label for="contact">Contact:</label>
-                <input type="text" id="contact" name="contact" required maxlength="11"/>
-            </div>
-            <div>
-                <label for="city">City:</label>
-                <select id="city" name="city" required>
-                    <option value="">선택</option>
-                </select>
-            </div>
-            <div>
-                <label for="district">District:</label>
-                <select id="district" name="district" required>
-                    <option value="">선택</option>
-                </select>
-            </div>
-            <div>
-                <label for="address">Detailed Address:</label>
-                <input type="text" id="address" name="address" required />
-            </div>
-            <div>
-                <label for="birthDate">Birth Date:</label>
-                <input type="date" id="birthDate" name="birth_date" required/>
-            </div>
-            <div>
-                <label for="gender">Gender:</label>
-                <select id="gender" name="gender" required>
-                    <option value="">선택</option>
-                    <option value="M">Male</option>
-                    <option value="F">Female</option>
-                </select>
-            </div>
-            <div>
-                <button type="submit">Submit</button>
-            </div>
-        </form>
-    </div>
-    <div id="companyContainer" style="display:none;">
-        <form id="companyFrm">
-            <input type="text" id="company_id" name="company_id" hidden>
-            이메일 : <input type="text" name="email" id="companyEmail" readonly><br> 
-            업종 :<select id="sector1" name="sector1" onchange="sector1SelectChanged()"></select>
-            <select id="sector2" name="sector2"></select><br>
-            사업자등록번호 : <input type="text" id ="registration_number" name="registration_number"><input type="button" onclick="checkRegistration_number()" value="사업자등록번호확인"><br>
-            <div id="resultNumber"></div><br>
-            회사명 : <input type="text" name="company_name"><br>
-            대표자명 : <input type="text" name="representative_name"><br>
-            회사주소 :<select id="address1" name="address1" onchange="address1SelectChanged()"></select>
-            <select id="address2" name="address2"></select>
-            <input type="text" name="detailAddress"><br>
-            전화번호 : <input type="text" name="tel"><br>
-            <input type="text" name="role" value="ROLE_COMPANY" hidden>
-            <button id="companySignupButton" onclick="reg(event)" disabled>회원가입</button>
-        </form>
-    </div>
-    <div id="result_post"></div>
-    </div>
-    </div>
-</body>
 </html>
