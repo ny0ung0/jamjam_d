@@ -9,6 +9,69 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" 
             crossorigin="anonymous"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #3385ff;
+            color: #fff;
+            padding: 20px;
+        }
+        .content {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: 20px;
+        }
+        h2 {
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+        .proposal-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .proposal-item {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+        .proposal-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .proposal-item h3 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            color: #0073b1;
+        }
+        .proposal-item p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .proposal-item button {
+            background-color: #3385ff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        .proposal-item button:hover {
+            background-color: #1a75ff;
+        }
+
         /* Modal 스타일 */
         .modal {
             display: none;
@@ -23,27 +86,41 @@
             background-color: rgba(0, 0, 0, 0.4);
             padding-top: 60px;
         }
-
         .modal-content {
             background-color: #fefefe;
             margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
+            border-radius: 8px;
         }
-
         .close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
-
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
+        }
+        #acceptButton, #rejectButton {
+            background-color: #3385ff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
+        #acceptButton:hover {
+            background-color: #1a75ff;
+        }
+        #rejectButton:hover {
+            background-color: #d9534f;
         }
     </style>
 </head>
@@ -52,28 +129,29 @@
     <div class="container">
         <div id="sidebar"></div>
         <div class="content">
-    <h2>포지션 제의 리스트</h2>
-    <ul id="proposalList" class="proposal-list"></ul>
+            <h2>포지션 제의 리스트</h2>
+            <ul id="proposalList" class="proposal-list"></ul>
 
-    <!-- The Modal -->
-    <div id="proposalModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h3 id="modalProposalTitle"></h3>
-            <p>기업 이름: <span id="modalCompanyName"></span></p>
-            <p>제안 내용: <span id="modalProposalContent"></span></p>
-            <button id="acceptButton">수락</button>
-            <button id="rejectButton">거절</button>
+            <!-- The Modal -->
+            <div id="proposalModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3 id="modalProposalTitle"></h3>
+                    <p>기업 이름: <span id="modalCompanyName"></span></p>
+                    <p>제안 내용: <span id="modalProposalContent"></span></p>
+                    <button id="acceptButton">수락</button>
+                    <button id="rejectButton">거절</button>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</div>
     <script>
         $(document).ready(function() {
-            fetchUserInfo();
-            $("#menu").load("/user_menubar.html");
+            
+        	$("#menu").load("/user_menubar.html", function() {
+                fetchUserInfo();
+            });
             $("#sidebar").load("/user_sidebar.html");
-
         });
 
         function formatDate(dateString) {

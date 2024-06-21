@@ -2,127 +2,245 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>resume Form</title>
+    <title>Resume Form</title>
     <link rel="stylesheet" type="text/css" href="/css/user.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #3385ff;
+            color: #fff;
+            padding: 20px;
+        }
+        .content {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: 20px;
+        }
+        h2 {
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input[type="text"], input[type="date"], select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section div {
+            margin-bottom: 10px;
+        }
+        .section button {
+            background-color: #3385ff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .section button:hover {
+            background-color: #1a75ff;
+        }
+        .section input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        button[type="submit"] {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+        }
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+        .license-item, .experience-item, .cover-letter-item, .education-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            position: relative;
+        }
+        .license-item button, .experience-item button, .cover-letter-item button, .education-item button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #d9534f;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .skill-item {
+    		display: inline-block;
+   		 	margin: 10px;
+    		padding: 10px 40px 10px 10px; /* Adjust padding to account for the close button */
+    		background-color: #f9f9f9;
+    		border: 1px solid #ddd;
+    		border-radius: 4px;
+    		position: relative;
+		}
+
+		.skill-item button {
+    		position: absolute;
+    		top: 50%;
+    		right: 5px;
+    		transform: translateY(-50%);
+    		background-color: #d9534f;
+    		color: #fff;
+    		border: none;
+    		padding: 5px 10px;
+    		cursor: pointer;
+    		border-radius: 4px;
+		}
+        
+        .skill-item button:hover, .license-item button:hover, .experience-item button:hover, .cover-letter-item button:hover, .education-item button:hover {
+            background-color: #c9302c;
+        }
+    </style>
 </head>
 <body>
 <div id="menu"></div>
     <div class="container">
         <div id="sidebar"></div>
         <div class="content">
-    <h2>이력서 등록 페이지</h2>
-    <div>
-        <form name="resume" id="resumeForm">
-            <input type="hidden" id="email" name="email" />
-            제목<input type="text" name="title" /><br />
-            프로필사진<input type="file" name="profile_photo" /><br />
+            <h2>이력서 등록 페이지</h2>
             <div>
-                <label for="desired_job">희망직무</label>
-                <select id="desired_job" name="desired_job" onchange="addJob()" required>
-                    <option value="">선택</option>
-                </select>
-                <div id="selectdesired_job">
-                </div>
+                <form name="resume" id="resumeForm">
+                    <input type="hidden" id="email" name="email" />
+                    <div class="section">
+                        <label for="title">제목</label>
+                        <input type="text" name="title" id="title"/>
+                    </div>
+                    <div class="section">
+                        <label for="profile_photo">프로필사진</label>
+                        <input type="file" name="profile_photo" id="profile_photo"/>
+                    </div>
+                    <div class="section">
+                        <label for="desired_job">희망직무</label>
+                        <select id="desired_job" name="desired_job" onchange="addJob()" required>
+                            <option value="">선택</option>
+                        </select>
+                        <div id="selectdesired_job"></div>
+                    </div>
+                    <div class="section">
+                        <label for="selectSkill">보유스킬</label>
+                        <select id="selectSkill" name="selectSkill" onchange="addSkill()" required>
+                            <option value="">선택</option>
+                        </select>
+                        <div id="selectedSkills"></div>
+                    </div>
+                    <input type="hidden" id="skills" name="skills" /><br />
+                    <div class="section">
+                        <label>보유자격증</label>
+                        <div id="licenses"></div>
+                        <button type="button" onclick="addLicense()">+추가</button>
+                    </div>
+                    <div class="section">
+                        <label>경력사항</label>
+                        <div id="experiences"></div>
+                        <button type="button" onclick="addExperience()">+추가</button>
+                    </div>
+                    <div class="section">
+                        <label>학력사항</label>
+                        <div id="educations"></div>
+                        <button type="button" onclick="addEducation()">+추가</button>
+                    </div>
+                    <div class="section">
+                        <label>취업우대사항</label>
+                        <div>
+                            <input type="checkbox" name="preferences" value="보훈대상"> 보훈대상
+                            <input type="checkbox" name="preferences" value="취업보호 대상"> 취업보호 대상
+                            <input type="checkbox" name="preferences" value="고용지원금 대상"> 고용지원금 대상
+                            <input type="checkbox" name="preferences" value="병역"> 병역
+                        </div>
+                    </div>
+                    <div class="section">
+                        <label>자기소개서</label>
+                        <div id="cover_letters"></div>
+                        <button type="button" onclick="addCoverLetter()">+추가</button>
+                    </div>
+                    <div class="section">
+                        <label for="city">희망근무지</label>
+                        <select id="city" name="desired_conditions" required>
+                        <option value="">선택</option>
+                        </select>
+                    </div>
+                    <div class="section">
+                        <label for="portfolio">포트폴리오</label>
+                        <input type="text" name="portfolio" id="portfolio" placeholder="포트폴리오"/>
+                    </div>
+                    <button type="submit" onclick="submitResume(event)">이력서 작성 완료</button>
+                </form>
             </div>
-            <div>
-                <label for="gotSkills">보유스킬</label>
-                <select id="selectSkill" name="selectSkill" onchange="addSkill()" required>
-                    <option value="">선택</option>
-                </select>
-                <div id="selectedSkills">
-                </div>
-            </div>
-            <input type="hidden" id="skills" name="skills" /><br />
-            <div>
-                <label>보유자격증</label>
-                <div id="licenses">
-                </div>
-                <button type="button" onclick="addLicense()">+추가</button>
-            </div>
-            <div>
-                <label>경력사항</label>
-                <div id="experiences">
-                </div>
-                <button type="button" onclick="addExperience()">+추가</button>
-            </div>
-            <div>
-                <label>학력사항</label>
-                <div id="educations">
-                </div>
-                <button type="button" onclick="addEducation()">+추가</button>
-            </div>
-            <div>
-                <label>취업우대사항</label>
-                <div>
-                    <input type="checkbox" name="preferences" value="보훈대상"> 보훈대상
-                    <input type="checkbox" name="preferences" value="취업보호 대상"> 취업보호 대상
-                    <input type="checkbox" name="preferences" value="고용지원금 대상"> 고용지원금 대상
-                    <input type="checkbox" name="preferences" value="병역"> 병역
-                </div>
-            </div>
-            <div>
-                <label>자기소개서</label>
-                <div id="cover_letters">
-                </div>
-                <button type="button" onclick="addCoverLetter()">+추가</button>
-            </div>
-            <div>
-                <label for="city">희망근무지</label>
-                <select id="city" name="desired_conditions" required>
-                <option value="">선택</option>
-                </select>
-            </div>
-            <input type="text" name="portfolio" placeholder="포트폴리오" /><br />
-            <button type="submit" onclick="submitResume(event)">이력서 작성 완료</button>
-        </form>
-    </div>
-    </div>
+        </div>
     </div>
     <script>
         $(document).ready(function () {
-        	$("#menu").load("/user_menubar.html");
+        	$("#menu").load("/user_menubar.html", function() {
+        		$.ajax({
+                    url: "http://localhost:8888/userInfo",
+                    method: "GET",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    success: function (data) {
+                        if (data) {
+                        	$("#userName").text(data.name);
+                            userEmail = data.email;
+                            $("#loggedInSection").show();
+                            $("#loggedOutSection").hide();
+                            $("#userEmail").text(data.email);
+                            $("#email").val(data.email);
+                            $("#name").val(data.name);
+                        }
+                    },
+                    error: function () {
+                        alert("Failed to fetch user info.");
+                    }
+                });
+            });
             $("#sidebar").load("/user_sidebar.html");
 
-            $.ajax({
-                url: "http://localhost:8888/userInfo",
-                method: "GET",
-                xhrFields: {
-                    withCredentials: true
-                },
-                success: function (data) {
-                    if (data) {
-                    	$("#userName").text(data.name);
-                        userEmail = data.email;
-                        $("#loggedInSection").show();
-                        $("#loggedOutSection").hide();
-                        $("#userEmail").text(data.email);
-                        $("#email").val(data.email);
-                        $("#name").val(data.name);
-                    }
-                },
-                error: function () {
-                    alert("Failed to fetch user info.");
-                }
-            });
+            
         });
 
-        fetch('/json/eduCode.json')
-        	.then(response => response.json())
-        	.then(data => {
-        		const select = document.getElementById('selectEducation');
-        		const keywordSet = new Set();
-        		data.forEach(item => {
-        			if(!keywordSet.has(item["학력"])){
-        				const option = document.createElement('option');
-        				option.value = item["학력"];
-        				option.text = item["학력"];
-        				select.add(option);
-        			}
-        		});
-        		
-        	});
         
         fetch('/json/skillList.json')
             .then(response => response.json())
@@ -358,4 +476,3 @@
     </script>
 </body>
 </html>
-

@@ -87,9 +87,11 @@
     </style>
     <script>
         $(document).ready(function () {
-            $("#menu").load("/user_menubar.html");
+            $("#menu").load("/user_menubar.html", function() {
+                fetchUserInfo();
+            });
             $("#sidebar").load("/user_sidebar.html");
-            fetchUserInfo();
+            
             popularPost();
             startSlider();
         });
@@ -102,12 +104,14 @@
                     withCredentials: true
                 },
                 success: function (data) {
-                    $("#userName").text(data.name);
-                    userEmail = data.email;
                     $("#loggedInSection").show();
                     $("#loggedOutSection").hide();
+                    $("#userName").text(data.name);
+                    userEmail = data.email;
                 },
                 error: function () {
+                    $("#loggedInSection").hide();
+                    $("#loggedOutSection").show();
                     console.log('사용자 정보를 가져오는 중 오류가 발생했습니다.');
                 }
             });
@@ -117,16 +121,14 @@
             window.location.href = "http://localhost:8888/login";
         }
         
-        function popularPost(){
+        function popularPost() {
             $.ajax({
-                url: `http://localhost:8888/user/popularResumeList`,
+                url: "http://localhost:8888/user/popularResumeList",
                 method: "GET",
-                success: function (data){
+                success: function (data) {
                     const popular = $('.cards-container');
-                    if(data.length > 0){
+                    if (data.length > 0) {
                         data.forEach(post => {
-                            post_id = post.posting_id;
-                            console.log(post.posting_id);
                             const row = `<div class="card">
                                 <img src="/images/${post.new_name}" width="110px" height="100px"></img>
                                 <h2>${post.company_name}</h2>
@@ -194,8 +196,7 @@
                     </div>
                 </div>
             </div>
-            <div class="cards-container">
-            </div>
+            <div class="cards-container"></div>
         </div>
     </div>
     <div class="footer">

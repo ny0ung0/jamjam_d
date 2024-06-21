@@ -7,32 +7,112 @@
     <link rel="stylesheet" type="text/css" href="/css/user.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #3385ff;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .content {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+
+        #resumeListContainer {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #resumeListTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        #resumeListTable thead {
+            background-color: #f2f2f2;
+        }
+
+        #resumeListTable th,
+        #resumeListTable td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #resumeListTable th {
+            background-color: #e6f7ff;
+            font-weight: bold;
+        }
+
+        #resumeListTable tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        #resumeListTable td a {
+            text-decoration: none;
+            color: #0073b1;
+            transition: color 0.3s ease;
+        }
+
+        #resumeListTable td a:hover {
+            color: #005580;
+        }
+
+        #resumeListTable td[colspan="2"] {
+            text-align: center;
+            color: #555;
+        }
+    </style>
 </head>
 
 <body>
-<div id="menu"></div>
+    <div id="menu"></div>
     <div class="container">
         <div id="sidebar"></div>
         <div class="content">
-    <h2>이력서 리스트</h2>
-    <div id="resumeListContainer">
-        <table id="resumeListTable">
-            <thead>
-                <tr>
-                    <th>이력서 제목</th>
-                    <th>작성 시간</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+            <h2>이력서 리스트</h2>
+            <div id="resumeListContainer">
+                <table id="resumeListTable">
+                    <thead>
+                        <tr>
+                            <th>이력서 제목</th>
+                            <th>작성 시간</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-</div>
-</div>
     <script>
         $(document).ready(function () {
-            fetchUserInfo();
-            $("#menu").load("/user_menubar.html");
+        	$("#menu").load("/user_menubar.html", function() {
+                fetchUserInfo();
+            });
             $("#sidebar").load("/user_sidebar.html");
 
         });
@@ -46,7 +126,7 @@
             const minute = ('0' + date.getMinutes()).slice(-2);
             return `${year}-${month}-${day} ${hour}:${minute}`;
         }
-        
+
         function fetchUserInfo() {
             $.ajax({
                 url: "http://localhost:8888/userInfo",

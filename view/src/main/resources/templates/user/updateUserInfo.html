@@ -1,173 +1,237 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>회원정보 수정</title>
-<link rel="stylesheet" type="text/css" href="/css/user.css">
-<script src="https://code.jquery.com/jquery-3.7.1.js"
-	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-	crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <title>회원정보 수정</title>
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #3385ff;
+            color: #fff;
+            padding: 20px;
+        }
+        .content {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: 40px;
+        }
+        h2 {
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+        h3 {
+            color: #333;
+        }
+        p {
+            color: #555;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"], select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button[type="submit"] {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+        }
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+    </style>
 </head>
-<script>
-$(document).ready(function() {
-	$("#menu").load("/user_menubar.html");
-    $("#sidebar").load("/user_sidebar.html");
-
-    function fetchUserInfo() {
-        $.ajax({
-            url: "http://localhost:8888/userInfo",
-            method: "GET",
-            xhrFields: {
-                withCredentials: true
-            },
-            success: function(data) {
-                if (data) {
-                	$("#userName").text(data.name);
-                    userEmail = data.email;
-                    $("#loggedInSection").show();
-                    $("#loggedOutSection").hide();
-
-                    $("#userEmail").text(data.email);
-                    $("#email").val(data.email);
-                    $("#name").val(data.name);
-                    $("#contact").val(data.contact);
-                    
-                    // json 주소 나누기
-                    if (data.address) {
-                        const addressData = JSON.parse(data.address);
-                        $("#city").val(addressData.city);
-
-                        // 시/도 값에 따른 구/군 값을 설정
-                        populateDistrictDropdown(addressData.city, addressData.district);
-                        $("#address").val(addressData.address);
-                    }
-                }
-            },
-            error: function() {
-                alert("Failed to fetch user info.");
-            }
-        });
-    }
-
-    // 시/도 선택박스에 데이터를 추가
-    fetch('/json/korea-administrative-district.json')
-    .then(response => response.json())
-    .then(data => {
-        const citySelect = document.getElementById('city');
-        data.forEach(city => {
-            for (const cityName in city) {
-                const option = document.createElement('option');
-                option.value = cityName;
-                option.text = cityName;
-                citySelect.add(option);
-            }
-        });
-    });
-
-    // 시/도 선택이 변경되면 구/군 선택박스를 업데이트
-    document.getElementById('city').addEventListener('change', function() {
-        const selectedCity = this.value;
-        populateDistrictDropdown(selectedCity);
-    });
-
-    function populateDistrictDropdown(selectedCity, districtToSelect) {
-        const districtSelect = document.getElementById('district');
-        districtSelect.innerHTML = ''; // 기존 옵션 제거
-
-        fetch('/json/korea-administrative-district.json')
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(city => {
-                if (city[selectedCity]) {
-                    city[selectedCity].forEach(district => {
-                        const option = document.createElement('option');
-                        option.value = district;
-                        option.text = district;
-                        districtSelect.add(option);
-                    });
-                }
-            });
-            if (districtToSelect) {
-                $("#district").val(districtToSelect);
-            }
-        });
-    }
-
-    $("#signupForm").submit(function(event) {
-        event.preventDefault();
-
-        var formData = {
-            email: $("#email").val(),
-            name: $("#name").val(),
-            contact: $("#contact").val(),
-            city: $("#city").val(),
-            district: $("#district").val(),
-            address: $("#address").val(),
-        };
-
-        $.ajax({
-            type: "PUT",
-            url: "http://localhost:8888/updateUserInfo",
-            data: JSON.stringify(formData),
-            contentType: "application/json",
-            success: function(response) {
-                alert("Signup successful!");
-                window.location.href = "/nindex"; // 성공 시 리디렉션
-            },
-            error: function(xhr, status, error) {
-                alert("Signup failed: " + xhr.responseText);
-            }
-        });
-    });
-
-    fetchUserInfo();
-});
-</script>
 <body>
 <div id="menu"></div>
     <div class="container">
         <div id="sidebar"></div>
         <div class="content">
-<div>
-<h2>회원정보 수정</h2>
-    <h3>환영합니다, <span id="userName">User</span>님!</h3>
-    <p>당신의 Email은 <span id="userEmail"></span>입니다.</p>
-</div>
-<div id="jobSeekerContainer">
-    <form id="signupForm">
-        <div>
-            <input type="hidden" id="email" name="email" readonly required />
+            <div>
+                <h2>회원정보 수정</h2>
+                <h3>환영합니다, <span id="userName">User</span>님!</h3>
+                <p>당신의 Email은 <span id="userEmail"></span>입니다.</p>
+            </div>
+            <div id="jobSeekerContainer">
+                <form id="signupForm">
+                    <div>
+                        <input type="hidden" id="email" name="email" readonly required />
+                    </div>
+                    <div>
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required />
+                    </div>
+                    <div>
+                        <label for="contact">Contact:</label>
+                        <input type="text" id="contact" name="contact" required maxlength="11"/>
+                    </div>
+                    <div>
+                        <label for="city">City:</label>
+                        <select id="city" name="city" required>
+                            <option value="">선택</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="district">District:</label>
+                        <select id="district" name="district" required>
+                            <option value="">선택</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="address">Detailed Address:</label>
+                        <input type="text" id="address" name="address" required />
+                    </div>
+                    <div>
+                        <button type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div>
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required />
-        </div>
-        <div>
-            <label for="contact">Contact:</label>
-            <input type="text" id="contact" name="contact" required maxlength="11"/>
-        </div>
-        <div>
-            <label for="city">City:</label>
-            <select id="city" name="city" required>
-                <option value="">선택</option>
-            </select>
-        </div>
-        <div>
-            <label for="district">District:</label>
-            <select id="district" name="district" required>
-                <option value="">선택</option>
-            </select>
-        </div>
-        <div>
-            <label for="address">Detailed Address:</label>
-            <input type="text" id="address" name="address" required />
-        </div>
-        <div>
-            <button type="submit">Submit</button>
-        </div>
-    </form>
-</div>
-</div>
-</div>
+    </div>
+    <script>
+        $(document).ready(function() {
+        	$("#menu").load("/user_menubar.html", function() {
+        		$.ajax({
+                    url: "http://localhost:8888/userInfo",
+                    method: "GET",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    success: function(data) {
+                        if (data) {
+                            $("#userName").text(data.name);
+                            userEmail = data.email;
+                            $("#loggedInSection").show();
+                            $("#loggedOutSection").hide();
+
+                            $("#userEmail").text(data.email);
+                            $("#email").val(data.email);
+                            $("#name").val(data.name);
+                            $("#contact").val(data.contact);
+                            
+                            // json 주소 나누기
+                            if (data.address) {
+                                const addressData = JSON.parse(data.address);
+                                $("#city").val(addressData.city);
+
+                                // 시/도 값에 따른 구/군 값을 설정
+                                populateDistrictDropdown(addressData.city, addressData.district);
+                                $("#address").val(addressData.address);
+                            }
+                        }
+                    },
+                    error: function() {
+                        alert("Failed to fetch user info.");
+                    }
+                });
+            });
+            $("#sidebar").load("/user_sidebar.html");
+
+
+            // 시/도 선택박스에 데이터를 추가
+            fetch('/json/korea-administrative-district.json')
+            .then(response => response.json())
+            .then(data => {
+                const citySelect = document.getElementById('city');
+                data.forEach(city => {
+                    for (const cityName in city) {
+                        const option = document.createElement('option');
+                        option.value = cityName;
+                        option.text = cityName;
+                        citySelect.add(option);
+                    }
+                });
+            });
+
+            // 시/도 선택이 변경되면 구/군 선택박스를 업데이트
+            document.getElementById('city').addEventListener('change', function() {
+                const selectedCity = this.value;
+                populateDistrictDropdown(selectedCity);
+            });
+
+            function populateDistrictDropdown(selectedCity, districtToSelect) {
+                const districtSelect = document.getElementById('district');
+                districtSelect.innerHTML = ''; // 기존 옵션 제거
+
+                fetch('/json/korea-administrative-district.json')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(city => {
+                        if (city[selectedCity]) {
+                            city[selectedCity].forEach(district => {
+                                const option = document.createElement('option');
+                                option.value = district;
+                                option.text = district;
+                                districtSelect.add(option);
+                            });
+                        }
+                    });
+                    if (districtToSelect) {
+                        $("#district").val(districtToSelect);
+                    }
+                });
+            }
+
+            $("#signupForm").submit(function(event) {
+                event.preventDefault();
+
+                var formData = {
+                    email: $("#email").val(),
+                    name: $("#name").val(),
+                    contact: $("#contact").val(),
+                    city: $("#city").val(),
+                    district: $("#district").val(),
+                    address: $("#address").val(),
+                };
+
+                $.ajax({
+                    type: "PUT",
+                    url: "http://localhost:8888/updateUserInfo",
+                    data: JSON.stringify(formData),
+                    contentType: "application/json",
+                    success: function(response) {
+                        alert("회원정보 수정 성공!");
+                        window.location.href = "/nindex"; // 성공 시 리디렉션
+                    },
+                    error: function(xhr, status, error) {
+                        alert("회원정보 수정 실패: " + xhr.responseText);
+                    }
+                });
+            });
+
+        });
+    </script>
 </body>
 </html>

@@ -84,3 +84,8 @@ body {
             background-color: #ffffff;
             color: #0066cc;
         }
+        .header img{
+        	margin-left: 20px;
+        	width: 80px;
+        	height: 50px;
+        }
