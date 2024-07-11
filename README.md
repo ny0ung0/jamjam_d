@@ -8,5 +8,11 @@
 <h2>✨ 주요 기능</h2>
 
 <h2>🔧 기술 스택</h2>
-
+<img src="https://github.com/ny0ung0/jamjam_d/assets/166091223/8d1ae1f2-313b-4f44-8850-ea7c4aa67f7a"/>
+<img src="https://github.com/ny0ung0/jamjam_d/assets/166091223/296aabd0-3355-4530-8f7a-f8c2cba3a9be"/>
+<img src="https://github.com/ny0ung0/jamjam_d/assets/166091223/c5482df1-5cf9-4e2a-88ea-431ca2ec6539"/>
+<img src="https://github.com/ny0ung0/jamjam_d/assets/166091223/41203017-91ac-49c8-a8bc-c90309fb73a4"/>
+<img src="https://github.com/ny0ung0/jamjam_d/assets/166091223/a1819672-c507-4558-85b6-827164a3115d"/>
+<img src="https://github.com/ny0ung0/jamjam_d/assets/166091223/8d313594-59d4-4590-9516-88a8a8e0dd9a"/>
+<img src="https://github.com/ny0ung0/jamjam_d/assets/166091223/7f8a7b92-73c9-4773-be9c-4e043a81feec"/>
 <h2>👩‍💻 팀원 소개</h2>
