@@ -20,5 +20,13 @@ Back-End<br/>
 Tools<br/>
 <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white">
 </div>
-
+Oauth,jpa
 <h2>👩‍💻 팀원 소개</h2>
+<table>
+<tr>
+  <th>임현용</th><th>이준형</th>
+</tr>
+  <tr>
+<td><a href="https://github.com/ny0ung0">@ny0ung0</a></td><td><a href="https://github.com/lallal123123">@lallal123123</a></td>
+  </tr>
+</table>
