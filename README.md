@@ -10,15 +10,15 @@
 
 <h2>🔧 기술 스택</h2>
 <div>
-Back-End<br/>
+<strong><span align="center">Back-End</span></strong><br/>
 <img src="https://img.shields.io/badge/java 17-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white"> <img src="https://img.shields.io/badge/Spring Boot-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white"> <img src="https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white"> <img src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white"> 
 </div>
 <div>
-  Front-End<br/>
+  <strong><span align="center">Front-End</span></strong><br/>
   <img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E">
 </div>
 <div>
-Tools<br/>
+<strong><span align="center">Tools</span></strong><br/>
 <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white">
 </div>
 Oauth,jpa
