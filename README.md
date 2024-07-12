@@ -1,6 +1,7 @@
 <h1>📑구인구직 웹사이트 (취뽀잼잼)</h1>
-<img src="https://github.com/user-attachments/assets/28d02675-ef45-43c0-b5e6-4f2511120590">
-
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/28d02675-ef45-43c0-b5e6-4f2511120590">
+</div>
 <h2>📚 개발 기간</h2>
 <strong>2024.6.10 ~2024.6.20 (2주)</strong>
 <h2>🎉 프로젝트 소개</h2>
