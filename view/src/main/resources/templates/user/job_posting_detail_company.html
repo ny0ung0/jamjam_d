@@ -117,16 +117,15 @@
         cursor: pointer;
     }
 </style>
-<link th:if="${session.company_id != null}" rel="stylesheet" type="text/css" href="/css/company.css">   
-<link th:if="${session.company_id == null}" rel="stylesheet" type="text/css" href="/css/user.css">
+ 
 </head>
 <body>
-    <div th:if="${session.company_id != null}" th:replace="header :: headerFragment">
+   
         <!-- The header content will be included here -->
     </div>
     <div class="container">
         
-        <div class="sidebar" th:if="${session.company_id != null}" th:replace="sidebar :: sidebarFragment">
+       
             <!-- Sidebar content will be included here -->
         </div>
         <div class="content">
@@ -135,7 +134,7 @@
 
 <div id="postingContainer">
 <div class="logoBox">
-    <img src="#" id="logo" width ="300px" height="300px" style=" object-fit: contain;">
+    <img src="#" id="logo" width ="300px" height="300px">
 </div>
     <div class="job-header">
         <h2><span id="title"></span></h2>
@@ -215,7 +214,6 @@
     <button onclick="scrapJob()">공고 스크랩하기</button>
     <button id="editButton" style="display: none;" onclick="editJobPosting()">공고 수정하기</button>
 </div>
-
 
 
 <!-- 이력서 선택 모달 -->
