@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-
+<style>
+      .header a img{
+        	margin-left: 20px;
+        	
+        }  
+</style>
 </head>
 <body>
 	 <div class="header" th:fragment="headerFragment">
-        <h1><a href = "/company/company_homepage">취뽀 JamJam</a></h1>
+        <a th:href="@{/company/company_homepage(company_id=${session.company_id})}"><img src="/images/흰색강아지로고.png"width= "80px"
+        	height= "50px"></img></a>
         <div class="menu">
            <a href="/company/company_job_postings_list">공고</a>
             <a href="/company/position_matching_list_company">매칭</a>

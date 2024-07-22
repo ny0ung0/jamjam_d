@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>기업 마이페이지</title>
     
-    <link th:if="${session.company_id ne null}" rel="stylesheet" type="text/css" href="/css/company.css">   
+    <link  rel="stylesheet" type="text/css" href="/css/company.css">   
 </head>
 <body>
-    <div th:if="${session.company_id ne null}" th:replace="header :: headerFragment">
+    <div  th:replace="header :: headerFragment">
         <!-- The header content will be included here -->
     </div>
     <div class="container">
         
-        <div class="sidebar" th:if="${session.company_id ne null}" th:replace="sidebar :: sidebarFragment">
+        <div class="sidebar"  th:replace="sidebar :: sidebarFragment">
             <!-- Sidebar content will be included here -->
         </div>
         <div class="content">
@@ -138,7 +138,7 @@
                     '<span class="proposal-title">' + proposal.proposal_title + '</span>' +
                     '<span class="status">' + proposal.status + '</span>' +
                     '<span><button class="contentBtn" onclick="toggleProposalContent(event,' + proposal.proposal_id + ')">제안내용 보기</button></span>' +
-                    '<div class="proposal-content" id="proposal-content-' + proposal.proposal_id + '" style="display: none;">' + proposal.proposal_content + '</div></div>';
+                    '</div><div class="proposal-content" id="proposal-content-' + proposal.proposal_id + '" style="display: none;">' + proposal.proposal_content + '</div><hr>';
                 });
             };
             xhttp.open("GET", "http://localhost:8888/company/positionProposal/" + company_id);

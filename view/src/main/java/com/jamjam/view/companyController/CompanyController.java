@@ -68,8 +68,9 @@ public class CompanyController {
 	}
 	
 	@RequestMapping("company_homepage")
-	public void company_homepage() {
-		
+	public void company_homepage(HttpSession session,@RequestParam("company_id")Integer company_id) {
+		session.setAttribute("company_id", company_id);
+		System.out.println(company_id);
 	}
 	
 	@RequestMapping("position_suggestion_list")
