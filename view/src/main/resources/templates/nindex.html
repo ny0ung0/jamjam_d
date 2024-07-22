@@ -56,13 +56,14 @@
             border-radius: 5px;
             padding: 20px;
             margin: 10px;
-            flex: 1;
             text-align: center;
+            flex: 1 1 calc(25% - 40px);
+            box-sizing: border-box;
         }
         .cards-container {
             display: flex;
-            justify-content: space-around;
             flex-wrap: wrap;
+            justify-content: space-around;
         }
         .btn-primary {
             background-color: #007bff;
@@ -71,6 +72,8 @@
             padding: 10px 20px;
             text-decoration: none;
             border-radius: 5px;
+            display: inline-block;
+            margin-top: 10px;
         }
         .btn-primary:hover {
             background-color: #0056b3;
@@ -118,7 +121,7 @@
         }
 
         function login() {
-            window.location.href = "http://localhost:8888/login";
+            window.location.href = "http://192.168.0.234:8888/login";
         }
         
         function popularPost() {
@@ -196,11 +199,9 @@
                     </div>
                 </div>
             </div>
+            <div style="margin-left: 10px;">인기채용관</div>
             <div class="cards-container"></div>
         </div>
-    </div>
-    <div class="footer">
-        Copyright © Your Website 2023
     </div>
 </body>
 </html>
