@@ -1,8 +1,10 @@
 package com.jamjam.view.userController;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/user")
@@ -61,5 +63,9 @@ public class UserController {
 	@GetMapping("positionProposal")
 	public String positionProposalList() {
 		return "/user/positionProposal";
+	}
+	@RequestMapping("/job_posting_detail_company")
+	public void job_posting_detail_company(@RequestParam(value ="posting_id",required =false) Integer posting_id,Model model) {
+		model.addAttribute("posting_id", posting_id);
 	}
 }
