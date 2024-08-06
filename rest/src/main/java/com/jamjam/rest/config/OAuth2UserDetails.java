@@ -12,8 +12,8 @@ import com.jamjam.rest.dto.User;
 
 public class OAuth2UserDetails implements OAuth2User {
 
-    private User user;
-    private Map<String, Object> attributes;
+    private User user; // 사용자 정보
+    private Map<String, Object> attributes; // OAuth2 제공자의 사용자 속성
 
     public static OAuth2UserDetails create(User user, Map<String, Object> attributes) {
         OAuth2UserDetails userDetails = new OAuth2UserDetails();
@@ -24,18 +24,17 @@ public class OAuth2UserDetails implements OAuth2User {
 
     @Override
     public Map<String, Object> getAttributes() {
-        return attributes;
+        return attributes; // OAuth2 사용자 속성 반환
     }
 
     @Override
     public String getName() {
-        return user.getName();
+        return user.getName();  // 사용자 이름 반환
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // 기본적으로 사용자가 USER 권한을 가진다고 가정합니다.
-        // 필요에 따라 사용자 역할에 맞게 권한을 설정하세요.
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 }
